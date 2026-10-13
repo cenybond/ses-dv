@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Связь Энергострой — первый экран</title>
+<meta name="description" content="Презентация первого экрана нового сайта ООО «Связь Энергострой». Не является действующим сайтом компании.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../../system/logo/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/system.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#main">К основному контенту</a>
+
+<header class="site-header" id="top">
+  <div class="container site-header__row">
+    <a class="logo" href="#top" aria-label="Связь Энергострой — на начало страницы">
+      <img class="logo__img" src="../../system/logo/logo-wordmark-on-dark.svg" width="1366.73" height="133.91" alt="">
+    </a>
+
+    <nav class="nav" aria-label="Основная навигация">
+      <ul>
+        <li><a href="#" data-preview-inert>Услуги</a></li>
+        <li><a href="#" data-preview-inert>Проекты</a></li>
+        <li><a href="#" data-preview-inert>О компании</a></li>
+        <li><a href="#" data-preview-inert>Контакты</a></li>
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="header-phone" href="tel:+79244999444">+7 (924) 499-94-44</a>
+      <button class="btn btn--lime btn--sm" type="button" data-preview-inert>Заказать звонок</button>
+      <button class="burger" type="button" aria-label="Меню" data-preview-inert>
+        <span class="burger__bars" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+<section class="hero on-dark" aria-labelledby="hero-title">
+  <div class="hero__photo" aria-hidden="true"></div>
+  <div class="hero__shade" aria-hidden="true"></div>
+
+  <div class="container hero__inner">
+    <p class="hero__lead">Осуществляем комплекс работ:</p>
+    <h1 id="hero-title">Связь <span class="accent">Энергострой</span></h1>
+    <ul class="hero__lines">
+      <li>Проектирование и строительство инженерных сетей</li>
+      <li>Многопрофильная строительно-монтажная организация</li>
+      <li>Строительство промышленных, гражданских зданий и других сооружений</li>
+    </ul>
+    <div class="hero__actions">
+      <button class="btn btn--lime btn--lg" type="button" data-preview-inert>Услуги <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+      <button class="btn btn--ghost-light btn--lg" type="button" data-preview-inert>Проекты</button>
+      <button class="btn btn--text-light" type="button" data-preview-inert>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+        Заказать звонок
+      </button>
+    </div>
+  </div>
+</section>
+</main>
+
+<p class="preview-note" role="status" aria-live="polite" hidden>Это презентация первого экрана: кнопка пока не активна</p>
+
+<script>
+(function(){
+  var note = document.querySelector('.preview-note'), timer;
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('[data-preview-inert]');
+    if(!el) return;
+    e.preventDefault();
+    note.hidden = false;
+    clearTimeout(timer);
+    timer = setTimeout(function(){ note.hidden = true; }, 2600);
+  });
+})();
+</script>
+</body>
+</html>

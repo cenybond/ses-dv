@@ -2,6 +2,7 @@
 // Карточка проекта (DESIGN-SYSTEM §8.5). Есть страница (`href`) — стрелка-ссылка; нет — статичная плашка
 // «Страница в полной версии» без фокуса и hover. Фальшивых ссылок не бывает.
 import ImagePlaceholder from './ImagePlaceholder.astro';
+import { ui } from '../data';
 
 interface Props {
   title: string;
@@ -16,11 +17,11 @@ const { title, href, photoSrc, photoAlt } = Astro.props;
   <div class="project__plate">
     <h3 class="project__title">{title}</h3>
     {href ? (
-      <a class="dot dot--lime dot--lg" href={href} aria-label={`Открыть проект «${title}»`}>
+      <a class="dot dot--lime dot--lg" href={href} aria-label={ui.a11y.openProject(title)}>
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
     ) : (
-      <p class="project__off">Страница в полной версии</p>
+      <p class="project__off">{ui.placeholders.projectPage}</p>
     )}
   </div>
 </li>

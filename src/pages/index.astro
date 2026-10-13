@@ -1,7 +1,7 @@
 ---
 // Служебная проверочная страница PHASE 5.1: подключает Layout, шапку, подвал и все общие компоненты.
 // Это НЕ главная страница демо: она переносится в DEMO-06 (hero, «О компании», преимущества, обращение). Подписи — служебные (U).
-// Названия услуг и проектов взяты дословно из docs/content/source/ и временно заданы здесь; в DEMO-03 переедут в data/source/*.
+// Названия услуг и проектов — из слоя данных (src/data, DEMO-03); подписи страницы служебные.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from '../components/Container.astro';
 import Button from '../components/Button.astro';
@@ -9,7 +9,7 @@ import ServiceCard from '../components/ServiceCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import ImagePlaceholder from '../components/ImagePlaceholder.astro';
 import ContactLink from '../components/ContactLink.astro';
-import { contacts } from '../data/site';
+import { services, projects, phones, email } from '../data';
 ---
 <BaseLayout
   title="Проверка каркаса — Связь Энергострой (демо)"
@@ -41,9 +41,9 @@ import { contacts } from '../data/site';
     <Container>
       <header class="section__head"><h2 class="h-section" id="check-services-title">Услуги</h2></header>
       <ul class="services">
-        <ServiceCard number="04" title="Монтаж объектов видеонаблюдения" />
-        <ServiceCard number="06" title="Геодезическое сопровождение строительства" />
-        <ServiceCard number="10" title="Проектирование" descriptionPending />
+        <ServiceCard number="04" title={services[3].title.text} />
+        <ServiceCard number="06" title={services[5].title.text} />
+        <ServiceCard number="10" title={services[9].title.text} descriptionPending={services[9].descriptionStatus === 'DESCRIPTION_PENDING'} />
       </ul>
     </Container>
   </section>
@@ -52,8 +52,8 @@ import { contacts } from '../data/site';
     <Container>
       <header class="section__head"><h2 class="h-section" id="check-projects-title">Проекты</h2></header>
       <ul class="projects">
-        <ProjectCard title="Таможенно-логистический терминал" />
-        <ProjectCard title="Благовещенская ТЭЦ" />
+        <ProjectCard title={projects[13].title.text} />
+        <ProjectCard title={projects[7].title.text} />
       </ul>
     </Container>
   </section>
@@ -67,8 +67,8 @@ import { contacts } from '../data/site';
         <ImagePlaceholder ratio="21:9" class="md:col-span-3" />
       </div>
       <dl class="contacts">
-        <div><dt>Телефон</dt><dd><ContactLink href={contacts.phones[0].href} label={contacts.phones[0].label} /></dd></div>
-        <div><dt>E-mail</dt><dd><ContactLink href={contacts.email.href} label={contacts.email.label} /></dd></div>
+        <div><dt>Телефон</dt><dd><ContactLink href={phones[0].href} label={phones[0].display.text} /></dd></div>
+        <div><dt>E-mail</dt><dd><ContactLink href={email.href} label={email.display.text} /></dd></div>
       </dl>
     </Container>
   </section>

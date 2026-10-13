@@ -3,8 +3,7 @@
 // Кнопка «Заказать звонок» и шторка меню появятся с диалогами (DEMO-05): до этого бургер — якорь на навигацию в подвале (работает без JS).
 import Logo from './Logo.astro';
 import ContactLink from './ContactLink.astro';
-import { contacts } from '../data/site';
-import { mainNav } from '../data/nav';
+import { phones, ui, mainNav } from '../data';
 
 interface Props {
   variant?: 'solid' | 'overlay';
@@ -15,7 +14,7 @@ const { variant = 'solid', currentPath = '' } = Astro.props;
 <header class="site-header" id="top" data-header={variant === 'solid' ? 'solid' : ''}>
   <div class="container site-header__row">
     <Logo variant="wordmark" />
-    <nav class="nav" aria-label="Основная навигация">
+    <nav class="nav" aria-label={ui.a11y.mainNav}>
       <ul>
         {mainNav.map((item) => (
           <li><a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>{item.label}</a></li>
@@ -23,8 +22,8 @@ const { variant = 'solid', currentPath = '' } = Astro.props;
       </ul>
     </nav>
     <div class="site-header__actions">
-      <ContactLink class="header-phone" href={contacts.phones[0].href} label={contacts.phones[0].label} />
-      <a class="burger" href="#site-nav" data-open-menu aria-label="Меню" aria-haspopup="dialog">
+      <ContactLink class="header-phone" href={phones[0].href} label={phones[0].display.text} />
+      <a class="burger" href="#site-nav" data-open-menu aria-label={ui.a11y.menu} aria-haspopup="dialog">
         <span class="burger__bars" aria-hidden="true"></span>
       </a>
     </div>

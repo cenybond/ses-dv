@@ -83,6 +83,7 @@ PHASE 3 визуальные концепции → ГЕЙТ G1 (заказчи�
 | Риски | дословность названий с повторами и опечатками (X-3, Q-24); разбор Tilda-разметки политики; кавычки и пробелы |
 | Откат | `git revert` |
 | Дальше | DEMO-04 |
+| **Статус (2026-10-13, PHASE 5.2)** | **Выполнено.** `src/data/{types,ui,nav,index}.ts`, `src/data/source/{services,projects,tlt,advantages,company,contacts,privacy}.ts` (политика — TS-данные вместо `content/privacy.md`, одна схема проверки); `scripts/check-copy.mjs`, `scripts/lib/snapshots.mjs`, негативные тесты `scripts/test-check-copy.mjs` (60 случаев + контрольный); `npm run verify` включает `check-copy` и `test-check-copy`. Состав: 10 услуг (9 + S-10), 14 проектов, 6 на главной, 5 преимуществ (3 на главной), 5 отделов, 12 видов работ ТЛТ. **Не сделано / отложено:** сверка видимых текстовых узлов `dist/*.html` с S/U/M и «числа только из снимков» (страниц ещё нет — с DEMO-06…); ESLint/Prettier/Playwright не ставились (P-29 открыт) |
 
 ### DEMO-04 · Layout и навигация
 

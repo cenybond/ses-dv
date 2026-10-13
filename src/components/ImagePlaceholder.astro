@@ -1,6 +1,8 @@
 ---
 // Явная заглушка фотографии (CLAUDE.md: сток не выдаём за проекты СЭС). Слот не зависит от фото:
 // при появлении снимка передаётся `src` — `.slot:has(.slot__img)` сам скрывает рамку и подпись.
+import { ui } from '../data';
+
 interface Props {
   ratio?: '16:10' | '21:9' | '4:3';
   src?: string;
@@ -9,7 +11,7 @@ interface Props {
 }
 const { ratio = '16:10', src, alt = '', class: className = '' } = Astro.props;
 const modifier = { '16:10': '', '21:9': 'slot--wide', '4:3': 'slot--4x3' }[ratio];
-const chip = `Место для фотографии · ${ratio.replace(':', ' : ')}`;
+const chip = `${ui.placeholders.photo} · ${ratio.replace(':', ' : ')}`;
 ---
 <div class:list={['slot', modifier, className]} aria-hidden={src ? undefined : 'true'}>
   {src ? <img class="slot__img" src={src} alt={alt} loading="lazy" /> : <span class="slot__chip">{chip}</span>}

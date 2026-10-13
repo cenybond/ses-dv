@@ -5,7 +5,7 @@ import '../styles/global.css';
 import favicon from '../../design/system/logo/favicon.svg?url';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { demo } from '../data/site';
+import { ui } from '../data';
 
 interface Props {
   title: string;
@@ -27,8 +27,8 @@ const isDemo = import.meta.env.PUBLIC_DEMO !== 'false';
     <link rel="icon" href={favicon} type="image/svg+xml" />
   </head>
   <body>
-    <a class="skip" href="#main">{demo.skipLink}</a>
-    {isDemo && <div class="demo-strip" role="note"><p>{demo.stripText}</p></div>}
+    <a class="skip" href="#main">{ui.demo.skipLink}</a>
+    {isDemo && <div class="demo-strip" role="note"><p>{ui.demo.strip}</p></div>}
     <SiteHeader variant={headerVariant} currentPath={Astro.url.pathname} />
     <main id="main" tabindex="-1">
       <slot />

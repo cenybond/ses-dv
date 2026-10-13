@@ -5,12 +5,13 @@
 import wordmarkOnDark from '../../design/system/logo/logo-wordmark-on-dark.svg?url';
 import wordmark from '../../design/system/logo/logo-wordmark.svg?url';
 import fullOnDark from '../../design/system/logo/logo-full-on-dark.svg?url';
+import { ui } from '../data';
 
 interface Props {
   variant: 'wordmark' | 'full-on-dark';
 }
 const { variant } = Astro.props;
-const label = 'Связь Энергострой — на начало страницы';
+const label = ui.a11y.logo;
 ---
 {variant === 'wordmark' ? (
   <a class="logo" href="/" aria-label={label}>

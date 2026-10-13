@@ -3,9 +3,12 @@
 ## Current phase
 **PHASE 5.3 / DEMO-04 — Layout, Navigation & Route Foundation: выполнена (2026-10-13).** Рабочая оболочка демо: шапка с CTA, меню-шторка на `<dialog>`, нижняя панель mobile, подвал с рабочими ссылками, skip-link, `aria-current`; созданы все 8 маршрутов (заготовки с честной пометкой); `check-links` с 33 негативными тестами подключён к `verify`. Главная, Hero, формы, диалог заявки не реализовывались; `/` по-прежнему служебная страница проверки каркаса (DEMO-06). PHASE 4 ждёт согласования заказчиком (как и ранее PHASE 2, 3); PHASE 1A, 1B согласованы; PHASE 1C — Proposed.
 
-**Следующий шаг: DEMO-05 «Диалог и демо-форма»** (`PLAN-DEMO.md`): `RequestDialog`, `DemoRequestForm`, перенос из `design/system/system.js` обработчиков диалога заявки, уведомления и демо-формы в `src/scripts/`, `/contacts#request`. Автоматически не начинать. Решение по ESLint/Prettier/Playwright (P-29) остаётся открытым. После DEMO-04 можно выполнить `/clear`.
+**Передача в Codex / PHASE C0 (2026-10-14):** аудит и проектные входные файлы скиллов — [docs/codex-handoff.md](docs/codex-handoff.md), инструкции — `AGENTS.md`; оригиналы `.claude/skills/` сохранены. Продуктовый код не меняется.
+
+**Следующая отдельная задача по поручению владельца: HERO VISUAL REFINEMENT V4** — точечная доработка `design/client-preview/hero/` по EverMod; требования сохранены в handoff. Автоматически не начинать. **DEMO-05 «Диалог и демо-форма»** остаётся следующим шагом основного плана `PLAN-DEMO.md`, но ожидает отдельного поручения после визуальной задачи. Решение по ESLint/Prettier/Playwright (P-29) остаётся открытым.
 
 ## Completed
+- **PHASE C0 / передача в Codex (2026-10-14):** выполнен аудит существующего репозитория; создан `AGENTS.md`, подключены семь входных файлов `.agents/skills/` с переиспользованием неизменённых оригиналов `.claude/skills/`, подготовлен `docs/codex-handoff.md` с требованиями Hero V4. `codex-cli 0.159.2` / `skills/list`: 7/7, scope repo, enabled true, ошибок нет; YAML и 48 ссылок проверены, локальный поиск и запуск Edge — PASS. `quick_validate.py` недоступен без PyYAML, структура проверена существующим Node YAML-парсером и Codex. `src/`, Hero, фон, дизайн-система и зависимости не изменялись; полный verify не требовался. Hero V4 и DEMO-05 не начаты.
 - Проверка проекта: репозиторий пустой (README.md), ветка `claude/practical-wright-l7rivb` от `main` (0dc1db3). CLAUDE.md и PROGRESS.md отсутствовали.
 - Скиллы: все 7 найдены в `origin/claude/ecstatic-einstein-3cjtaw` (`.claude/skills/`).
 - Анализ референса EverMod → `docs/REFERENCE-ANALYSIS.md`.
@@ -179,7 +182,7 @@
 - `ses-dv.ru` не запрашивался, production, `docs/content/source/`, frontend-зависимости, `package.json` не затрагивались.
 
 ## Next step
-DEMO-05 «Диалог и демо-форма» (см. «Current phase»). Заказчику по-прежнему нужно показать прототип (V-1…V-15, `docs/DEMO-VISUAL-DIRECTION.md` §8) и дизайн-систему (Q-34…Q-37); реализация идёт по Proposed-решениям.
+HERO VISUAL REFINEMENT V4 отдельным промптом (см. «Current phase» и `docs/codex-handoff.md`); затем DEMO-05 только по отдельному поручению. Заказчику по-прежнему нужно показать прототип (V-1…V-15, `docs/DEMO-VISUAL-DIRECTION.md` §8) и дизайн-систему (Q-34…Q-37); реализация идёт по Proposed-решениям.
 
 Проверки PHASE 4 (Edge headless через CDP, `file://` и локальный http; фактические прогоны):
 - **VERIFIED. Логотип:** PDF разобран, 14 заливок, 0 растровых объектов, 0 градиентов; геометрия совпала с Figma-SVG (команды, цвета, отклонение 0,005 ед.); растровая сверка; SVG без `script/style/image/href/url()`; пересборка воспроизводима. Визуально проверен на светлом, белом, тёмном фоне, 16–260 px.

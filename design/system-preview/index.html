@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="ru" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Дизайн-система СЭС — style guide</title>
+<meta name="description" content="Минимальная дизайн-система демонстрационного сайта «Связь Энергострой»: логотип, цвет, типографика, компоненты. Рабочий документ, не является сайтом компании.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../system/logo/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/system.css">
+<link rel="stylesheet" href="preview.css">
+<script>document.documentElement.className = 'js';</script>
+</head>
+<body>
+<a class="skip" href="#main">К основному контенту</a>
+
+<header class="sg-top">
+  <div class="container sg-top__row">
+    <p class="sg-top__title">Дизайн-система СЭС</p>
+    <nav class="sg-nav" aria-label="Разделы style guide">
+      <a href="#sg-logo">Логотип</a><a href="#sg-color">Цвет</a><a href="#sg-type">Типографика</a><a href="#sg-geometry">Сетка и геометрия</a><a href="#sg-buttons">Кнопки</a><a href="#sg-forms">Формы</a><a href="#sg-cards">Карточки</a><a href="#sg-shell">Header и footer</a><a href="#sg-hero">Hero</a><a href="#sg-resp">Адаптив</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+
+<section class="sg-intro" aria-labelledby="sg-h1">
+  <div class="container">
+    <h1 class="t-h1" id="sg-h1">Дизайн-система демо «Связь Энергострой»</h1>
+    <p class="sg-note">Страница собрана из тех же файлов, что и прототип главной: <code>design/system/tokens.css</code>, <code>design/system/system.css</code>, <code>design/system/system.js</code>. Цвета, размеры текста и контраст читаются из токенов при загрузке, поэтому расхождения между этой страницей и системой невозможны. Текущая ширина окна: <b id="sg-vp">—</b>. Спецификация правил — <code>DESIGN-SYSTEM.md</code> в корне репозитория.</p>
+    <p class="badge sg-status">Все решения — Proposed, пока заказчик не утвердил направление; утверждена только палитра (A-12)</p>
+    <noscript><p class="demo-note demo-note--block" style="margin-top:16px">Для вывода значений токенов, таблицы контраста и демо-форм нужен JavaScript.</p></noscript>
+  </div>
+</section>
+
+<!-- ====================== ЛОГОТИП ====================== -->
+<section class="sg-sec" id="sg-logo" aria-labelledby="sg-logo-h">
+  <div class="container">
+    <h2 id="sg-logo-h">Логотип</h2>
+    <p class="sg-note">Оригинал заказчика: <a class="link-inline" href="../../brand/source/logotip-vektor.pdf">brand/source/logotip-vektor.pdf</a> (векторный PDF из Figma, 1384 × 735,5; 14 контуров; растра, градиентов и шрифтов нет, текст в кривых). SVG собраны скриптом <code>brand/build_logo_svg.py</code> без изменения геометрии; сверка с исходником описана в <code>DESIGN-SYSTEM.md</code> §2.</p>
+
+    <h3>Полный знак (оригинал) и вариант на тёмном</h3>
+    <div class="sg-logo-pair">
+      <div><div class="sg-logo-box sg-logo-box--white"><img src="../system/logo/logo-full.svg" alt="Связь Энергострой — полный знак на белом фоне" width="1384" height="735.5" style="--w:260px"></div><p class="sg-cap"><code>logo-full.svg</code> · оригинальные цвета · для светлого фона</p></div>
+      <div><div class="sg-logo-box sg-logo-box--light"><img src="../system/logo/logo-full.svg" alt="Связь Энергострой — полный знак на фоне страницы" width="1384" height="735.5" style="--w:260px"></div><p class="sg-cap">тот же файл на фоне страницы <code>--color-bg</code></p></div>
+      <div><div class="sg-logo-box sg-logo-box--dark"><img src="../system/logo/logo-full-on-dark.svg" alt="Связь Энергострой — полный знак на тёмном фоне" width="1384" height="735.5" style="--w:260px"></div><p class="sg-cap"><code>logo-full-on-dark.svg</code> · название и «СЭС» белые, знак без изменений</p></div>
+    </div>
+
+    <h3>Словесная часть (шапка) и знак (favicon, компактное использование)</h3>
+    <div class="sg-logo-pair">
+      <div><div class="sg-logo-box sg-logo-box--white"><img src="../system/logo/logo-wordmark.svg" alt="Связь Энергострой — словесная часть на белом фоне" width="1366.73" height="133.91" style="--w:260px"></div><p class="sg-cap"><code>logo-wordmark.svg</code> · шапка после прокрутки</p></div>
+      <div><div class="sg-logo-box sg-logo-box--dark"><img src="../system/logo/logo-wordmark-on-dark.svg" alt="Связь Энергострой — словесная часть на тёмном фоне" width="1366.73" height="133.91" style="--w:260px"></div><p class="sg-cap"><code>logo-wordmark-on-dark.svg</code> · шапка над hero</p></div>
+      <div><div class="sg-logo-box sg-logo-box--white"><img src="../system/logo/logo-mark.svg" alt="Связь Энергострой — знак" width="535.5" height="268.5" style="--w:170px"></div><p class="sg-cap"><code>logo-mark.svg</code> · верхний знак. Салатовые части слабо контрастируют со светлым (1,7 : 1 и 2,6 : 1): знак сопровождается названием или стоит на тёмном</p></div>
+    </div>
+
+    <h3>Favicon</h3>
+    <div class="sg-stage"><div class="sg-fav">
+      <figure><img src="../system/logo/favicon.svg" width="16" height="16" alt=""><span>16 px</span></figure>
+      <figure><img src="../system/logo/favicon.svg" width="32" height="32" alt=""><span>32 px</span></figure>
+      <figure><img src="../system/logo/favicon.svg" width="48" height="48" alt=""><span>48 px</span></figure>
+      <figure><img src="../system/logo/favicon.svg" width="96" height="96" alt=""><span>96 px</span></figure>
+      <figure style="background:var(--color-bg-dark);padding:10px;border-radius:12px;color:var(--color-text-on-dark-muted)"><img src="../system/logo/favicon.svg" width="16" height="16" alt=""><span>16 на тёмном</span></figure>
+      <figure style="background:var(--color-bg-dark);padding:10px;border-radius:12px;color:var(--color-text-on-dark-muted)"><img src="../system/logo/favicon.svg" width="32" height="32" alt=""><span>32 на тёмном</span></figure>
+    </div></div>
+    <p class="sg-cap"><code>favicon.svg</code>: верхний знак по центру квадрата, поле 6 %, фон прозрачный. Знак широкий (2 : 1), поэтому в 16 px он занимает 8 px по высоте — различим, но мелок.</p>
+
+    <h3>Охранное поле и минимальные размеры</h3>
+    <div>
+      <div class="sg-stage sg-stage--bg"><div class="sg-clear" style="--w:260px;--clear:calc(260px * .0766)"><img src="../system/logo/logo-full.svg" alt="" width="1384" height="735.5"></div><p class="sg-cap">Охранное поле = высота заглавной «С» в названии = 7,7 % ширины полного знака (штриховая рамка). В неё не заходят другие элементы.</p></div>
+      <div class="sg-scroll" role="region" aria-label="Минимальные размеры логотипа" tabindex="0" style="margin-top:16px"><table class="sg-table"><thead><tr><th>Вариант</th><th>Минимум</th><th>Где</th></tr></thead><tbody>
+        <tr><td>Полный знак</td><td>ширина 160 px</td><td>подвал, титулы, документы</td></tr>
+        <tr><td>Словесная часть</td><td>ширина 160 px (в шапке 168 / 200 px)</td><td>шапка</td></tr>
+        <tr><td>Знак</td><td>ширина 24 px (favicon — 16 px)</td><td>favicon, значок приложения</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <h3>Где какой вариант</h3>
+    <div class="sg-scroll" role="region" aria-label="Использование вариантов логотипа" tabindex="0"><table class="sg-table"><thead><tr><th>Место</th><th>Вариант</th><th>Почему</th></tr></thead><tbody>
+      <tr><td>Header над hero (прозрачный)</td><td><code>logo-wordmark-on-dark.svg</code></td><td>Название читается на тёмном; полный знак при высоте шапки 72–84 px нечитаем (название ≈ 10 px)</td></tr>
+      <tr><td>Header после прокрутки / внутренние страницы</td><td><code>logo-wordmark.svg</code></td><td>Оригинальный цвет названия на белом (3,8 : 1; для логотипа требований контраста нет)</td></tr>
+      <tr><td>Footer</td><td><code>logo-full-on-dark.svg</code>, ширина 208 px</td><td>Полный знак читается; белый текст на тёмном</td></tr>
+      <tr><td>Вкладка браузера</td><td><code>favicon.svg</code></td><td>Знак без текста</td></tr>
+    </tbody></table></div>
+
+    <h3>Нельзя</h3>
+    <ul class="sg-note" style="padding-inline-start:1.2em;list-style:disc"><li>перерисовывать, растягивать непропорционально, поворачивать, добавлять тень, обводку, градиент;</li><li>менять шрифт названия на Manrope или набирать название текстом;</li><li>перекрашивать знак; допускается только белый цвет названия и «СЭС» на тёмном (файлы <code>*-on-dark.svg</code>);</li><li>помещать на фотографию без затемнения и на фон со слабым контрастом к зелёному;</li><li>использовать растровый логотип со старого сайта.</li></ul>
+
+    <div class="sg-q"><strong>Что требует согласования заказчика</strong><ul>
+      <li>Вариант на тёмном с белым названием (допущен заданием PHASE 4, но это производное от оригинала).</li>
+      <li>В шапке используется только словесная часть без знака. Горизонтальная версия (знак слева от названия) потребовала бы перекомпоновки оригинала и не создавалась.</li>
+      <li>Favicon = верхний знак в квадрате с прозрачным фоном; квадратный значок с фоном или другая обрезка — решение бренда.</li>
+      <li>Цвета, измеренные по старому PNG (A-12: <code>#4D9600</code>, <code>#6BAD04</code>, <code>#88D600</code>), отличаются на 1–3 единицы канала от значений в векторном файле (<code>#4E9300</code>, <code>#6BAD03</code>, <code>#89D702</code>). Токены UI не менялись; какие значения считать фирменными — DESIGN-SYSTEM.md §3.</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ====================== ЦВЕТ ====================== -->
+<section class="sg-sec" id="sg-color" aria-labelledby="sg-color-h">
+  <div class="container">
+    <h2 id="sg-color-h">Цвет</h2>
+    <p class="sg-note">Компоненты используют только семантические токены (<code>--color-*</code>), а не HEX. Корпоративная палитра утверждена (A-12): основной <code>#116315</code> и салатовые <code>#88D600</code>, <code>#6BAD04</code>, <code>#4D9600</code>. Нейтральные и тонировка — Proposed (V-3).</p>
+    <div id="sg-palette"></div>
+
+    <h3>Цвета логотипа (значения векторного файла)</h3>
+    <div class="sg-grid">
+      <div class="sg-sw"><div class="sg-sw__c" style="--c:#4E9300"></div><div class="sg-sw__t"><b>Название и тёмные полосы</b><span>#4E9300 (в UI-токенах: #4D9600)</span></div></div>
+      <div class="sg-sw"><div class="sg-sw__c" style="--c:#6BAD03"></div><div class="sg-sw__t"><b>Боковые полосы</b><span>#6BAD03 (в UI-токенах: #6BAD04)</span></div></div>
+      <div class="sg-sw"><div class="sg-sw__c" style="--c:#89D702"></div><div class="sg-sw__t"><b>Центральная «стрела»</b><span>#89D702 (в UI-токенах: #88D600)</span></div></div>
+    </div>
+
+    <h3>Контраст (WCAG 2.2 AA), посчитан из токенов</h3>
+    <div class="sg-scroll" role="region" aria-label="Таблица контраста" tabindex="0"><table class="sg-table"><thead><tr><th>Пара</th><th>Токены</th><th>Контраст</th><th>Порог</th><th>Результат</th></tr></thead><tbody id="sg-contrast"></tbody></table></div>
+    <p class="sg-cap">Правило: <code>--color-accent</code> на светлом фоне не несёт текст и смысл (1,66 : 1); используется как заливка кнопки с тёмным текстом, подчёркивание-акцент и метки на тёмном.</p>
+  </div>
+</section>
+
+<!-- ====================== ТИПОГРАФИКА ====================== -->
+<section class="sg-sec" id="sg-type" aria-labelledby="sg-type-h">
+  <div class="container">
+    <h2 id="sg-type-h">Типографика</h2>
+    <p class="sg-note">Manrope — заголовки, кнопки, навигация, подписи. Golos Text — текст и интерфейс. Локальные WOFF2 (кириллица + латиница, OFL-1.1), лицензии в <code>design/system/fonts/</code>. Размеры адаптивны через <code>clamp()</code>: значения при 390 / 768 / 1440 px посчитаны из токена.</p>
+    <div class="sg-stage" id="sg-types"></div>
+    <h3>Проверка кириллицы</h3>
+    <div class="sg-grid sg-grid--2">
+      <div class="sg-stage"><p class="sg-label">Manrope 500</p><p style="font:500 24px/1.3 var(--font-head)">АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ абвгдеёжзийклмнопрстуфхцчшщъыьэюя 0123456789 № «» „“ — ,.;:!?/()</p></div>
+      <div class="sg-stage"><p class="sg-label">Golos Text 400</p><p style="font:400 20px/1.4 var(--font-text)">АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ абвгдеёжзийклмнопрстуфхцчшщъыьэюя 0123456789 № «» „“ — +7 (924) 499-94-44 · 0,4/10/35кВ</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== СЕТКА И ГЕОМЕТРИЯ ====================== -->
+<section class="sg-sec" id="sg-geometry" aria-labelledby="sg-geo-h">
+  <div class="container">
+    <h2 id="sg-geo-h">Сетка, отступы, геометрия</h2>
+    <h3>Контейнер и колонки</h3>
+    <div class="sg-stage sg-stage--bg"><div class="sg-grid12" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="sg-cap">Контейнер ≤ 1200 px (<code>--container</code>), боковые поля <code>clamp(16px, 4vw, 32px)</code>, логическая сетка 12 колонок с промежутком 16 px. Карточные сетки задаются явно: услуги 4 → 3 → 2 → 1, проекты 3 → 2 → 1, преимущества 3 → 1, подвал 4 → 2 → 1, обращение 5/7 → 1.</p></div>
+    <div class="sg-scroll" role="region" aria-label="Брейкпоинты" tabindex="0" style="margin-top:16px"><table class="sg-table"><thead><tr><th>Брейкпоинт</th><th>Роль</th><th>Что меняется</th></tr></thead><tbody>
+      <tr><td><code>≤ 640 px</code> (канонический)</td><td>Телефон</td><td>Нижняя панель, услуги — компактные строки, 1 колонка, диалог — нижняя шторка, логотип 168 px</td></tr>
+      <tr><td><code>≤ 960 px</code> (канонический)</td><td>Планшет</td><td>Меню-шторка вместо навигации, шапка 72 px, проекты и галерея — 2 колонки, обращение — 1 колонка</td></tr>
+      <tr><td><code>≤ 820 / 900 / 1024 / 1180 px</code> (локальные)</td><td>Подстройка компоновки</td><td>820: услуги 2 колонки, нет плавающей карточки в hero · 900: преимущества в столбец · 1024: услуги 3 колонки, подвал 2 колонки · 1180: телефон уходит из шапки</td></tr>
+    </tbody></table></div>
+
+    <h3>Отступы (шаг 4 px)</h3>
+    <div class="sg-stage" id="sg-space"></div>
+    <p class="sg-cap">Секции разделяет <code>--section-gap</code> = <code>clamp(56px, 6vw, 88px)</code>; заголовок секции → содержимое <code>--head-gap</code> = <code>clamp(24px, 3vw, 40px)</code>. Нечётные значения прототипа (6, 10, 14, 18, 28, 36, 44) — оптическая подгонка внутри компонентов.</p>
+
+    <h3>Радиусы</h3>
+    <div class="sg-stage"><div class="sg-radii">
+      <figure><i style="border-radius:var(--radius-xl)"></i>xl 28<br>блок обращения</figure>
+      <figure><i style="border-radius:var(--radius-lg)"></i>lg 24<br>карточки, слоты, диалоги</figure>
+      <figure><i style="border-radius:var(--radius-md)"></i>md 16<br>плашка проекта</figure>
+      <figure><i style="border-radius:var(--radius-sm)"></i>sm 12<br>кнопки, поля</figure>
+      <figure><i style="border-radius:50%"></i>круг<br>иконка-кнопка, номер</figure>
+      <figure><i style="border-radius:var(--radius-pill);width:120px;height:40px"></i>pill<br>чипы, бейджи</figure>
+    </div></div>
+    <p class="sg-cap">Радиус зависит от размера и роли: чем крупнее поверхность, тем больше радиус; вложенный элемент имеет меньший радиус, чем контейнер.</p>
+
+    <h3>Размеры элементов</h3>
+    <div class="sg-scroll" role="region" aria-label="Размеры элементов" tabindex="0"><table class="sg-table"><thead><tr><th>Элемент</th><th>Размер</th><th>Токен</th></tr></thead><tbody>
+      <tr><td>Кнопка: малая / обычная / крупная</td><td>44 / 48 / 56 px высота</td><td><code>--size-btn-sm</code> <code>--size-btn</code> <code>--size-btn-lg</code></td></tr>
+      <tr><td>Поле ввода / textarea</td><td>52 px / от 96 px</td><td><code>--size-field</code></td></tr>
+      <tr><td>Иконка-кнопка (круг со стрелкой)</td><td>40 / 48 / 56 px; кнопка закрытия 44 px</td><td>—</td></tr>
+      <tr><td>Минимальная цель касания</td><td>44 × 44 px</td><td><code>--size-touch</code></td></tr>
+      <tr><td>Шапка / нижняя панель</td><td>84 px (72 до 960) / 76 px</td><td><code>--header-h</code> <code>--dock-h</code></td></tr>
+      <tr><td>Граница кнопки и поля</td><td>1,5 px (на экране 1× отрисуется 1 px)</td><td><code>--border-w</code></td></tr>
+    </tbody></table></div>
+
+    <h3>Пропорции изображений</h3>
+    <div class="sg-grid">
+      <div class="sg-ratio"><i style="aspect-ratio:21/9"></i>21 : 9 · hero; широкая карточка проекта <code>.slot--wide</code></div>
+      <div class="sg-ratio"><i style="aspect-ratio:16/10"></i>16 : 10 · карточка проекта (по умолчанию)</div>
+      <div class="sg-ratio"><i style="aspect-ratio:4/3"></i>4 : 3 · галерея проекта <code>.slot--4x3</code></div>
+      <div class="sg-ratio"><i style="aspect-ratio:4/5;max-width:140px"></i>4 : 5 · кадрирование hero на mobile</div>
+    </div>
+    <p class="sg-cap">Фото всегда <code>object-fit: cover</code>: разная ориентация исходников не ломает макет.</p>
+
+    <h3>Ширины текстовых колонок</h3>
+    <div class="sg-scroll" role="region" aria-label="Ширины текстовых колонок" tabindex="0"><table class="sg-table"><thead><tr><th>Текст</th><th>Максимум</th></tr></thead><tbody>
+      <tr><td>H1 hero</td><td>11 символов (<code>11ch</code>)</td></tr>
+      <tr><td>Строки hero</td><td>540 px</td></tr>
+      <tr><td>Заголовок внутренней страницы / вводный абзац</td><td>22ch / 60ch</td></tr>
+      <tr><td>Подзаголовок блока обращения</td><td>34ch</td></tr>
+      <tr><td>Длинный текст (<code>.prose</code>, политика)</td><td>68ch</td></tr>
+    </tbody></table></div>
+  </div>
+</section>
+
+<!-- ====================== КНОПКИ ====================== -->
+<section class="sg-sec" id="sg-buttons" aria-labelledby="sg-btn-h">
+  <div class="container">
+    <h2 id="sg-btn-h">Кнопки и ссылки-действия</h2>
+    <p class="sg-note">Состояния «hover», «focus», «active» показаны служебными классами <code>.is-hover</code>, <code>.is-focus</code>, <code>.is-active</code>, которые зеркалят <code>:hover</code>, <code>:focus-visible</code>, <code>:active</code>; в боевой разметке они не нужны. Все живые образцы можно навести и проверить Tab. Состояние «loading» в демо не требуется: формы ничего не отправляют; для production — <code>aria-busy="true"</code> и неактивная кнопка.</p>
+
+    <h3>Primary — <code>.btn--lime</code></h3>
+    <div class="sg-stage"><div class="sg-states">
+      <div><button class="btn btn--lime" type="button">Заказать звонок</button><small>default</small></div>
+      <div><button class="btn btn--lime is-hover" type="button">Заказать звонок</button><small>hover</small></div>
+      <div><button class="btn btn--lime is-focus" type="button">Заказать звонок</button><small>focus-visible</small></div>
+      <div><button class="btn btn--lime is-active" type="button">Заказать звонок</button><small>active</small></div>
+      <div><button class="btn btn--lime" type="button" disabled>Заказать звонок</button><small>disabled</small></div>
+    </div></div>
+    <div class="sg-stage" style="margin-top:12px"><div class="sg-states">
+      <div><button class="btn btn--lime btn--sm" type="button">Заказать звонок</button><small>sm · 44 px</small></div>
+      <div><button class="btn btn--lime" type="button">Отправить</button><small>base · 48 px</small></div>
+      <div><button class="btn btn--lime btn--lg" type="button">Отправить <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button><small>lg со стрелкой · 56 px</small></div>
+      <div><a class="btn btn--lime btn--lg" href="#sg-buttons">Услуги <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a><small>ссылка с видом кнопки</small></div>
+    </div></div>
+
+    <h3>Secondary — <code>.btn--ghost-dark</code> (на светлом) и <code>.btn--ghost-light</code> (на тёмном)</h3>
+    <div class="sg-stage"><div class="sg-states">
+      <div><button class="btn btn--ghost-dark" type="button">Позвонить</button><small>default</small></div>
+      <div><button class="btn btn--ghost-dark is-hover" type="button">Позвонить</button><small>hover</small></div>
+      <div><button class="btn btn--ghost-dark is-focus" type="button">Позвонить</button><small>focus-visible</small></div>
+      <div><button class="btn btn--ghost-dark is-active" type="button">Позвонить</button><small>active</small></div>
+      <div><button class="btn btn--ghost-dark" type="button" disabled>Позвонить</button><small>disabled</small></div>
+    </div></div>
+    <div class="sg-stage sg-stage--hero on-dark" style="padding:clamp(16px,2.5vw,28px);margin-top:12px"><div class="sg-states">
+      <div><button class="btn btn--ghost-light btn--lg" type="button">Проекты</button><small style="color:var(--color-text-on-dark-muted)">default</small></div>
+      <div><button class="btn btn--ghost-light btn--lg is-hover" type="button">Проекты</button><small style="color:var(--color-text-on-dark-muted)">hover</small></div>
+      <div><button class="btn btn--ghost-light btn--lg is-focus" type="button">Проекты</button><small style="color:var(--color-text-on-dark-muted)">focus-visible</small></div>
+      <div><button class="btn btn--ghost-light btn--lg is-active" type="button">Проекты</button><small style="color:var(--color-text-on-dark-muted)">active</small></div>
+      <div><button class="btn btn--ghost-light btn--lg" type="button" disabled>Проекты</button><small style="color:var(--color-text-on-dark-muted)">disabled</small></div>
+    </div></div>
+
+    <h3>Text — <code>.btn--text-light</code> (на тёмном), <code>.link-arrow</code>, <code>.link-inline</code></h3>
+    <div class="sg-stage sg-stage--hero on-dark" style="padding:clamp(16px,2.5vw,28px)"><div class="sg-states">
+      <div><button class="btn btn--text-light" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg> Заказать звонок</button><small style="color:var(--color-text-on-dark-muted)">default</small></div>
+      <div><button class="btn btn--text-light is-hover" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg> Заказать звонок</button><small style="color:var(--color-text-on-dark-muted)">hover</small></div>
+      <div><button class="btn btn--text-light is-focus" type="button"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg> Заказать звонок</button><small style="color:var(--color-text-on-dark-muted)">focus-visible</small></div>
+    </div></div>
+    <div class="sg-stage" style="margin-top:12px"><div class="sg-states">
+      <div><button class="link-arrow" type="button">Подробнее о компании <span class="link-arrow__dot" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button><small>link-arrow · default</small></div>
+      <div><button class="link-arrow is-hover" type="button">Подробнее о компании <span class="link-arrow__dot" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button><small>hover</small></div>
+      <div><button class="link-arrow is-focus" type="button">Подробнее о компании <span class="link-arrow__dot" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button><small>focus-visible</small></div>
+      <div><span>Нажимая кнопку "Отправить" вы соглашаетесь с <button class="link-inline" type="button">Политикой конфиденциальности</button></span><small>link-inline · default</small></div>
+      <div><span><button class="link-inline is-hover" type="button">Политикой конфиденциальности</button></span><small>hover</small></div>
+      <div><span><button class="link-inline is-focus" type="button">Политикой конфиденциальности</button></span><small>focus-visible</small></div>
+    </div></div>
+
+    <h3>Icon button — <code>.dot</code> как <code>&lt;button&gt;</code>, <code>.modal__close</code></h3>
+    <div class="sg-stage"><div class="sg-states">
+      <div><button class="dot dot--lime dot--lg" type="button" aria-label="Открыть проект «Таможенно-логистический терминал»"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><small>default · 48 px</small></div>
+      <div><button class="dot dot--lime dot--lg is-hover" type="button" aria-label="Открыть проект (hover)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><small>hover</small></div>
+      <div><button class="dot dot--lime dot--lg is-focus" type="button" aria-label="Открыть проект (focus)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><small>focus-visible</small></div>
+      <div><div style="position:relative;width:64px;height:64px"><button class="modal__close" type="button" aria-label="Закрыть"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><small>закрыть · 44 px</small></div>
+      <div><div style="position:relative;width:64px;height:64px"><button class="modal__close is-hover" type="button" aria-label="Закрыть (hover)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><small>hover</small></div>
+    </div></div>
+    <p class="sg-cap">Иконка без текста всегда имеет <code>aria-label</code>; сама иконка — <code>aria-hidden="true"</code>. Декоративный <code>.dot</code> внутри кнопки или ссылки — не интерактивен сам по себе.</p>
+  </div>
+</section>
+
+<!-- ====================== ФОРМЫ ====================== -->
+<section class="sg-sec" id="sg-forms" aria-labelledby="sg-forms-h">
+  <div class="container">
+    <h2 id="sg-forms-h">Элементы формы</h2>
+    <p class="sg-note">Демо-форма ничего не отправляет и не сохраняет: у формы нет <code>action</code>, у полей нет <code>name</code>, нет сетевых запросов и хранилищ. Подпись всегда над полем, видимая. Ошибка — текст под полем, связанный через <code>aria-describedby</code>, и красная граница (цвет не единственный признак: есть текст).</p>
+    <div class="sg-stage"><div class="sg-grid">
+      <div class="field"><label for="sg-f1">Ваше имя</label><input id="sg-f1" type="text" placeholder="Имя" autocomplete="off"></div>
+      <div class="field"><label for="sg-f2">Ваше имя — hover</label><input id="sg-f2" class="is-hover" type="text" placeholder="Имя" autocomplete="off"></div>
+      <div class="field"><label for="sg-f3">Ваше имя — focus-visible</label><input id="sg-f3" class="is-focus" type="text" placeholder="Имя" autocomplete="off"></div>
+      <div class="field"><label for="sg-f4">Ваш телефон — заполнено</label><input id="sg-f4" type="tel" value="+7 (924) 499-94-44" autocomplete="off"></div>
+      <div class="field"><label for="sg-f5">Ваш телефон — ошибка</label><input id="sg-f5" type="tel" value="123" aria-invalid="true" aria-describedby="sg-f5-err" autocomplete="off"><p class="field__err" id="sg-f5-err">Проверьте номер: нужно не меньше 10 цифр</p></div>
+      <div class="field"><label for="sg-f6">Ваш Email — недоступно</label><input id="sg-f6" type="email" placeholder="Email" disabled></div>
+      <div class="field" style="grid-column:1/-1"><label for="sg-f7">Ваш вопрос</label><textarea id="sg-f7" rows="3" placeholder="Введите Ваш вопрос" autocomplete="off"></textarea></div>
+    </div></div>
+
+    <h3>Уведомления формы</h3>
+    <div class="sg-stage sg-stage--alt"><div class="sg-grid">
+      <div><p class="sg-label">Демо-пометка (перед формой) — <code>.demo-note</code></p><p class="demo-note" style="margin-top:0"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg> Демонстрационная форма. Заявка не будет отправлена</p></div>
+      <div><p class="sg-label">Результат отправки — <code>.form__result</code></p><p class="form__result" role="status" style="margin-top:0">Это демонстрация. Заявка не отправлена, введённые данные не сохранены</p></div>
+      <div><p class="sg-label">Согласие — <code>.form__consent</code></p><p class="form__consent" style="margin-top:0">Нажимая кнопку "Отправить" вы соглашаетесь с <button class="link-inline" type="button">Политикой конфиденциальности</button></p></div>
+      <div><p class="sg-label">Блок-пометка «место под материал» — <code>.demo-note--block</code></p><p class="demo-note demo-note--block"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg> Актуальные документы будут добавлены после получения от заказчика</p></div>
+    </div></div>
+    <p class="sg-cap">Флажок согласия в демо не используется (решение Q-31 — после демо). Живая форма с проверкой — в блоке обращения ниже.</p>
+  </div>
+</section>
+
+<!-- ====================== КАРТОЧКИ ====================== -->
+<section class="sg-sec" id="sg-cards" aria-labelledby="sg-cards-h">
+  <div class="container">
+    <h2 id="sg-cards-h">Карточки и блоки содержимого</h2>
+
+    <h3>Карточка услуги — <code>.service</code></h3>
+    <p class="sg-note">Название — дословно из источника, от 1 до 6 строк без обрезки (переносы и <code>hyphens: auto</code>). Номер 01–10 — интерфейсный. У «Проектирования» вместо описания — <code>.service__pending</code> «Описание будет добавлено» (описание не придумывается). Действие «Заказать» открывает демо-диалог с названием услуги; на ≤ 640 px карточка превращается в компактную строку (слово «Заказать» остаётся в доступном имени).</p>
+    <div class="sg-stage sg-stage--bg"><ul class="services" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))">
+      <li><button class="service" type="button" data-open-request data-context="Услуга" data-subject="Монтаж объектов видеонаблюдения"><span class="num" aria-hidden="true">04</span><span class="service__title">Монтаж объектов видеонаблюдения</span><span class="service__act">Заказать <span class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></button></li>
+      <li><button class="service" type="button" data-open-request data-context="Услуга" data-subject="Строительство линейных сооружений магистральных и внутризоновых кабельных и воздушных линий связи"><span class="num" aria-hidden="true">01</span><span class="service__title">Строительство линейных сооружений магистральных и внутризоновых кабельных и воздушных линий связи</span><span class="service__act">Заказать <span class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></button></li>
+      <li><button class="service" type="button" data-open-request data-context="Услуга" data-subject="Проектирование"><span class="num" aria-hidden="true">10</span><span class="service__title">Проектирование</span><span class="service__pending">Описание будет добавлено</span><span class="service__act">Заказать <span class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></button></li>
+      <li id="sg-target"><button class="service is-hover" type="button" data-open-request data-context="Услуга" data-subject="Благоустройство дворовых и общественных территорий"><span class="num" aria-hidden="true">08</span><span class="service__title">Благоустройство дворовых и общественных территорий</span><span class="service__act">Заказать <span class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span></button></li>
+      <li class="services__all"><button class="all-tile" type="button" data-notice="Страница «Услуги» (/services)"><span class="all-tile__title">Все услуги</span><span class="dot dot--lime" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button></li>
+    </ul></div>
+    <p class="sg-cap">Четвёртая карточка показана в состоянии hover. Якорный переход <code>/services#s-NN</code> подсвечивает карточку рамкой через <code>li:target</code>: <a class="link-inline" href="#sg-target">показать акцент на карточке «Благоустройство…»</a>.</p>
+
+    <h3>Карточка проекта — <code>.project</code> + <code>.slot</code></h3>
+    <p class="sg-note">Слот — явная заглушка «Место для фотографии» с рамкой-видоискателем; не имитирует фото. Активная карточка (есть страница) — кнопка-стрелка с <code>aria-label</code>. Недоступная — <code>.project--static</code>: не ссылка, нет hover, текстовая пометка «Страница в полной версии». Когда фото появится — внутрь слота кладётся <code>&lt;img class="slot__img"&gt;</code>, заглушка скрывается автоматически.</p>
+    <div class="sg-stage sg-stage--bg"><ul class="projects" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))">
+      <li class="project"><div class="slot" aria-hidden="true"><span class="slot__chip">Место для фотографии · 16 : 10</span></div><div class="project__plate"><h4 class="project__title">Таможенно-логистический терминал</h4><button class="dot dot--lime dot--lg" type="button" data-notice="Страница проекта «Таможенно-логистический терминал» (/projects/tlt)" aria-label="Открыть проект «Таможенно-логистический терминал»"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div></li>
+      <li class="project project--static"><div class="slot" aria-hidden="true"><span class="slot__chip">Место для фотографии · 16 : 10</span></div><div class="project__plate"><h4 class="project__title">Благовещенская ТЭЦ</h4><p class="project__off">Страница в полной версии</p></div></li>
+      <li class="project project--static"><div class="slot" aria-hidden="true"><span class="slot__chip">Место для фотографии · 16 : 10</span></div><div class="project__plate"><h4 class="project__title">ГАУКАО «Амурская областная филармония»</h4><p class="project__off">Страница в полной версии</p></div></li>
+    </ul>
+    <div class="sg-grid" style="margin-top:24px">
+      <div><div class="slot slot--wide" aria-hidden="true"><span class="slot__chip">Место для фотографии · 21 : 9</span></div><p class="sg-cap"><code>.slot--wide</code> — широкий кадр (шапка страницы проекта)</p></div>
+      <div><div class="slot slot--4x3" aria-hidden="true"><span class="slot__chip">Место для фотографии · 4 : 3</span></div><p class="sg-cap"><code>.slot--4x3</code> — кадр галереи</p></div>
+    </div></div>
+
+    <h3>Галерея, статичные строки, бейдж</h3>
+    <div class="sg-stage sg-stage--bg">
+      <ul class="gallery"><li><div class="slot slot--4x3" aria-hidden="true"><span class="slot__chip">Фото 1 · 4 : 3</span></div></li><li><div class="slot slot--4x3" aria-hidden="true"><span class="slot__chip">Фото 2 · 4 : 3</span></div></li><li><div class="slot slot--4x3" aria-hidden="true"><span class="slot__chip">Фото 3 · 4 : 3</span></div></li></ul>
+      <ul class="row-list" style="margin-top:16px"><li>Наружное электроснабжение <span class="badge">Страница в полной версии</span></li><li>Наружное электроосвещение <span class="badge">Страница в полной версии</span></li><li>Наружные сети связи <span class="badge">Страница в полной версии</span></li></ul>
+    </div>
+    <p class="sg-cap"><code>.gallery</code> — 3 → 2 колонки; <code>.row-list</code> — неактивные строки (не ссылки, без hover); <code>.badge</code> — пометка «в полной версии» (светлая и <code>.badge--on-dark</code>).</p>
+
+    <h3>Хлебные крошки и шапка страницы</h3>
+    <div class="sg-stage sg-stage--bg" style="padding-bottom:32px">
+      <div class="page-head" style="padding-top:0">
+        <nav aria-label="Хлебные крошки"><ol class="crumbs"><li><a href="#sg-cards">Проекты</a></li><li><span aria-current="page">Таможенно-логистический терминал</span></li></ol></nav>
+        <h4 class="page-head__title">Проекты</h4>
+        <p class="page-head__lead">В данном разделе указаны завершенные и текущие проекты</p>
+      </div>
+    </div>
+    <p class="sg-cap"><code>.page-head</code>: крошки → H1 (<code>--type-h1</code>) → вводный абзац. На странице один <code>&lt;h1&gt;</code>; здесь образец показан тегом <code>&lt;h4&gt;</code>, чтобы не нарушать иерархию этой страницы.</p>
+
+    <h3>Преимущества — <code>.adv</code></h3>
+    <div class="sg-stage sg-stage--bg"><div class="card adv">
+      <h4 class="adv__title">ПОЧЕМУ СТОИТ ВЫБРАТЬ<br>ООО «Связь Энергострой»</h4>
+      <ol class="adv__list">
+        <li class="adv__item"><span class="num" aria-hidden="true">01</span><p>Высококвалифицированные специалисты</p></li>
+        <li class="adv__item"><span class="num" aria-hidden="true">02</span><p>Опыт работы на крупных объектах</p></li>
+        <li class="adv__item"><span class="num" aria-hidden="true">03</span><p>Работаем по Локально-Сметным Расчетам</p></li>
+      </ol>
+    </div></div>
+
+    <h3>Длинный текст — <code>.prose</code></h3>
+    <div class="sg-stage"><div class="prose">
+      <h4>2. Основные понятия, используемые в Политике</h4>
+      <p>2.1. Автоматизированная обработка персональных данных — обработка персональных данных с помощью средств вычислительной техники.</p>
+    </div></div>
+    <p class="sg-cap">Для политики конфиденциальности: ширина ≤ 68ch, заголовки уровня H3, списки с маркерами.</p>
+  </div>
+</section>
+
+<!-- ====================== CTA ====================== -->
+<section class="sg-sec" id="sg-cta" aria-labelledby="sg-cta-h">
+  <div class="container">
+    <h2 id="sg-cta-h">Блок обращения (CTA) с живой демо-формой</h2>
+    <p class="sg-note">Попробуйте отправить пустую форму, ввести неверный телефон или e-mail, затем заполнить верно: проверка клиентская, данные нигде не сохраняются, сетевых запросов нет.</p>
+    <div class="cta" style="margin-top:20px">
+      <div class="cta__text">
+        <h3 class="h-section h-section--cta" style="margin:0">Мы рады сотрудничать с Вами!</h3>
+        <p class="cta__sub">Заполните данные и мы свяжемся с Вами в ближайшее время</p>
+        <p class="demo-note"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg> Демонстрационная форма. Заявка не будет отправлена</p>
+        <dl class="contacts">
+          <div><dt>Телефон</dt><dd><a href="tel:+79244999444">+7 (924) 499-94-44</a></dd></div>
+          <div><dt>Телефон</dt><dd><a href="tel:+79244480859">+7 (924) 448-08-59</a></dd></div>
+          <div><dt>E-mail</dt><dd><a href="mailto:doc@ses-dv.ru">doc@ses-dv.ru</a></dd></div>
+          <div><dt>WhatsApp</dt><dd><a href="https://wa.me/79244999444" rel="noopener">+7 924 499 94 44</a></dd></div>
+        </dl>
+      </div>
+      <form class="form" data-demo-form novalidate>
+        <div class="form__grid">
+          <div class="field"><label for="cta-name">Ваше имя</label><input id="cta-name" type="text" autocomplete="off" placeholder="Имя" required aria-required="true" data-field="name"><p class="field__err" id="cta-name-err" hidden></p></div>
+          <div class="field"><label for="cta-phone">Ваш телефон</label><input id="cta-phone" type="tel" autocomplete="off" spellcheck="false" inputmode="tel" placeholder="+7 (000) 000-00-00" required aria-required="true" data-field="phone"><p class="field__err" id="cta-phone-err" hidden></p></div>
+          <div class="field"><label for="cta-email">Ваш Email</label><input id="cta-email" type="email" autocomplete="off" spellcheck="false" placeholder="Email" data-field="email"><p class="field__err" id="cta-email-err" hidden></p></div>
+          <div class="field field--submit"><button class="btn btn--lime btn--lg btn--block" type="submit">Отправить <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button></div>
+        </div>
+        <p class="form__consent">Нажимая кнопку "Отправить" вы соглашаетесь с <button class="link-inline" type="button" data-notice="Страница «Политика конфиденциальности» (/privacy)">Политикой конфиденциальности</button></p>
+        <p class="form__result" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== HEADER, FOOTER, ДИАЛОГИ ====================== -->
+<section class="sg-sec" id="sg-shell" aria-labelledby="sg-shell-h">
+  <div class="container">
+    <h2 id="sg-shell-h">Header, footer, диалоги, нижняя панель</h2>
+
+    <h3>Header</h3>
+    <p class="sg-note">Над hero шапка прозрачная, текст и логотип белые (<code>logo-wordmark-on-dark.svg</code>). После прокрутки на 24 px — класс <code>.is-solid</code>: белый фон 97 %, тёмный текст, зелёный логотип, тонкая нижняя линия. На внутренних страницах без hero — <code>data-header="solid"</code>: шапка светлая всегда. Состав: логотип · 4 пункта навигации (текущий — <code>aria-current="page"</code>, подчёркнут) · телефон (с 1180 px) · «Заказать звонок» (с 960 px). До 960 px — кнопка «Меню» открывает шторку. Ширина образцов зависит от окна: при ширине &lt; 960 px показан мобильный вид.</p>
+    <div class="sg-stage sg-stage--hero on-dark">
+      <header class="site-header"><div class="container site-header__row">
+        <a class="logo" href="#sg-shell" aria-label="Связь Энергострой — на начало страницы"><img class="logo__img logo__img--on-dark" src="../system/logo/logo-wordmark-on-dark.svg" width="1366.73" height="133.91" alt=""><img class="logo__img logo__img--on-light" src="../system/logo/logo-wordmark.svg" width="1366.73" height="133.91" alt=""></a>
+        <nav class="nav" aria-label="Образец навигации"><ul><li><a href="#sg-shell" class="is-hover">Услуги</a></li><li><a href="#sg-shell" aria-current="page">Проекты</a></li><li><a href="#sg-shell">О компании</a></li><li><a href="#sg-shell">Контакты</a></li></ul></nav>
+        <div class="site-header__actions"><a class="header-phone" href="tel:+79244999444">+7 (924) 499-94-44</a><button class="btn btn--lime btn--sm" type="button" data-open-request>Заказать звонок</button><a class="burger" href="#sg-shell" data-open-menu aria-label="Меню" aria-haspopup="dialog"><span class="burger__bars" aria-hidden="true"></span></a></div>
+      </div></header>
+    </div>
+    <p class="sg-cap">Прозрачная шапка над тёмным hero (пункт «Услуги» — hover, «Проекты» — текущий).</p>
+    <div class="sg-stage sg-stage--bg" style="margin-top:12px;padding:0">
+      <header class="site-header is-solid"><div class="container site-header__row">
+        <a class="logo" href="#sg-shell" aria-label="Связь Энергострой — на начало страницы"><img class="logo__img logo__img--on-dark" src="../system/logo/logo-wordmark-on-dark.svg" width="1366.73" height="133.91" alt=""><img class="logo__img logo__img--on-light" src="../system/logo/logo-wordmark.svg" width="1366.73" height="133.91" alt=""></a>
+        <nav class="nav" aria-label="Образец навигации, светлая шапка"><ul><li><a href="#sg-shell">Услуги</a></li><li><a href="#sg-shell" aria-current="page">Проекты</a></li><li><a href="#sg-shell">О компании</a></li><li><a href="#sg-shell">Контакты</a></li></ul></nav>
+        <div class="site-header__actions"><a class="header-phone" href="tel:+79244999444">+7 (924) 499-94-44</a><button class="btn btn--lime btn--sm" type="button" data-open-request>Заказать звонок</button><a class="burger" href="#sg-shell" data-open-menu aria-label="Меню" aria-haspopup="dialog"><span class="burger__bars" aria-hidden="true"></span></a></div>
+      </div></header>
+    </div>
+    <p class="sg-cap">Светлая шапка (<code>.is-solid</code>).</p>
+
+    <h3>Footer</h3>
+    <p class="sg-note">Четыре колонки: полный знак + юридическое название + описание · «Разделы» (4 активных + «Вакансии» с бейджем «В полной версии») · «Контакты» (телефоны, e-mail, «Адрес уточняется» — <code>ADDRESS_PENDING</code>) · «Демонстрационная версия». Внизу — юридическое название и «Политика конфиденциальности». ≤ 1024 px: 2 колонки; ≤ 640 px: 1 колонка. «© 2024» из источника не переносится (V-13).</p>
+    <div class="sg-stage" style="padding:0">
+      <footer class="site-footer on-dark"><div class="container">
+        <div class="footer__grid">
+          <div class="footer__brand"><a class="logo logo--footer" href="#sg-shell" aria-label="Связь Энергострой — на начало страницы"><img class="logo__img" src="../system/logo/logo-full-on-dark.svg" width="1384" height="735.5" alt=""></a><p>ООО «Связь Энергострой»</p><p class="footer__muted">Многопрофильная строительно-монтажная организация</p></div>
+          <nav class="footer__col" aria-label="Образец разделов подвала"><h3 class="footer__h">Разделы</h3><ul><li><a href="#sg-shell">Услуги</a></li><li><a href="#sg-shell">Проекты</a></li><li><a href="#sg-shell">О компании</a></li><li><a href="#sg-shell">Контакты</a></li><li><span class="off">Вакансии <span class="badge badge--on-dark">В полной версии</span></span></li></ul></nav>
+          <div class="footer__col"><h3 class="footer__h">Контакты</h3><ul><li><a href="tel:+79244999444">+7 (924) 499-94-44</a></li><li><a href="tel:+79244480859">+7 (924) 448-08-59</a></li><li><a href="mailto:doc@ses-dv.ru">doc@ses-dv.ru</a></li><li><span class="footer__muted">Адрес уточняется</span></li></ul></div>
+          <div class="footer__col"><h3 class="footer__h">Демонстрационная версия</h3><p class="footer__muted">Не является действующим сайтом компании. Тексты перенесены с действующего сайта, их актуальность подтверждается заказчиком</p></div>
+        </div>
+        <div class="footer__bottom"><p>ООО «Связь Энергострой»</p><button class="link-inline link-inline--light" type="button" data-notice="Страница «Политика конфиденциальности» (/privacy)">Политика конфиденциальности</button></div>
+      </div></footer>
+    </div>
+
+    <h3>Диалоги и шторка меню</h3>
+    <p class="sg-note">Нативный <code>&lt;dialog&gt;</code> + <code>showModal()</code>: фокус удерживается внутри, Esc и клик по фону закрывают, фокус возвращается на кнопку-источник. На ≤ 640 px диалог выезжает снизу (шторка), меню — на весь экран. При закрытии введённое сбрасывается.</p>
+    <div class="sg-stage"><div class="sg-row">
+      <button class="btn btn--lime" type="button" data-open-request>Диалог заявки</button>
+      <button class="btn btn--lime" type="button" data-open-request data-context="Проект" data-subject="Таможенно-логистический терминал">Диалог заявки с контекстом</button>
+      <button class="btn btn--ghost-dark" type="button" data-notice="Страница «Услуги» (/services)">Диалог «демонстрационное ограничение»</button>
+      <button class="btn btn--ghost-dark" type="button" data-open-menu>Меню-шторка</button>
+    </div></div>
+
+    <h3>Нижняя панель mobile — <code>.dock</code></h3>
+    <p class="sg-note">Только ≤ 640 px: две кнопки («Позвонить» — <code>tel:</code>, «Оставить заявку» — диалог), закреплена снизу, учитывает <code>safe-area-inset-bottom</code>; <code>body</code> получает нижний отступ <code>--dock-h</code>, поэтому панель не перекрывает конец страницы. Показана в кадре «Главная, 390 px» ниже.</p>
+  </div>
+</section>
+
+<!-- ====================== HERO ====================== -->
+<section class="sg-sec" id="sg-hero" aria-labelledby="sg-hero-h">
+  <div class="container">
+    <h2 id="sg-hero-h">Hero: структура и требования к фотографии</h2>
+    <p class="sg-note">Фотография не добавлена: заказчик предоставит или сгенерирует её позже. Сейчас hero — тёмная заглушка с рамкой-видоискателем и карточкой «Место для фотографии». Схемы ниже — не изображения, а условные обозначения.</p>
+    <div class="sg-grid sg-grid--2" style="margin-top:20px">
+      <div><div class="sg-hero" style="--bg:#d9ddd6;--ov:linear-gradient(90deg,rgba(10,16,11,.72) 0%,rgba(10,16,11,.38) 48%,rgba(10,16,11,0) 75%)"><div class="sg-hero__ov"></div><div class="sg-hero__txt"><b>Связь Энергострой</b><span>зона текста · левые 50 %</span></div><div class="sg-hero__zone">зона объекта · правая половина</div></div><p class="sg-cap"><b>A (по умолчанию)</b>: градиент слева направо <code>rgba(10,16,11,.72)</code> → <code>.38</code> на 48 % → <code>0</code> на 75 %. Светлая подложка схемы — худший случай (яркая фотография).</p></div>
+      <div><div class="sg-hero" style="--bg:#d9ddd6;--ov:linear-gradient(90deg,rgba(10,16,11,.72) 0%,rgba(10,16,11,.56) 48%,rgba(10,16,11,.2) 100%)"><div class="sg-hero__ov"></div><div class="sg-hero__txt"><b>Связь Энергострой</b><span>зона текста · левые 50 %</span></div><div class="sg-hero__zone">зона объекта · правая половина</div></div><p class="sg-cap"><b>B (светлая фотография)</b>: <code>.72</code> → <code>.56</code> на 48 % → <code>.2</code>. При α ≥ 0,56 под текстом любой пиксель даёт белому тексту ≥ 4,5 : 1.</p></div>
+      <div><div class="sg-hero sg-hero--m" style="--bg:#d9ddd6;--ov:linear-gradient(0deg,rgba(10,16,11,.82) 0%,rgba(10,16,11,.55) 45%,rgba(10,16,11,.15) 100%)"><div class="sg-hero__ov"></div><div class="sg-hero__zone">объект</div><div class="sg-hero__txt"><b>Связь Энергострой</b><span>текст внизу</span></div></div><p class="sg-cap"><b>C (mobile ≤ 820 px)</b>: кадр обрезается до ≈ 4 : 5 по центру объекта (<code>object-position</code>), текст внизу, градиент снизу вверх <code>.82</code> → <code>.55</code> на 45 % → <code>.15</code>.</p></div>
+      <div class="sg-scroll" role="region" aria-label="Требования к фотографии hero" tabindex="0"><table class="sg-table" style="min-width:0"><thead><tr><th>Параметр</th><th>Требование</th></tr></thead><tbody>
+        <tr><td>Размещение</td><td>На всю ширину окна под прозрачной шапкой; высота <code>clamp(640px, 49vw, 740px)</code> (≈ 2 : 1 на 1440 px)</td></tr>
+        <tr><td>Пропорция и размер</td><td>21 : 9; рекомендуется 2880 × 1235 px, минимум 1920 × 823 px</td></tr>
+        <tr><td>Формат и вес</td><td>WebP (+ JPG запасной), sRGB, ≤ 300 КБ; без текста, логотипов и водяных знаков внутри кадра</td></tr>
+        <tr><td>Композиция</td><td>Объект — правая половина (от 52 % слева); левая половина — спокойная, малодетальная зона под текст; важное — в центральных 80 % по высоте (кадрируется <code>cover</code>)</td></tr>
+        <tr><td>Яркость под текстом</td><td>Вариант A допустим, если в левых 50 % кадра нет пикселей ярче ≈ 72 % (≈ #B9B9B9): при α .38 это граница 4,5 : 1 для белого текста 18 px. Иначе — вариант B</td></tr>
+        <tr><td>Подлинность</td><td>Только реальные объекты СЭС или явно помеченные иллюстрации заказчика; сток не выдаётся за проекты (CLAUDE.md)</td></tr>
+        <tr><td>Доступность</td><td>Фото — декоративное (<code>alt=""</code>), если не несёт информации; текст hero всегда живой</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== АДАПТИВ ====================== -->
+<section class="sg-sec" id="sg-resp" aria-labelledby="sg-resp-h" style="padding-bottom:var(--section-gap)">
+  <div class="container">
+    <h2 id="sg-resp-h">Адаптивные решения: реальный прототип в кадрах</h2>
+    <p class="sg-note">Кадры — настоящая главная (<code>design/explorations/ses-home-v1/index.html</code>) в окнах 320, 390 и 768 px. Ряд прокручивается внутри блока; горизонтальной прокрутки у страницы нет. Широкий вид (1024–1440 px) проверяется изменением окна браузера.</p>
+    <div class="sg-frames" role="region" aria-label="Кадры адаптивной вёрстки" tabindex="0">
+      <figure class="sg-frame"><iframe title="Главная, ширина 320 px" src="../explorations/ses-home-v1/index.html" width="320" height="640" loading="lazy"></iframe><figcaption>320 px · первый экран, шапка, нижняя панель</figcaption></figure>
+      <figure class="sg-frame"><iframe title="Главная, ширина 390 px" src="../explorations/ses-home-v1/index.html" width="390" height="760" loading="lazy"></iframe><figcaption>390 px · первый экран</figcaption></figure>
+      <figure class="sg-frame"><iframe title="Услуги, ширина 390 px" src="../explorations/ses-home-v1/index.html#services" width="390" height="760" loading="lazy"></iframe><figcaption>390 px · услуги — компактные строки</figcaption></figure>
+      <figure class="sg-frame"><iframe title="Подвал, ширина 390 px" src="../explorations/ses-home-v1/index.html#footer-nav" width="390" height="760" loading="lazy"></iframe><figcaption>390 px · footer</figcaption></figure>
+      <figure class="sg-frame"><iframe title="Главная, ширина 768 px" src="../explorations/ses-home-v1/index.html" width="768" height="760" loading="lazy"></iframe><figcaption>768 px · меню-шторка вместо навигации</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ ДИАЛОГИ (те же, что в прототипе) ============ -->
+<dialog class="modal" id="menu" aria-label="Меню">
+  <div class="modal__box modal__box--menu">
+    <button class="modal__close" type="button" data-close aria-label="Закрыть меню"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <nav aria-label="Образец мобильной навигации"><ul class="menu-list">
+      <li><a href="#sg-shell" data-close>Услуги</a></li><li><a href="#sg-shell" data-close>Проекты</a></li><li><a href="#sg-shell" data-close>О компании</a></li><li><a href="#sg-shell" data-close>Контакты</a></li>
+    </ul></nav>
+    <div class="menu-contacts"><a href="tel:+79244999444">+7 (924) 499-94-44</a><a href="mailto:doc@ses-dv.ru">doc@ses-dv.ru</a></div>
+    <button class="btn btn--lime btn--lg btn--block" type="button" data-open-request data-close>Заказать звонок</button>
+  </div>
+</dialog>
+
+<dialog class="modal" id="request" aria-labelledby="req-title">
+  <div class="modal__box">
+    <button class="modal__close" type="button" data-close aria-label="Закрыть"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2 class="modal__title" id="req-title">Мы рады сотрудничать с Вами!</h2>
+    <p class="modal__sub">Заполните данные и мы свяжемся с Вами в ближайшее время</p>
+    <p class="demo-note"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg> Демонстрационная форма. Заявка не будет отправлена</p>
+    <p class="modal__context" id="req-context" hidden></p>
+    <form class="form form--modal" data-demo-form novalidate>
+      <div class="form__grid form__grid--one">
+        <div class="field"><label for="req-name">Ваше имя</label><input id="req-name" type="text" autocomplete="off" placeholder="Имя" required aria-required="true" data-field="name"><p class="field__err" id="req-name-err" hidden></p></div>
+        <div class="field"><label for="req-phone">Ваш телефон</label><input id="req-phone" type="tel" autocomplete="off" spellcheck="false" inputmode="tel" placeholder="+7 (000) 000-00-00" required aria-required="true" data-field="phone"><p class="field__err" id="req-phone-err" hidden></p></div>
+        <div class="field"><label for="req-email">Ваш Email</label><input id="req-email" type="email" autocomplete="off" spellcheck="false" placeholder="Email" data-field="email"><p class="field__err" id="req-email-err" hidden></p></div>
+        <div class="field"><label for="req-q">Ваш вопрос</label><textarea id="req-q" rows="3" autocomplete="off" placeholder="Введите Ваш вопрос"></textarea></div>
+        <div class="field field--submit"><button class="btn btn--lime btn--lg btn--block" type="submit">Отправить <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button></div>
+      </div>
+      <p class="form__consent">Нажимая кнопку "Отправить" вы соглашаетесь с <button class="link-inline" type="button" data-notice="Страница «Политика конфиденциальности» (/privacy)">Политикой конфиденциальности</button></p>
+      <p class="form__result" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</dialog>
+
+<dialog class="modal" id="notice" aria-labelledby="notice-title">
+  <div class="modal__box modal__box--small">
+    <button class="modal__close" type="button" data-close aria-label="Закрыть"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2 class="modal__title modal__title--sm" id="notice-title">Демонстрационное ограничение</h2>
+    <p class="notice__what" id="notice-what"></p>
+    <p class="notice__why">В этом прототипе реализована только главная страница. Остальные страницы демо появятся на следующих этапах.</p>
+    <button class="btn btn--lime btn--block" type="button" data-close>Понятно</button>
+  </div>
+</dialog>
+
+<script src="../system/system.js" defer></script>
+<script src="preview.js" defer></script>
+</body>
+</html>

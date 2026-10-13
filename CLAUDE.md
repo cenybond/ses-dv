@@ -15,14 +15,17 @@ Demo-first (A-17): Discovery → IA → SPEC демо (PHASE 2) → визуал
 - Не подключать аналитику, сторонние сервисы доставки заявок, CMS и backend без отдельного решения.
 - Удалённые URL не редиректить на главную автоматически.
 - Демо: формы не отправляют и не хранят данные; недействующее не выдавать за рабочее.
+- Дизайн: только токены `--color-*`, `--type-*`, `--space-*`, `--radius-*` из `tokens.css`, без HEX и новых размеров в компонентах; салатовый `--color-accent` на светлом не несёт текст. Новые цвета, шрифты, декор — только через `DECISIONS.md`.
+- Логотип: единственный источник — `brand/source/logotip-vektor.pdf` (не изменять); не перерисовывать, не растягивать, не менять шрифт, не перекрашивать (кроме белого названия на тёмном); SVG пересобираются `python -I brand/build_logo_svg.py`.
 
 ## Окружение
 - Рабочая ветка: `integration/docs-and-skills`. Скиллы проекта уже в ней (`.claude/skills/`, слиты из `claude/ecstatic-einstein-3cjtaw`), не устанавливать заново.
 - Локальное окружение Windows: `ses-dv.ru` доступен. Облачная сессия: `.ru`-домены закрыты сетевой политикой окружения, краулинг только локально.
 - Предложенный стек (P-19): Astro + TypeScript + Tailwind, ещё не установлен.
+- Дизайн-система (PHASE 4): `design/system/` (`tokens.css` → `system.css`, `system.js`, `logo/`, `fonts/`), style guide `design/system-preview/index.html`, правила `DESIGN-SYSTEM.md`.
 
 ## Команды
 Пока нет (frontend не создан).
 
 ## Документы
-`SPEC-DEMO.md` (что строим), `DESIGN-BRIEF.md`, `ARCHITECTURE-DEMO.md`, `PLAN-DEMO.md` (порядок и проверки), `docs/` — исследования и полная IA. Новой сессии достаточно: `CLAUDE.md`, `PROGRESS.md` и файлы текущего шага.
+`SPEC-DEMO.md` (что строим), `DESIGN-SYSTEM.md` (токены, компоненты, логотип), `DESIGN-BRIEF.md`, `ARCHITECTURE-DEMO.md`, `PLAN-DEMO.md` (порядок и проверки), `docs/` — исследования и полная IA. Новой сессии достаточно: `CLAUDE.md`, `PROGRESS.md` и файлы текущего шага.

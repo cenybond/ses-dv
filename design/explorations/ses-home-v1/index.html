@@ -6,6 +6,9 @@
 <title>Связь Энергострой — прототип главной v1</title>
 <meta name="description" content="Демонстрационный прототип главной страницы ООО «Связь Энергострой». Не является действующим сайтом компании.">
 <meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../../system/logo/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../system/tokens.css">
+<link rel="stylesheet" href="../../system/system.css">
 <link rel="stylesheet" href="styles.css">
 <script>document.documentElement.className = 'js';</script>
 </head>
@@ -22,9 +25,9 @@
 <header class="site-header" id="top" data-header>
   <div class="container site-header__row">
     <a class="logo" href="#top" aria-label="Связь Энергострой — на начало страницы">
-      <!-- Временный текстовый знак (Q-33): векторный логотип от заказчика ещё не получен -->
-      <span class="logo__mark" aria-hidden="true">СЭС</span>
-      <span class="logo__word">Связь Энергострой</span>
+      <!-- Оригинальный логотип заказчика (design/system/logo/): словесная часть; белая над hero, зелёная на светлой шапке -->
+      <img class="logo__img logo__img--on-dark" src="../../system/logo/logo-wordmark-on-dark.svg" width="1366.73" height="133.91" alt="">
+      <img class="logo__img logo__img--on-light" src="../../system/logo/logo-wordmark.svg" width="1366.73" height="133.91" alt="">
     </a>
 
     <nav class="nav" aria-label="Основная навигация">
@@ -273,12 +276,12 @@
           </div>
           <div class="field">
             <label for="cta-phone">Ваш телефон</label>
-            <input id="cta-phone" type="tel" autocomplete="off" inputmode="tel" placeholder="+7 (000) 000-00-00" required aria-required="true" data-field="phone">
+            <input id="cta-phone" type="tel" autocomplete="off" spellcheck="false" inputmode="tel" placeholder="+7 (000) 000-00-00" required aria-required="true" data-field="phone">
             <p class="field__err" id="cta-phone-err" hidden></p>
           </div>
           <div class="field">
             <label for="cta-email">Ваш Email</label>
-            <input id="cta-email" type="email" autocomplete="off" placeholder="Email" data-field="email">
+            <input id="cta-email" type="email" autocomplete="off" spellcheck="false" placeholder="Email" data-field="email">
             <p class="field__err" id="cta-email-err" hidden></p>
           </div>
           <div class="field field--submit">
@@ -286,7 +289,7 @@
           </div>
         </div>
         <p class="form__consent">Нажимая кнопку "Отправить" вы соглашаетесь с <button class="link-inline" type="button" data-notice="Страница «Политика конфиденциальности» (/privacy)">Политикой конфиденциальности</button></p>
-        <p class="form__result" role="status" aria-live="polite" hidden></p>
+        <p class="form__result" role="status" aria-live="polite"></p>
       </form>
     </div>
   </div>
@@ -299,9 +302,8 @@
   <div class="container">
     <div class="footer__grid">
       <div class="footer__brand">
-        <a class="logo logo--footer" href="#top" aria-label="На начало страницы">
-          <span class="logo__mark" aria-hidden="true">СЭС</span>
-          <span class="logo__word">Связь Энергострой</span>
+        <a class="logo logo--footer" href="#top" aria-label="Связь Энергострой — на начало страницы">
+          <img class="logo__img" src="../../system/logo/logo-full-on-dark.svg" width="1384" height="735.5" alt="">
         </a>
         <p>ООО «Связь Энергострой»</p>
         <p class="footer__muted">Многопрофильная строительно-монтажная организация</p>
@@ -313,7 +315,7 @@
           <li><a href="#projects">Проекты</a></li>
           <li><a href="#about">О компании</a></li>
           <li><a href="#contacts">Контакты</a></li>
-          <li><span class="off">Вакансии <em>В полной версии</em></span></li>
+          <li><span class="off">Вакансии <span class="badge badge--on-dark">В полной версии</span></span></li>
         </ul>
       </nav>
       <div class="footer__col">
@@ -387,12 +389,12 @@
         </div>
         <div class="field">
           <label for="req-phone">Ваш телефон</label>
-          <input id="req-phone" type="tel" autocomplete="off" inputmode="tel" placeholder="+7 (000) 000-00-00" required aria-required="true" data-field="phone">
+          <input id="req-phone" type="tel" autocomplete="off" spellcheck="false" inputmode="tel" placeholder="+7 (000) 000-00-00" required aria-required="true" data-field="phone">
           <p class="field__err" id="req-phone-err" hidden></p>
         </div>
         <div class="field">
           <label for="req-email">Ваш Email</label>
-          <input id="req-email" type="email" autocomplete="off" placeholder="Email" data-field="email">
+          <input id="req-email" type="email" autocomplete="off" spellcheck="false" placeholder="Email" data-field="email">
           <p class="field__err" id="req-email-err" hidden></p>
         </div>
         <div class="field">
@@ -404,7 +406,7 @@
         </div>
       </div>
       <p class="form__consent">Нажимая кнопку "Отправить" вы соглашаетесь с <button class="link-inline" type="button" data-notice="Страница «Политика конфиденциальности» (/privacy)">Политикой конфиденциальности</button></p>
-      <p class="form__result" role="status" aria-live="polite" hidden></p>
+      <p class="form__result" role="status" aria-live="polite"></p>
     </form>
   </div>
 </dialog>
@@ -421,6 +423,6 @@
   </div>
 </dialog>
 
-<script src="script.js" defer></script>
+<script src="../../system/system.js" defer></script>
 </body>
 </html>

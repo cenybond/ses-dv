@@ -1,4 +1,5 @@
-/* Прототип главной СЭС v1. Без сетевых запросов, без хранения данных, без аналитики. */
+/* СЭС — общее поведение (PHASE 4): шапка, меню-шторка, диалоги, демо-форма.
+   Без сетевых запросов, без хранения данных, без аналитики. Все элементы необязательны: страница может содержать любое подмножество. */
 (function () {
   'use strict';
 
@@ -12,11 +13,15 @@
   var lastTrigger = null;
 
   /* ----- Шапка: прозрачная над hero, светлая после прокрутки ----- */
-  function syncHeader() {
-    header.classList.toggle('is-solid', window.scrollY > 24);
+  /* data-header="solid" — внутренние страницы без hero: шапка светлая всегда */
+  if (header) {
+    var always = header.getAttribute('data-header') === 'solid';
+    var syncHeader = function () {
+      header.classList.toggle('is-solid', always || window.scrollY > 24);
+    };
+    syncHeader();
+    window.addEventListener('scroll', syncHeader, { passive: true });
   }
-  syncHeader();
-  window.addEventListener('scroll', syncHeader, { passive: true });
 
   /* ----- Диалоги ----- */
   function openDialog(d, trigger) {
@@ -27,7 +32,7 @@
   function closeDialog(d) {
     if (d.open) d.close();
   }
-  [menu, request, notice].forEach(function (d) {
+  [menu, request, notice].filter(Boolean).forEach(function (d) {
     d.addEventListener('close', function () {
       if (d === request) resetForm($('form', d));
       if (lastTrigger && document.contains(lastTrigger) && lastTrigger.offsetParent !== null) lastTrigger.focus();
@@ -42,7 +47,7 @@
 
   /* Меню (на узких экранах); без JS бургер — якорь на навигацию в футере */
   $$('[data-open-menu]').forEach(function (a) {
-    a.addEventListener('click', function (e) { e.preventDefault(); openDialog(menu, a); });
+    a.addEventListener('click', function (e) { if (!menu) return; e.preventDefault(); openDialog(menu, a); });
   });
   /* Пункты меню — якоря: закрыть шторку и дать браузеру перейти */
   $$('#menu a[href^="#"]').forEach(function (a) {
@@ -53,11 +58,12 @@
   var ctxEl = $('#req-context');
   $$('[data-open-request]').forEach(function (b) {
     b.addEventListener('click', function () {
+      if (!request) return;
       var subject = b.getAttribute('data-subject');
-      if (subject) {
+      if (subject && ctxEl) {
         ctxEl.textContent = (b.getAttribute('data-context') || 'Тема') + ': ' + subject;
         ctxEl.hidden = false;
-      } else {
+      } else if (ctxEl) {
         ctxEl.textContent = '';
         ctxEl.hidden = true;
       }
@@ -72,6 +78,7 @@
   /* Уведомление о демо-ограничении (страницы, которых нет в прототипе) */
   $$('[data-notice]').forEach(function (b) {
     b.addEventListener('click', function () {
+      if (!notice) return;
       $('#notice-what').textContent = 'Здесь будет: ' + b.getAttribute('data-notice') + '.';
       openDialog(notice, b);
     });
@@ -124,7 +131,7 @@
     form.reset();
     $$('input[data-field]', form).forEach(function (i) { setErr(i, ''); });
     var r = $('.form__result', form);
-    if (r) { r.hidden = true; r.textContent = ''; }
+    if (r) r.textContent = '';
   }
 
   $$('[data-demo-form]').forEach(function (form) {
@@ -132,16 +139,15 @@
       e.preventDefault();
       var result = $('.form__result', form);
       var bad = validate(form);
-      if (bad) { result.hidden = true; bad.focus(); return; }
+      if (bad) { result.textContent = ''; bad.focus(); return; }
       form.reset(); /* данные очищаются сразу, нигде не сохраняются */
-      result.textContent = MSG;
-      result.hidden = false;
+      result.textContent = MSG; /* регион role=status уже в DOM и пуст — вывод озвучивается */
     });
     form.addEventListener('input', function (e) {
       var i = e.target;
       if (i.hasAttribute && i.hasAttribute('aria-invalid')) setErr(i, '');
       var r = $('.form__result', form);
-      if (r && !r.hidden) r.hidden = true;
+      if (r && r.textContent) r.textContent = '';
     });
   });
 })();

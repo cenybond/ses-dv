@@ -1,7 +1,7 @@
 # PROGRESS
 
 ## Current phase
-**PHASE 2 — Demo Product Specification: выполнена (2026-10-13), ожидает согласования заказчиком.** Подготовлены `SPEC-DEMO.md`, `DESIGN-BRIEF.md`, `ARCHITECTURE-DEMO.md`, `PLAN-DEMO.md`. Frontend, зависимости, дизайн-концепции и дизайн-система **не создавались**. Следующая фаза — PHASE 3 (Demo Visual Concepts). PHASE 1A, 1B согласованы; PHASE 1C (полная IA) остаётся Proposed, демо-часть скорректирована A-24 (демо-first, A-17).
+**PHASE 3 — Reference-driven visual design: выполнена (2026-10-13), ожидает согласования заказчиком.** Один HTML/CSS-прототип главной по утверждённому референсу EverMod: `design/explorations/ses-home-v1/index.html`. Описание решений — `docs/DEMO-VISUAL-DIRECTION.md`. Astro, дизайн-система и PHASE 4 не начаты. PHASE 2 (SPEC-DEMO и связанные документы) ждёт согласования заказчиком; PHASE 1A, 1B согласованы; PHASE 1C — Proposed, демо-часть скорректирована A-24.
 
 ## Completed
 - Проверка проекта: репозиторий пустой (README.md), ветка `claude/practical-wright-l7rivb` от `main` (0dc1db3). CLAUDE.md и PROGRESS.md отсутствовали.
@@ -43,6 +43,14 @@
   - `PLAN-DEMO.md` — 15 шагов DEMO-01…DEMO-15 с целью, scope, зависимостями, критериями, проверками, рисками, откатом; критический аудит.
   - `DECISIONS.md`: A-24, P-19…P-21, Q-27 сужен, Q-29…Q-33; P-02 развит; в A-22 пометка про A-24. `docs/INFORMATION-ARCHITECTURE.md`: §12.2 (PG-06, PG-11, PG-12, PG-01), §6.3 (строка PRJ-14-01 приведена к источнику), Q-27. `CLAUDE.md` обновлён (порядок фаз, ограничения демо, документы).
   - Сняты старые блокеры: «CLAUDE.md описывает прежний порядок» (исправлено).
+
+- **PHASE 3 — Reference-driven visual design (2026-10-13):**
+  - Оригинал референса сохранён: `design/references/evermod/evermod-home-desktop.webp` (один скриншот desktop 731×1280; мобильного нет). Ссылка добавлена в `docs/REFERENCE-ANALYSIS.md`.
+  - Прототип `design/explorations/ses-home-v1/` (`index.html`, `styles.css`, `script.js`, `assets/fonts/`, `screenshots/`, `README.md`): header, hero, «О компании», 3 преимущества, 10 услуг, 6 проектов, обращение с демо-формой, footer, меню-шторка, диалоги, нижняя панель mobile.
+  - Шрифты: Manrope (заголовки) + Golos Text (текст), WOFF2 локально, OFL-1.1 (≈ 99 КБ); сравнивались с Onest и Golos Text на реальных строках СЭС. Файлы скачаны из npm-пакетов `@fontsource-variable/*` с разрешения пользователя во временную папку сессии, в проект положены только выбранные.
+  - Палитра: утверждённые `#116315`, `#88D600` (+ `#6BAD04`, `#4D9600` в резерве); нейтральные и тонировка — Proposed.
+  - `docs/DEMO-VISUAL-DIRECTION.md`: референс, перенос и адаптация, шрифты, токены, требования к фото, список решений на согласование (V-1…V-15), проверки.
+  - Скриншоты 1440 / 768 / 390, диалоги, сравнение с референсом — в `design/explorations/ses-home-v1/screenshots/`.
 
 ## In progress
 Нет.
@@ -117,5 +125,12 @@
 - **NOT_VERIFIED:** реальные скорость и вес страниц (код не написан); совместимость Astro 7 / TypeScript 7 с ESLint и `@astrojs/check` (проверка в DEMO-02); поведение `<dialog>` на iOS; актуальность телефонов и e-mail; согласие заказчика с составом демо.
 - Frontend не создан, зависимости не устанавливались, `ses-dv.ru` не запрашивался и не изменялся, `docs/content/source/` не изменён.
 
+Проверки PHASE 3 (2026-10-13), подробности — `docs/DEMO-VISUAL-DIRECTION.md` §9:
+- **PASS (Chromium/Edge headless через CDP):** нет горизонтальной прокрутки на 320 / 360 / 390 / 768 / 1024 / 1280 / 1440; 0 ошибок консоли; ноль запросов вне файлов прототипа, нет хранения данных, у форм нет `action` и `name`; меню, диалог заявки, валидация, демо-сообщение, Esc, возврат фокуса, шапка при прокрутке работают; цели нажатия на mobile ≥ 44 px (кроме ссылки внутри предложения); контрасты пар токенов рассчитаны; длинные названия (170 знаков) не обрезаются.
+- **PASS (программно):** 36 строк из прототипа найдены в `docs/content/source/`; вне источника только текст полосы демо (U/M); `ADDRESS_PENDING`/`DESCRIPTION_PENDING` не видны пользователю; старого адреса нет.
+- **Сравнение с референсом:** визуальное, по `screenshots/compare-reference-vs-prototype.png`; расхождения вызваны содержимым СЭС (10 услуг, нет фото, цифр, иконок).
+- **NOT_VERIFIED:** Safari и Firefox; реальные устройства и касания; масштаб 200 %; скринридер; `prefers-reduced-motion`; скорость загрузки; мобильный и планшетный референс отсутствует (адаптация спроектирована самостоятельно).
+- `ses-dv.ru` не запрашивался, production, `docs/content/source/`, frontend-зависимости, `package.json` не затрагивались.
+
 ## Next step
-**PHASE 3 — Demo Visual Concepts** (2–3 направления главной desktop + mobile в рамках `DESIGN-BRIEF.md`; вопросы — его §12). Запускается после согласования заказчиком `SPEC-DEMO.md`, `DESIGN-BRIEF.md`, `ARCHITECTURE-DEMO.md`, `PLAN-DEMO.md`. Дизайн-концепции, дизайн-система и frontend не начаты. Согласование полной архитектуры (Q-17…Q-28) идёт параллельно.
+Показать прототип заказчику и получить решения V-1…V-15 (`docs/DEMO-VISUAL-DIRECTION.md` §8). После согласования — **PHASE 4: минимальная дизайн-система** (DEMO-01 в `PLAN-DEMO.md`). PHASE 4 автоматически не начинается; Astro-разработка не начинается до согласования дизайна.

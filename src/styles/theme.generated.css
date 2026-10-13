@@ -1,0 +1,41 @@
+/* СГЕНЕРИРОВАНО scripts/sync-theme.mjs из design/system/tokens.css. Не править вручную: npm run sync-theme. */
+@theme {
+  --spacing: 0.25rem; /* шаг 4 px, совпадает с --space-N (p-4 = 16 px) */
+  --breakpoint-sm: 640px; /* канонические брейкпоинты, DESIGN-SYSTEM §5 */
+  --breakpoint-md: 960px;
+  --color-brand: #116315;
+  --color-accent: #88D600;
+  --color-accent-hover: #97E61A;
+  --color-accent-mid: #6BAD04;
+  --color-accent-deep: #4D9600;
+  --color-on-accent: #111111;
+  --color-on-brand: #FFFFFF;
+  --color-bg: #F6F7F4;
+  --color-bg-alt: #EDF4E5;
+  --color-surface: #FFFFFF;
+  --color-bg-dark: #141A15;
+  --color-bg-dark-alt: #1C2A20;
+  --color-text: #141A15;
+  --color-text-muted: #4A544C;
+  --color-text-on-dark: #EEF2EC;
+  --color-text-on-dark-muted: #B9C4B8;
+  --color-placeholder: #6C766E;
+  --color-border: #DCE2D8;
+  --color-border-strong: #6F7B71;
+  --color-focus: #116315;
+  --color-focus-on-dark: #88D600;
+  --color-error: #B3261E;
+  --color-success: #116315;
+  --color-disabled-bg: #E4E8E1;
+  --color-disabled-text: #6F7B71;
+  --color-overlay: rgba(14,22,16,.62);
+  --font-head: "Manrope","Segoe UI",system-ui,sans-serif;
+  --font-text: "Golos Text","Segoe UI",system-ui,sans-serif;
+  --radius-xl: 28px;
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --radius-pill: 999px;
+  --shadow-raised: 0 10px 28px -18px rgba(20,26,21,.45);
+  --shadow-float: 0 14px 36px -16px rgba(0,0,0,.45);
+}

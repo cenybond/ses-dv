@@ -1,0 +1,14 @@
+/* Подключение дизайн-системы. Единственный источник значений — design/system/tokens.css.
+   Порядок слоёв: токены → база и компоненты системы → утилиты Tailwind (утилиты сильнее компонентов). */
+@layer theme, base, components, utilities;
+
+@import "../../design/system/tokens.css" layer(theme);
+@import "../../design/system/system.css" layer(components);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@source "../";
+
+/* Тема Tailwind генерируется из tokens.css (npm run sync-theme): цвета, радиусы, тени, семейства шрифтов.
+   Стили шрифтов (`--type-*`) не переносятся: используются классы `.t-*` из system.css.
+   Утилита `container` Tailwind отключена: контейнер — `.container` из system.css (1200 px, поля `--gutter`). */
+@import "./theme.generated.css";
+@source not inline("container");

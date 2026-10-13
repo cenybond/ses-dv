@@ -1,0 +1,43 @@
+---
+// Оболочка страницы: head (noindex в демо, favicon), skip-link, полоса демо, шапка, <main>, подвал.
+// Диалоги (меню, заявка, уведомление) добавляются в DEMO-05.
+import '../styles/global.css';
+import favicon from '../../design/system/logo/favicon.svg?url';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { demo } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  headerVariant?: 'solid' | 'overlay';
+}
+const { title, description, headerVariant = 'solid' } = Astro.props;
+// PUBLIC_DEMO=false отключает полосу и noindex — только отдельным решением владельца (B-09, B-11).
+const isDemo = import.meta.env.PUBLIC_DEMO !== 'false';
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {isDemo && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" href={favicon} type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip" href="#main">{demo.skipLink}</a>
+    {isDemo && <div class="demo-strip" role="note"><p>{demo.stripText}</p></div>}
+    <SiteHeader variant={headerVariant} currentPath={Astro.url.pathname} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+    <script>
+      // Поведение дизайн-системы (шапка при прокрутке, меню, диалоги, демо-форма) — общий файл с прототипом.
+      // В DEMO-04/05 переносится в типизированные модули src/scripts/.
+      import '../../design/system/system.js';
+    </script>
+  </body>
+</html>

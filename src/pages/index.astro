@@ -1,0 +1,75 @@
+---
+// Служебная проверочная страница PHASE 5.1: подключает Layout, шапку, подвал и все общие компоненты.
+// Это НЕ главная страница демо: она переносится в DEMO-06 (hero, «О компании», преимущества, обращение). Подписи — служебные (U).
+// Названия услуг и проектов взяты дословно из docs/content/source/ и временно заданы здесь; в DEMO-03 переедут в data/source/*.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Button from '../components/Button.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ImagePlaceholder from '../components/ImagePlaceholder.astro';
+import ContactLink from '../components/ContactLink.astro';
+import { contacts } from '../data/site';
+---
+<BaseLayout
+  title="Проверка каркаса — Связь Энергострой (демо)"
+  description="Служебная страница проверки каркаса демонстрационного сайта ООО «Связь Энергострой». Не является действующим сайтом компании."
+>
+  <Container class="page-head">
+    <h1 class="page-head__title">Проверка каркаса</h1>
+    <p class="page-head__lead">Служебная страница: общие компоненты и токены дизайн-системы. Главная страница демо переносится отдельным шагом.</p>
+  </Container>
+
+  <section class="section" aria-labelledby="check-buttons">
+    <Container>
+      <header class="section__head"><h2 class="h-section" id="check-buttons">Кнопки</h2></header>
+      <div class="flex flex-wrap items-center gap-4">
+        <Button href="#check-services" size="lg" arrow>Услуги</Button>
+        <Button href="#check-projects" variant="ghost-dark" size="lg">Проекты</Button>
+        <Button href="#check-buttons" variant="ghost-dark" size="sm">Малая</Button>
+        <Button variant="lime" size="sm">Действие</Button>
+      </div>
+      <div class="on-dark bg-bg-dark-alt mt-6 flex flex-wrap items-center gap-4 rounded-lg p-6">
+        <Button href="#check-services" size="lg" arrow>Услуги</Button>
+        <Button href="#check-projects" variant="ghost-light" size="lg">Проекты</Button>
+        <Button variant="text-light">Текстовая на тёмном</Button>
+      </div>
+    </Container>
+  </section>
+
+  <section class="section" id="check-services" aria-labelledby="check-services-title">
+    <Container>
+      <header class="section__head"><h2 class="h-section" id="check-services-title">Услуги</h2></header>
+      <ul class="services">
+        <ServiceCard number="04" title="Монтаж объектов видеонаблюдения" />
+        <ServiceCard number="06" title="Геодезическое сопровождение строительства" />
+        <ServiceCard number="10" title="Проектирование" descriptionPending />
+      </ul>
+    </Container>
+  </section>
+
+  <section class="section" id="check-projects" aria-labelledby="check-projects-title">
+    <Container>
+      <header class="section__head"><h2 class="h-section" id="check-projects-title">Проекты</h2></header>
+      <ul class="projects">
+        <ProjectCard title="Таможенно-логистический терминал" />
+        <ProjectCard title="Благовещенская ТЭЦ" />
+      </ul>
+    </Container>
+  </section>
+
+  <section class="section section--cta" aria-labelledby="check-slots">
+    <Container>
+      <header class="section__head"><h2 class="h-section" id="check-slots">Слоты изображений</h2></header>
+      <div class="grid gap-4 md:grid-cols-3">
+        <ImagePlaceholder ratio="16:10" />
+        <ImagePlaceholder ratio="4:3" />
+        <ImagePlaceholder ratio="21:9" class="md:col-span-3" />
+      </div>
+      <dl class="contacts">
+        <div><dt>Телефон</dt><dd><ContactLink href={contacts.phones[0].href} label={contacts.phones[0].label} /></dd></div>
+        <div><dt>E-mail</dt><dd><ContactLink href={contacts.email.href} label={contacts.email.label} /></dd></div>
+      </dl>
+    </Container>
+  </section>
+</BaseLayout>

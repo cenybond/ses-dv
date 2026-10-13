@@ -1,0 +1,11 @@
+---
+// Ссылка контакта: tel:/mailto:. Вид и цель касания ≥ 44 px задают классы системы (`.header-phone`, `.contacts a`, `.footer__col a`).
+// Утилиты Tailwind здесь не используются намеренно: слой utilities сильнее слоя components и перебил бы `display:none` у `.header-phone`.
+interface Props {
+  href: string;
+  label: string;
+  class?: string;
+}
+const { href, label, class: className = '' } = Astro.props;
+---
+<a class={className || undefined} href={href}>{label}</a>

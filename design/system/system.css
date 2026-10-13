@@ -65,7 +65,7 @@ main:focus{outline:none}
 .dot--lime{background:var(--color-accent);color:var(--color-on-accent);border:0}
 .dot--lg{width:48px;height:48px}
 button.dot{padding:0}
-button.dot:hover,button.dot.is-hover{transform:translateX(2px)}
+button.dot:hover,button.dot.is-hover,a.dot:hover,a.dot.is-hover{transform:translateX(2px)}
 .link-arrow{display:inline-flex;align-items:center;gap:12px;min-height:var(--size-touch);padding:0;background:none;border:0;font:600 15px/1.2 var(--font-head);color:var(--color-text);text-align:start}
 .link-arrow__dot{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--color-accent);color:var(--color-on-accent);transition:transform var(--motion-base)}
 .link-arrow:hover .link-arrow__dot,.link-arrow.is-hover .link-arrow__dot{transform:translateX(3px)}

@@ -66,6 +66,7 @@ PHASE 3 визуальные концепции → ГЕЙТ G1 (заказчи�
 | Риски | несовместимость Astro 7 / TypeScript 7 с `@astrojs/check` и ESLint; загрузка браузера Playwright; CRLF на Windows |
 | Откат | `git revert`; зависимости удаляются откатом коммита с lockfile |
 | Дальше | DEMO-03 |
+| **Статус (2026-10-13, PHASE 5.1)** | **Выполнено частично.** Сделано: Astro 7 + TS 6 + Tailwind 4, интеграция `design/system`, `BaseLayout`, шапка/подвал, общие компоненты, одна служебная страница `/`, `.claude/launch.json`, скрипты `check`, `check-tokens`, `check-dist`, `check-browser`, `verify`; baseline: JS 1,3 КБ gz, CSS 6,3 КБ gz. **Не сделано / изменено:** 8 маршрутов-заготовок (страницы создаются в своих шагах, `check-dist` ведёт список ожидающих); ESLint/Prettier и Playwright не ставились (P-29, решить в начале DEMO-03); `.gitattributes` корня не добавлялся (`core.autocrlf=true`: в индексе LF, git лишь предупреждает о замене при выходе в рабочую копию; решить, нужна ли фиксация, в DEMO-03); `verify` без `format:check`, `lint`, `test` |
 
 ### DEMO-03 · Данные и тексты
 

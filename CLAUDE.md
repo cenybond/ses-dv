@@ -21,11 +21,17 @@ Demo-first (A-17): Discovery → IA → SPEC демо (PHASE 2) → визуал
 ## Окружение
 - Рабочая ветка: `integration/docs-and-skills`. Скиллы проекта уже в ней (`.claude/skills/`, слиты из `claude/ecstatic-einstein-3cjtaw`), не устанавливать заново.
 - Локальное окружение Windows: `ses-dv.ru` доступен. Облачная сессия: `.ru`-домены закрыты сетевой политикой окружения, краулинг только локально.
-- Предложенный стек (P-19): Astro + TypeScript + Tailwind, ещё не установлен.
+- Стек (A-28): Astro 7 + TypeScript 6 + Tailwind 4, статика. Исходники `src/`, `scripts/`; `design/system/` остаётся единственным источником токенов, шрифтов, логотипов и CSS компонентов (A-29).
 - Дизайн-система (PHASE 4): `design/system/` (`tokens.css` → `system.css`, `system.js`, `logo/`, `fonts/`), style guide `design/system-preview/index.html`, правила `DESIGN-SYSTEM.md`.
 
 ## Команды
-Пока нет (frontend не создан).
+`npm run dev` (порт 4321), `build`, `preview`, `check` (astro check), `check-tokens`, `check-dist` (после build), `check-browser` (после build; Edge/Chrome, `--shots <папка>`, `--base <url>`), `verify` = всё перечисленное. `npm run sync-theme` — после правки `design/system/tokens.css`.
+
+## Архитектурные правила Astro (PHASE 5.1)
+- Стили: `src/styles/global.css` импортирует `design/system/*` в слои `theme` → `components` → `utilities`. Не копировать CSS, шрифты и SVG в `src/`; `theme.generated.css` не править вручную.
+- В `src/` нет HEX, `rgb()` и произвольных размеров вида `[12px]` (проверяет `check-tokens`); цвета, радиусы, тени — токенами/утилитами `bg-brand`, `rounded-lg`. Компоненты системы (`.btn`, `.service`…) не усложнять утилитами `display`/размеров (P-27).
+- Ссылки в интерфейсе только на существующие страницы; готовность маршрутов — `src/data/nav.ts` (`built`). `check-dist` печатает ожидающие страницы.
+- Логотипы — `src/components/Logo.astro` (SVG из `design/system/logo/`, не менять; `check-dist` сверяет байты).
 
 ## Документы
 `SPEC-DEMO.md` (что строим), `DESIGN-SYSTEM.md` (токены, компоненты, логотип), `DESIGN-BRIEF.md`, `ARCHITECTURE-DEMO.md`, `PLAN-DEMO.md` (порядок и проверки), `docs/` — исследования и полная IA. Новой сессии достаточно: `CLAUDE.md`, `PROGRESS.md` и файлы текущего шага.

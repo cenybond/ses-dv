@@ -1,0 +1,41 @@
+---
+// Подвал (DESIGN-SYSTEM §8.2): полный знак на тёмном, разделы, контакты, пометка демо. «Вакансии» — недоступная строка (не ссылка).
+import Logo from './Logo.astro';
+import ContactLink from './ContactLink.astro';
+import { company, contacts, demo } from '../data/site';
+import { mainNav, privacyRoute } from '../data/nav';
+---
+<footer class="site-footer on-dark">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <Logo variant="full-on-dark" />
+        <p>{company.legalName}</p>
+        <p class="footer__muted">{company.description}</p>
+      </div>
+      <nav class="footer__col" id="site-nav" aria-label="Разделы сайта" tabindex="-1">
+        <h2 class="footer__h">Разделы</h2>
+        <ul>
+          {mainNav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+          <li><span class="off">Вакансии <span class="badge badge--on-dark">В полной версии</span></span></li>
+        </ul>
+      </nav>
+      <div class="footer__col">
+        <h2 class="footer__h">Контакты</h2>
+        <ul>
+          {contacts.phones.map((p) => <li><ContactLink href={p.href} label={p.label} /></li>)}
+          <li><ContactLink href={contacts.email.href} label={contacts.email.label} /></li>
+          <li><span class="footer__muted">{contacts.addressNote}</span></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h2 class="footer__h">{demo.footerTitle}</h2>
+        <p class="footer__muted">{demo.footerText}</p>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>{company.legalName}</p>
+      <a class="link-inline link-inline--light" href={privacyRoute.href}>{privacyRoute.label}</a>
+    </div>
+  </div>
+</footer>

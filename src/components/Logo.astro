@@ -1,0 +1,24 @@
+---
+// Логотип заказчика из design/system/logo/ (SVG собраны brand/build_logo_svg.py из векторного PDF). Не перерисовывать, не перекрашивать.
+// wordmark: две картинки под варианты фона шапки (над hero — белая, на светлой шапке — оригинальная; переключает `.site-header.is-solid`).
+// full-on-dark: полный знак на тёмном (подвал).
+import wordmarkOnDark from '../../design/system/logo/logo-wordmark-on-dark.svg?url';
+import wordmark from '../../design/system/logo/logo-wordmark.svg?url';
+import fullOnDark from '../../design/system/logo/logo-full-on-dark.svg?url';
+
+interface Props {
+  variant: 'wordmark' | 'full-on-dark';
+}
+const { variant } = Astro.props;
+const label = 'Связь Энергострой — на начало страницы';
+---
+{variant === 'wordmark' ? (
+  <a class="logo" href="/" aria-label={label}>
+    <img class="logo__img logo__img--on-dark" src={wordmarkOnDark} width="1366.73" height="133.91" alt="" />
+    <img class="logo__img logo__img--on-light" src={wordmark} width="1366.73" height="133.91" alt="" />
+  </a>
+) : (
+  <a class="logo logo--footer" href="/" aria-label={label}>
+    <img class="logo__img" src={fullOnDark} width="1384" height="735.5" alt="" />
+  </a>
+)}

@@ -13,7 +13,7 @@ export { projects, projectsPageTitle, projectsPageLead, homeProjects } from './s
 export { tlt, tltWorkTypes } from './source/tlt.ts';
 export { privacyTitle, privacyParagraphs } from './source/privacy.ts';
 export { ui } from './ui.ts';
-export { routes, mainNav, privacyRoute } from './nav.ts';
+export { routes, mainNav, privacyRoute, projectRoute, currentState, normalizePath } from './nav.ts';
 export type * from './types.ts';
 
 type ProjectItem = (typeof projects)[number];

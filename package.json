@@ -23,7 +23,9 @@
     "check-copy": "node --disable-warning=ExperimentalWarning scripts/check-copy.mjs",
     "test-check-copy": "node --disable-warning=ExperimentalWarning scripts/test-check-copy.mjs",
     "check-dist": "node scripts/check-dist.mjs",
+    "check-links": "node scripts/check-links.mjs",
+    "test-check-links": "node scripts/test-check-links.mjs",
     "check-browser": "node scripts/check-browser.mjs",
-    "verify": "npm run check && npm run build && npm run check-tokens && npm run check-copy && npm run test-check-copy && npm run check-dist && npm run check-browser"
+    "verify": "npm run check && npm run build && npm run check-tokens && npm run check-copy && npm run test-check-copy && npm run check-dist && npm run check-links && npm run test-check-links && npm run check-browser"
   }
 }

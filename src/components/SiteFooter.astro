@@ -1,8 +1,16 @@
 ---
-// Подвал (DESIGN-SYSTEM §8.2): полный знак на тёмном, разделы, контакты, пометка демо. «Вакансии» — недоступная строка (не ссылка).
+// Подвал (DESIGN-SYSTEM §8.2): полный знак на тёмном, разделы, контакты, пометка демо. «Вакансии» — недоступная строка (не ссылка);
+// «Новости» и «Документы» не выводятся (SPEC-DEMO §6.8). #site-nav — цель кнопки «Меню» без JS.
 import Logo from './Logo.astro';
 import ContactLink from './ContactLink.astro';
+import NavigationLink from './NavigationLink.astro';
+import InertNote from './InertNote.astro';
 import { company, phones, email, ui, mainNav, privacyRoute } from '../data';
+
+interface Props {
+  currentPath?: string;
+}
+const { currentPath = '' } = Astro.props;
 ---
 <footer class="site-footer on-dark">
   <div class="container">
@@ -15,8 +23,8 @@ import { company, phones, email, ui, mainNav, privacyRoute } from '../data';
       <nav class="footer__col" id="site-nav" aria-label={ui.a11y.footerNav} tabindex="-1">
         <h2 class="footer__h">{ui.nav.footerHeading}</h2>
         <ul>
-          {mainNav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
-          <li><span class="off">{ui.nav.vacancies} <span class="badge badge--on-dark">{ui.placeholders.feature}</span></span></li>
+          {mainNav.map((item) => <li><NavigationLink href={item.href} label={item.label} currentPath={currentPath} /></li>)}
+          <li><InertNote label={ui.nav.vacancies} onDark /></li>
         </ul>
       </nav>
       <div class="footer__col">
@@ -34,7 +42,7 @@ import { company, phones, email, ui, mainNav, privacyRoute } from '../data';
     </div>
     <div class="footer__bottom">
       <p>{company.name.text}</p>
-      <a class="link-inline link-inline--light" href={privacyRoute.href}>{privacyRoute.label}</a>
+      <NavigationLink class="link-inline link-inline--light" href={privacyRoute.href} label={privacyRoute.label} currentPath={currentPath} />
     </div>
   </div>
 </footer>

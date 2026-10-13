@@ -1,0 +1,13 @@
+---
+// Недоступный в демо элемент (SPEC-DEMO §7): не ссылка и не кнопка, не получает фокус, пометка текстом, а не только цветом.
+// Стиль строки — `.footer__col .off` (подвал); пометка — `.badge`.
+import { ui } from '../data';
+
+interface Props {
+  label: string;
+  note?: string;
+  onDark?: boolean;
+}
+const { label, note = ui.placeholders.feature, onDark = false } = Astro.props;
+---
+<span class="off">{label} <span class:list={['badge', onDark && 'badge--on-dark']}>{note}</span></span>

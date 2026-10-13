@@ -25,13 +25,14 @@ Demo-first (A-17): Discovery → IA → SPEC демо (PHASE 2) → визуал
 - Дизайн-система (PHASE 4): `design/system/` (`tokens.css` → `system.css`, `system.js`, `logo/`, `fonts/`), style guide `design/system-preview/index.html`, правила `DESIGN-SYSTEM.md`.
 
 ## Команды
-`npm run dev` (порт 4321), `build`, `preview`, `check` (astro check), `check-tokens`, `check-copy` (дословность данных против `docs/content/source/`; `-- --root <папка>`), `test-check-copy` (негативные тесты проверки во временной копии), `check-dist` (после build), `check-browser` (после build; Edge/Chrome, `--shots <папка>`, `--base <url>`), `verify` = всё перечисленное. `npm run sync-theme` — после правки `design/system/tokens.css`.
+`npm run dev` (порт 4321), `build`, `preview`, `check` (astro check), `check-tokens`, `check-copy` (дословность данных против `docs/content/source/`; `-- --root <папка>`), `test-check-copy` (негативные тесты проверки во временной копии), `check-dist` (после build), `check-links` (после build; ссылки, якоря, `aria-current`; `-- --dist <папка>`), `test-check-links` (негативные тесты на копии `dist/`), `check-browser` (после build; Edge/Chrome, все страницы × 320…1440, меню, нижняя панель, без JS; `--shots <папка>`, `--page <путь>`, `--base <url>`), `verify` = всё перечисленное. `npm run sync-theme` — после правки `design/system/tokens.css`.
 
 ## Архитектурные правила Astro (PHASE 5.1)
 - Стили: `src/styles/global.css` импортирует `design/system/*` в слои `theme` → `components` → `utilities`. Не копировать CSS, шрифты и SVG в `src/`; `theme.generated.css` не править вручную.
 - В `src/` нет HEX, `rgb()` и произвольных размеров вида `[12px]` (проверяет `check-tokens`); цвета, радиусы, тени — токенами/утилитами `bg-brand`, `rounded-lg`. Компоненты системы (`.btn`, `.service`…) не усложнять утилитами `display`/размеров (P-27).
 - Ссылки в интерфейсе только на существующие страницы; готовность маршрутов — `src/data/nav.ts` (`built`). `check-dist` печатает ожидающие страницы.
 - Данные (DEMO-03): тексты живут только в `src/data/` — `source/*` (S, дословно, каждая строка `{text, src}` со ссылкой на снимок `docs/content/source/`), `ui.ts` (U, подписи интерфейса), `index.ts` (выборки). Новый текст — только с `src`; опечатки источника не править; `*_PENDING`, `SOURCE_SUPPORTED`, `CLIENT_APPROVED` — внутренние маркеры, в интерфейс не выводить. После правки данных — `npm run check-copy`.
+- Навигация (DEMO-04): пути только из `src/data/nav.ts` (`routes`, `mainNav`), `aria-current` — через `NavigationLink`; недоступное в демо — `InertNote` (не ссылка, пометка текстом); новый маршрут = страница + `built: true` + проходит `check-links`. Поведение — `src/scripts/` (шапка, шторка меню); `design/system/system.js` в Astro не подключается (P-30).
 - Логотипы — `src/components/Logo.astro` (SVG из `design/system/logo/`, не менять; `check-dist` сверяет байты).
 
 ## Документы

@@ -1,0 +1,11 @@
+---
+// Нижняя панель mobile (≤ 640 px, `.dock` в system.css): «Позвонить» — tel: из данных, «Оставить заявку» — /contacts
+// (диалог заявки подключается в DEMO-05; без JS ведёт на /contacts#request). Номер ожидает подтверждения заказчиком (Q-29).
+// Отступ снизу: safe-area-inset-bottom; body получает padding-bottom на высоту панели (system.css), конец страницы не перекрыт.
+import Button from './Button.astro';
+import { phones, routes, ui } from '../data';
+---
+<div class="dock" role="group" aria-label={ui.a11y.quickActions}>
+  <Button href={phones[0].href} variant="ghost-dark">{ui.actions.call}</Button>
+  <Button href={routes.contacts}>{ui.actions.leaveRequest}</Button>
+</div>

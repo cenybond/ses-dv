@@ -1,0 +1,10 @@
+---
+// Заготовка маршрута (DEMO-04): оболочка и навигация работают, содержимое страницы — в своей фазе PLAN-DEMO.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageStub from '../components/PageStub.astro';
+import { company, ui } from '../data';
+const title = ui.nav.contacts;
+---
+<BaseLayout title={`${title} — ${company.name.text} (демо)`} description={ui.stub.note}>
+  <PageStub title={title}></PageStub>
+</BaseLayout>

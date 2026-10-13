@@ -1,0 +1,30 @@
+---
+// Меню-шторка (≤ 960 px): нативный <dialog>. Открывает кнопка «Меню» в шапке (src/scripts/mobile-menu.ts);
+// без JS диалог закрыт, а кнопка — якорь на навигацию в подвале (#site-nav). Пункты — те же, что в шапке (data/nav.ts).
+import NavigationLink from './NavigationLink.astro';
+import ContactLink from './ContactLink.astro';
+import Button from './Button.astro';
+import { mainNav, phones, email, routes, ui } from '../data';
+
+interface Props {
+  currentPath?: string;
+}
+const { currentPath = '' } = Astro.props;
+---
+<dialog class="modal" id="menu" aria-label={ui.a11y.menu}>
+  <div class="modal__box modal__box--menu">
+    <button class="modal__close" type="button" data-close-menu aria-label={ui.a11y.closeMenu} autofocus>
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav aria-label={ui.a11y.menuNav}>
+      <ul class="menu-list">
+        {mainNav.map((item) => <li><NavigationLink href={item.href} label={item.label} currentPath={currentPath} /></li>)}
+      </ul>
+    </nav>
+    <div class="menu-contacts">
+      <ContactLink href={phones[0].href} label={phones[0].display.text} />
+      <ContactLink href={email.href} label={email.display.text} />
+    </div>
+    <Button href={routes.contacts} size="lg" block>{ui.actions.orderCall}</Button>
+  </div>
+</dialog>

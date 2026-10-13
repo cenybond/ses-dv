@@ -1,9 +1,12 @@
 ---
-// Шапка (DESIGN-SYSTEM §8.1). `solid` — внутренние страницы без hero: светлая всегда; `overlay` — прозрачная над hero (главная, DEMO-06).
-// Кнопка «Заказать звонок» и шторка меню появятся с диалогами (DEMO-05): до этого бургер — якорь на навигацию в подвале (работает без JS).
+// Шапка (DESIGN-SYSTEM §8.1). `solid` — внутренние страницы без hero: светлая всегда (класс уже в разметке, без JS шапка читаема);
+// `overlay` — прозрачная над hero (главная, DEMO-06): hero сам уходит под шапку отрицательным margin-top, светлой она становится при прокрутке.
+// «Заказать звонок» до DEMO-05 ведёт на /contacts. Кнопка «Меню» — якорь на навигацию в подвале; с JS открывает шторку (scripts/mobile-menu.ts).
 import Logo from './Logo.astro';
 import ContactLink from './ContactLink.astro';
-import { phones, ui, mainNav } from '../data';
+import NavigationLink from './NavigationLink.astro';
+import Button from './Button.astro';
+import { phones, ui, mainNav, routes } from '../data';
 
 interface Props {
   variant?: 'solid' | 'overlay';
@@ -11,19 +14,18 @@ interface Props {
 }
 const { variant = 'solid', currentPath = '' } = Astro.props;
 ---
-<header class="site-header" id="top" data-header={variant === 'solid' ? 'solid' : ''}>
+<header class:list={['site-header', variant === 'solid' && 'is-solid']} id="top" data-header={variant === 'solid' ? 'solid' : ''}>
   <div class="container site-header__row">
     <Logo variant="wordmark" />
     <nav class="nav" aria-label={ui.a11y.mainNav}>
       <ul>
-        {mainNav.map((item) => (
-          <li><a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>{item.label}</a></li>
-        ))}
+        {mainNav.map((item) => <li><NavigationLink href={item.href} label={item.label} currentPath={currentPath} /></li>)}
       </ul>
     </nav>
     <div class="site-header__actions">
       <ContactLink class="header-phone" href={phones[0].href} label={phones[0].display.text} />
-      <a class="burger" href="#site-nav" data-open-menu aria-label={ui.a11y.menu} aria-haspopup="dialog">
+      <Button href={routes.contacts} size="sm">{ui.actions.orderCall}</Button>
+      <a class="burger" href="#site-nav" data-open-menu aria-label={ui.a11y.menu}>
         <span class="burger__bars" aria-hidden="true"></span>
       </a>
     </div>

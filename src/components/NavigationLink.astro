@@ -1,0 +1,14 @@
+---
+// Ссылка навигации с `aria-current`: `page` на самой странице, `true` на страницах раздела (/projects/tlt → «Проекты»).
+// Вид активного пункта задают классы системы по атрибуту (`.nav a[aria-current]`, `.menu-list a[aria-current]`, `.footer__col a[aria-current]`).
+import { currentState } from '../data';
+
+interface Props {
+  href: string;
+  label: string;
+  currentPath?: string;
+  class?: string;
+}
+const { href, label, currentPath = '', class: className } = Astro.props;
+---
+<a class={className} href={href} aria-current={currentState(href, currentPath)}>{label}</a>

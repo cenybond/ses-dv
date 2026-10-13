@@ -100,6 +100,7 @@ PHASE 3 визуальные концепции → ГЕЙТ G1 (заказчи�
 | Риски | высота шапки vs якоря; поведение `<dialog>` на iOS; перекрытие нижней панелью |
 | Откат | `git revert` |
 | Дальше | DEMO-05 |
+| **Статус (2026-10-13, PHASE 5.3)** | **Выполнено.** Все 8 маршрутов (заготовки, закрыт долг DEMO-02), шапка с CTA, шторка `<dialog>` (`src/scripts/mobile-menu.ts`), нижняя панель, подвал, `SkipLink`, `DemoBanner`, `InertNote`, `NavigationLink`, `PageStub`; `check-links` + `test-check-links` (33 негативных теста) в `verify`; `check-browser` расширен (8 страниц × 5 ширин, меню, панель, без JS). **Отличия от плана:** вместо `tests/e2e/navigation.spec.ts` (Playwright) — `scripts/check-browser.mjs` (P-29); `Button` и `components/layout|ui/` не выделялись (`Button` существует с DEMO-02, компоненты лежат плоско в `src/components/`); `scripts/menu.ts` → `src/scripts/mobile-menu.ts`. «Заказать звонок» и «Оставить заявку» ведут на `/contacts` до DEMO-05. |
 
 ### DEMO-05 · Диалог и демо-форма
 

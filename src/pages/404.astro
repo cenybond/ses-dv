@@ -1,0 +1,19 @@
+---
+// Техническая страница ошибки (SPEC-DEMO PG-12): минимальная, со ссылками на разделы (IA §12). Не презентуется.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Container from '../components/Container.astro';
+import Button from '../components/Button.astro';
+import { company, mainNav, routes, ui } from '../data';
+---
+<BaseLayout title={`${ui.notFound.title} — ${company.name.text} (демо)`} description={ui.notFound.lead}>
+  <Container class="page-head">
+    <h1 class="page-head__title">{ui.notFound.title}</h1>
+    <p class="page-head__lead">{ui.notFound.lead}</p>
+  </Container>
+  <Container class="section section--cta">
+    <div class="flex flex-wrap gap-4">
+      {mainNav.map((item) => <Button href={item.href} variant="ghost-dark">{item.label}</Button>)}
+      <Button href={routes.home}>{ui.stub.home}</Button>
+    </div>
+  </Container>
+</BaseLayout>

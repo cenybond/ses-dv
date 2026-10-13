@@ -1,0 +1,10 @@
+---
+// Заготовка страницы проекта (DEMO-04): содержимое ТЛТ — DEMO-09. Название проекта — из слоя данных.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageStub from '../../components/PageStub.astro';
+import { company, projects, ui } from '../../data';
+const title = projects.find((p) => p.slug === 'tlt')!.title.text;
+---
+<BaseLayout title={`${title} — ${company.name.text} (демо)`} description={ui.stub.note}>
+  <PageStub title={title} />
+</BaseLayout>

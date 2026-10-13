@@ -1,11 +1,15 @@
 ---
 // Оболочка страницы: head (noindex в демо, favicon), skip-link, полоса демо, шапка, <main>, подвал.
-// Диалоги (меню, заявка, уведомление) добавляются в DEMO-05.
+// Меню-шторка и нижняя панель — общие для всех страниц; диалог заявки добавляется в DEMO-05.
 import '../styles/global.css';
 import favicon from '../../design/system/logo/favicon.svg?url';
+import SkipLink from '../components/SkipLink.astro';
+import DemoBanner from '../components/DemoBanner.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import MobileMenu from '../components/MobileMenu.astro';
+import MobileBottomBar from '../components/MobileBottomBar.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { ui } from '../data';
+import { normalizePath } from '../data';
 
 interface Props {
   title: string;
@@ -15,6 +19,7 @@ interface Props {
 const { title, description, headerVariant = 'solid' } = Astro.props;
 // PUBLIC_DEMO=false отключает полосу и noindex — только отдельным решением владельца (B-09, B-11).
 const isDemo = import.meta.env.PUBLIC_DEMO !== 'false';
+const currentPath = normalizePath(Astro.url.pathname);
 ---
 <!doctype html>
 <html lang="ru">
@@ -27,17 +32,17 @@ const isDemo = import.meta.env.PUBLIC_DEMO !== 'false';
     <link rel="icon" href={favicon} type="image/svg+xml" />
   </head>
   <body>
-    <a class="skip" href="#main">{ui.demo.skipLink}</a>
-    {isDemo && <div class="demo-strip" role="note"><p>{ui.demo.strip}</p></div>}
-    <SiteHeader variant={headerVariant} currentPath={Astro.url.pathname} />
+    <SkipLink />
+    {isDemo && <DemoBanner />}
+    <SiteHeader variant={headerVariant} currentPath={currentPath} />
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <SiteFooter />
+    <SiteFooter currentPath={currentPath} />
+    <MobileMenu currentPath={currentPath} />
+    <MobileBottomBar />
     <script>
-      // Поведение дизайн-системы (шапка при прокрутке, меню, диалоги, демо-форма) — общий файл с прототипом.
-      // В DEMO-04/05 переносится в типизированные модули src/scripts/.
-      import '../../design/system/system.js';
+      import '../scripts/site.ts';
     </script>
   </body>
 </html>

@@ -1,0 +1,330 @@
+{
+  "reports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "documentWidth": 1440,
+      "documentHeight": 900,
+      "outside": [],
+      "overlaps": [],
+      "fonts": [
+        "Manrope",
+        "Manrope",
+        "Golos Text",
+        "Golos Text"
+      ],
+      "logo": true,
+      "heading": {
+        "text": "Проектирование и строительство инженерных сетей",
+        "rect": {
+          "x": 120,
+          "y": 284.40625,
+          "width": 711.359375,
+          "height": 229.078125,
+          "bottom": 513.484375,
+          "right": 831.359375
+        },
+        "font": "74.88px / 76.3776px Manrope, \"Segoe UI\", system-ui, sans-serif"
+      },
+      "photo": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "right": 1440
+      },
+      "primary": {
+        "rect": {
+          "x": 120,
+          "y": 629.671875,
+          "width": 205.359375,
+          "height": 56,
+          "bottom": 685.671875,
+          "right": 325.359375
+        },
+        "radius": "999px"
+      },
+      "arrow": {
+        "x": 277.859375,
+        "y": 637.671875,
+        "width": 40,
+        "height": 40,
+        "bottom": 677.671875,
+        "right": 317.859375
+      },
+      "current": [
+        {
+          "text": "Главная",
+          "href": "#top"
+        }
+      ],
+      "smallControls": [],
+      "contrast": {
+        "heading": {
+          "minimum": 9.61,
+          "samples": 12432
+        },
+        "accent": {
+          "minimum": 4.53,
+          "samples": 6764
+        },
+        "subtitle": {
+          "minimum": 9.97,
+          "samples": 247
+        }
+      },
+      "previewNotice": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "documentWidth": 390,
+      "documentHeight": 844,
+      "outside": [],
+      "overlaps": [],
+      "fonts": [
+        "Manrope",
+        "Manrope",
+        "Golos Text",
+        "Golos Text"
+      ],
+      "logo": true,
+      "heading": {
+        "text": "Проектирование и строительство инженерных сетей",
+        "rect": {
+          "x": 16,
+          "y": 213.953125,
+          "width": 358,
+          "height": 121.6875,
+          "bottom": 335.640625,
+          "right": 374
+        },
+        "font": "39.78px / 40.5756px Manrope, \"Segoe UI\", system-ui, sans-serif"
+      },
+      "photo": {
+        "x": 0,
+        "y": 582.96875,
+        "width": 390,
+        "height": 219.484375,
+        "bottom": 802.453125,
+        "right": 390
+      },
+      "primary": {
+        "rect": {
+          "x": 16,
+          "y": 426.015625,
+          "width": 189.359375,
+          "height": 56,
+          "bottom": 482.015625,
+          "right": 205.359375
+        },
+        "radius": "999px"
+      },
+      "arrow": {
+        "x": 157.859375,
+        "y": 434.015625,
+        "width": 40,
+        "height": 40,
+        "bottom": 474.015625,
+        "right": 197.859375
+      },
+      "current": [
+        {
+          "text": "Главная",
+          "href": "#top"
+        }
+      ],
+      "smallControls": [],
+      "previewNotice": true
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "documentWidth": 320,
+      "documentHeight": 844,
+      "outside": [],
+      "overlaps": [],
+      "fonts": [
+        "Manrope",
+        "Manrope",
+        "Golos Text",
+        "Golos Text"
+      ],
+      "logo": true,
+      "heading": {
+        "text": "Проектирование и строительство инженерных сетей",
+        "rect": {
+          "x": 16,
+          "y": 196.203125,
+          "width": 288,
+          "height": 99.84375,
+          "bottom": 296.046875,
+          "right": 304
+        },
+        "font": "32.64px / 33.2928px Manrope, \"Segoe UI\", system-ui, sans-serif"
+      },
+      "photo": {
+        "x": 0,
+        "y": 604.8125,
+        "width": 320,
+        "height": 180.09375,
+        "bottom": 784.90625,
+        "right": 320
+      },
+      "primary": {
+        "rect": {
+          "x": 16,
+          "y": 409.609375,
+          "width": 177.359375,
+          "height": 56,
+          "bottom": 465.609375,
+          "right": 193.359375
+        },
+        "radius": "999px"
+      },
+      "arrow": {
+        "x": 145.859375,
+        "y": 417.609375,
+        "width": 40,
+        "height": 40,
+        "bottom": 457.609375,
+        "right": 185.859375
+      },
+      "current": [
+        {
+          "text": "Главная",
+          "href": "#top"
+        }
+      ],
+      "smallControls": [],
+      "previewNotice": true
+    },
+    {
+      "width": 768,
+      "height": 900,
+      "documentWidth": 768,
+      "documentHeight": 900,
+      "outside": [],
+      "overlaps": [],
+      "fonts": [
+        "Manrope",
+        "Manrope",
+        "Golos Text",
+        "Golos Text"
+      ],
+      "logo": true,
+      "heading": {
+        "text": "Проектирование и строительство инженерных сетей",
+        "rect": {
+          "x": 30.71875,
+          "y": 147.1875,
+          "width": 342,
+          "height": 114.46875,
+          "bottom": 261.65625,
+          "right": 372.71875
+        },
+        "font": "500 36px / 38.16px Manrope, \"Segoe UI\", system-ui, sans-serif"
+      },
+      "photo": {
+        "x": 0,
+        "y": 467.78125,
+        "width": 768,
+        "height": 432.21875,
+        "bottom": 900,
+        "right": 768
+      },
+      "primary": {
+        "rect": {
+          "x": 459.53125,
+          "y": 240.75,
+          "width": 205.359375,
+          "height": 56,
+          "bottom": 296.75,
+          "right": 664.890625
+        },
+        "radius": "999px"
+      },
+      "arrow": {
+        "x": 617.390625,
+        "y": 248.75,
+        "width": 40,
+        "height": 40,
+        "bottom": 288.75,
+        "right": 657.390625
+      },
+      "current": [
+        {
+          "text": "Главная",
+          "href": "#top"
+        }
+      ],
+      "smallControls": [],
+      "previewNotice": true
+    },
+    {
+      "width": 1024,
+      "height": 900,
+      "documentWidth": 1024,
+      "documentHeight": 900,
+      "outside": [],
+      "overlaps": [],
+      "fonts": [
+        "Manrope",
+        "Manrope",
+        "Golos Text",
+        "Golos Text"
+      ],
+      "logo": true,
+      "heading": {
+        "text": "Проектирование и строительство инженерных сетей",
+        "rect": {
+          "x": 32,
+          "y": 159.1875,
+          "width": 408.5625,
+          "height": 136.78125,
+          "bottom": 295.96875,
+          "right": 440.5625
+        },
+        "font": "500 43.008px / 45.5885px Manrope, \"Segoe UI\", system-ui, sans-serif"
+      },
+      "photo": {
+        "x": 0,
+        "y": 323.703125,
+        "width": 1024,
+        "height": 576.296875,
+        "bottom": 900,
+        "right": 1024
+      },
+      "primary": {
+        "rect": {
+          "x": 608.65625,
+          "y": 234.765625,
+          "width": 205.359375,
+          "height": 56,
+          "bottom": 290.765625,
+          "right": 814.015625
+        },
+        "radius": "999px"
+      },
+      "arrow": {
+        "x": 766.515625,
+        "y": 242.765625,
+        "width": 40,
+        "height": 40,
+        "bottom": 282.765625,
+        "right": 806.515625
+      },
+      "current": [
+        {
+          "text": "Главная",
+          "href": "#top"
+        }
+      ],
+      "smallControls": [],
+      "previewNotice": true
+    }
+  ],
+  "errors": [],
+  "external": []
+}

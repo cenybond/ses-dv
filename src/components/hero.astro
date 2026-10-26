@@ -1,0 +1,22 @@
+---
+import { hero, routes } from '../data';
+import photo from '../../design/client-preview/hero/assets/hero-bg-house.webp?url';
+import '../styles/hero.css';
+const accent = 'инженерных сетей';
+const prefix = hero.lines[0].text.slice(0, -accent.length);
+const subtitle = hero.lines[1].text.split('строительно-монтажная');
+---
+<section class="hero on-dark" aria-labelledby="hero-title">
+  <div class="container hero__inner">
+    <p class="hero__lead">{hero.intro.text}</p>
+    <h1 id="hero-title">{prefix}<span class="accent">{accent}</span></h1>
+    <p class="hero__sub">{subtitle[0]}<span class="hero__nw">строительно-монтажная</span>{subtitle[1]}</p>
+    <div class="hero__actions">
+      <a class="btn btn--lime btn--lg" href={routes.services} data-goal="services_click">Наши услуги <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <a class="btn btn--text-light" href={routes.projects} data-goal="projects_click">Проекты <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+  <div class="hero__photo" aria-hidden="true"><img src={photo} alt="" width="1672" height="941" fetchpriority="high" decoding="async" /></div>
+  <div class="hero__shade" aria-hidden="true"></div>
+  <p class="hero__credit">Временный кадр: иллюстрация, не объект СЭС</p>
+</section>

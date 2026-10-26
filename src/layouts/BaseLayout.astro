@@ -4,7 +4,10 @@
 import '../styles/global.css';
 import favicon from '../../design/system/logo/favicon.svg?url';
 import SkipLink from '../components/SkipLink.astro';
-import DemoBanner from '../components/DemoBanner.astro';
+import SeoHead from '../components/seo-head.astro';
+import CookieBanner from '../components/cookie-banner.astro';
+import CookieSettings from '../components/cookie-settings.astro';
+import RequestDialog from '../components/request-dialog.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import MobileMenu from '../components/MobileMenu.astro';
 import MobileBottomBar from '../components/MobileBottomBar.astro';
@@ -17,8 +20,6 @@ interface Props {
   headerVariant?: 'solid' | 'overlay';
 }
 const { title, description, headerVariant = 'solid' } = Astro.props;
-// PUBLIC_DEMO=false отключает полосу и noindex — только отдельным решением владельца (B-09, B-11).
-const isDemo = import.meta.env.PUBLIC_DEMO !== 'false';
 const currentPath = normalizePath(Astro.url.pathname);
 ---
 <!doctype html>
@@ -26,14 +27,11 @@ const currentPath = normalizePath(Astro.url.pathname);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    {isDemo && <meta name="robots" content="noindex, nofollow" />}
+    <SeoHead title={title} description={description} path={currentPath} />
     <link rel="icon" href={favicon} type="image/svg+xml" />
   </head>
   <body>
     <SkipLink />
-    {isDemo && <DemoBanner />}
     <SiteHeader variant={headerVariant} currentPath={currentPath} />
     <main id="main" tabindex="-1">
       <slot />
@@ -41,8 +39,12 @@ const currentPath = normalizePath(Astro.url.pathname);
     <SiteFooter currentPath={currentPath} />
     <MobileMenu currentPath={currentPath} />
     <MobileBottomBar />
+    <RequestDialog />
+    <CookieBanner />
+    <CookieSettings />
     <script>
       import '../scripts/site.ts';
+      import '../scripts/forms.ts';
     </script>
   </body>
 </html>

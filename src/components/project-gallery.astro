@@ -1,0 +1,16 @@
+---
+import {pageui} from '../data/ui';
+interface Props { title?: string; images?: {src: string; alt: string; width: number; height: number}[] }
+const {title = pageui.photos, images = []} = Astro.props;
+---
+<section class="project-gallery" aria-label={title}>
+  <h2 class="project-gallery__heading">{title}</h2>
+  {images.length > 0 ? <div class="project-gallery__images">
+    {images.map((image) => <figure><img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" /></figure>)}
+  </div> : <div class="project-photo-slot">
+    <span class="project-photo-slot__corner" aria-hidden="true">+</span>
+    <p>{pageui.photoawaiting}</p>
+    <span class="project-photo-slot__caption">{pageui.photodisclaimer}</span>
+    <span class="project-photo-slot__corner" aria-hidden="true">+</span>
+  </div>}
+</section>

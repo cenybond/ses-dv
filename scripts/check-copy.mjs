@@ -160,8 +160,8 @@ const load = async (rel) => {
     return {};
   }
 };
-const [svc, prj, tltM, adv, comp, cont, priv, uiM, navM] = await Promise.all(
-  ['source/services.ts', 'source/projects.ts', 'source/tlt.ts', 'source/advantages.ts', 'source/company.ts', 'source/contacts.ts', 'source/privacy.ts', 'ui.ts', 'nav.ts'].map(load),
+const [svc, prj, tltM, adv, comp, cont, priv, uiM, navM, detailsM, worksM, vacanciesM, poolM] = await Promise.all(
+  ['source/services.ts', 'source/projects.ts', 'source/tlt.ts', 'source/advantages.ts', 'source/company.ts', 'source/contacts.ts', 'source/privacy.ts', 'ui.ts', 'nav.ts', 'source/project-details.ts', 'source/work-details.ts', 'source/vacancies.ts', 'source/content-texts.ts'].map(load),
 );
 if (errors.length) finish();
 
@@ -171,7 +171,7 @@ const decisionsText = readLf(join(root, 'DECISIONS.md'));
 const snapshotFiles = readdirSync(sourceDir).filter((f) => f.endsWith('.md') && !f.startsWith('_') && f !== 'README.md');
 
 // ---------- 1–2. все SourceText и «голые» строки ----------
-const sourceModules = { services: svc, projects: prj, tlt: tltM, advantages: adv, company: comp, contacts: cont, privacy: priv };
+const sourceModules = { services: svc, projects: prj, tlt: tltM, advantages: adv, company: comp, contacts: cont, privacy: priv, projectdetails: detailsM, workdetails: worksM, vacancies: vacanciesM, content: poolM };
 const seenObjects = new WeakSet();
 const textOwners = new Map(); // text → путь первого объекта (дубли вне privacy)
 let sourceTexts = 0;
@@ -264,11 +264,11 @@ projects.forEach((p, i) => {
     req(p.image, ['src', 'alt'], `${p.id}.image`);
     ok(!/^https?:|tilda|ses-dv\.ru/i.test(p.image.src) && existsSync(join(root, p.image.src)), 'изображение', `${p.id}: файл изображения «${p.image.src}» не найден в репозитории или это ссылка на старый сайт`);
   }
-  ok(p.hasPage === (p.id === 'prj-14'), 'страницы', `${p.id}: hasPage=${p.hasPage}; в демо страница только у ТЛТ (prj-14)`);
+  ok(p.hasPage === true, 'страницы', `${p.id}: hasPage=${p.hasPage}; все проекты должны иметь страницу`);
   checkLinks(p.id, p.serviceLinks, 'project');
   for (const l of p.serviceLinks) if (l.evidence) ok(l.evidence.src.startsWith(`${p.snapshot}#`), 'связи', `${p.id}→${l.serviceId}: основание должно быть строкой снимка ${p.snapshot}`);
 });
-ok(projects.filter((p) => p.hasPage).length === 1 && projects.find((p) => p.hasPage)?.slug === 'tlt', 'страницы', 'активна ровно одна страница проекта: tlt');
+ok(projects.filter((p) => p.hasPage).length === 14, 'страницы', 'активны все 14 страниц проектов');
 
 // главная: 6 проектов
 ok(homeProjects?.ids.length === EXPECT.homeProjects, 'количество', `проектов главной ${homeProjects?.ids.length}, ожидалось ${EXPECT.homeProjects}`);
@@ -299,7 +299,7 @@ uniq(workTypes.map((w) => w.id), 'ID видов работ');
 workTypes.forEach((w, i) => {
   req(w, ['id', 'title', 'snapshot', 'hasPage', 'serviceLinks'], `вид работ ${w.id}`);
   ok(w.id === `prj-14-${String(i + 1).padStart(2, '0')}` && w.title.src === `tlt.md#rec606966693/${2 * i + 1}`, 'порядок', `${w.id}: порядок видов работ отличается от источника tlt.md`);
-  ok(w.hasPage === false, 'страницы', `${w.id}: страницы видов работ в демо не создаются`);
+  ok(w.hasPage === true, 'страницы', `${w.id}: страницы видов работ должны существовать`);
   ok(w.snapshot === `${i + 1}.md` && existsSync(join(sourceDir, w.snapshot)), 'снимок', `${w.id}: нет снимка страницы ${w.snapshot}`);
   if (existsSync(join(sourceDir, w.snapshot))) {
     const snap = (cache.get(w.snapshot) ?? (cache.set(w.snapshot, loadSnapshot(sourceDir, w.snapshot)), cache.get(w.snapshot)));
@@ -393,7 +393,7 @@ ok(documents.status === 'PENDING_FROM_CLIENT' && documents.items.length === 0, '
       if (typeof v === 'string') leaves.push([p, v]);
       else if (v && typeof v === 'object') collect(v, p);
     }
-  })(ui, '');
+  })({ ...ui, pages: uiM.pageui ?? {} }, '');
   for (const [p, v] of leaves) {
     ok(v.trim().length > 0, 'ui', `ui.${p}: пустая подпись`);
     for (const m of MARKERS) ok(!v.includes(m), 'маркеры', `ui.${p}: внутренний маркер ${m} попал в интерфейсный текст`);
@@ -440,6 +440,40 @@ for (const [file, blocks] of Object.entries(COVERAGE)) {
   for (const block of Object.keys(blocks)) ok(snap.blocks.has(block), 'полнота', `COVERAGE: в ${file} нет блока ${block}`);
 }
 
+// Полная версия: каждый новый снимок покрыт дословным текстом или общим каноническим фрагментом.
+const detailitems = detailsM.projectdetails ?? [];
+const workitems = worksM.workdetails ?? [];
+const groups = vacanciesM.vacancygroups ?? [];
+ok(detailitems.length === 13, 'количество', 'ожидались 13 подробных страниц проектов и отдельная ТЛТ');
+ok(workitems.length === 12, 'количество', 'ожидались 12 подробных страниц видов работ ТЛТ');
+uniq(workitems.map(w => w.slug), 'slug видов работ');
+for(const detail of detailitems) {
+  ok(projectIds.has(detail.id) && !!detail.heading?.text, 'страницы', 'страница проекта должна иметь ID и исходный заголовок');
+}
+for(const work of workitems) {
+  ok(workTypeIds.has(work.id) && work.paragraphs.length > 0, 'страницы', 'вид работ должен иметь ID и описание');
+  ok(/^[a-z0-9]+(-[a-z0-9]+)*$/.test(work.slug), 'slug', 'неверный slug вида работ');
+}
+ok(groups.length === 2 && groups.flatMap(g => g.vacancies).length === 3, 'количество', 'ожидались 2 группы и 3 вакансии');
+ok(groups.flatMap(g=>g.vacancies).every(v=>v.active === false), 'вакансии', 'актуальность вакансий не подтверждена: active=false');
+const fullsnapshots = [...projects.filter(p=>p.slug !== 'tlt').map(p=>p.snapshot), ...workTypes.map(w=>w.snapshot), 'worker.md', 'engineers.md', 'vacancies.md'];
+for (const file of fullsnapshots) {
+  if(!file || !existsSync(join(sourceDir,file))) continue;
+  const record = file === 'vacancies.md' ? vacanciesM : file === 'worker.md' ? groups[0] : file === 'engineers.md' ? groups[1] : detailitems.find(d=>d.src===file) ?? workitems.find(w=>w.src===file);
+  const localvalues = new Set();
+  (function collect(value) { if(!value || typeof value !== 'object') return; if(typeof value.text==='string' && typeof value.src==='string') { localvalues.add(value.text); return; } for(const child of Object.values(value)) collect(child); })(record);
+  const snapshot = loadSnapshot(sourceDir,file);
+  for(const [block,units] of snapshot.blocks) {
+    const joinedheading = units.filter(u=>u.label==='TITLE').map(u=>u.text).join(' ');
+    for(const unit of units) {
+      if(unit.text==='Подробнее') { excluded++; continue; }
+      const present = localvalues.has(unit.text) || (unit.label==='TITLE' && localvalues.has(joinedheading));
+      ok(present,'полнота',file+'#'+block+'/'+unit.n+': оригинальный фрагмент пропущен в данных');
+      if(present) covered++;
+    }
+  }
+}
+
 // ---------- 7. запреты: старый адрес, старый сайт, новости, маркеры в сборке ----------
 {
   const contactsUnits = loadSnapshot(sourceDir, 'contacts.md').blocks.get('rec596804757') ?? [];
@@ -453,11 +487,16 @@ for (const [file, blocks] of Object.entries(COVERAGE)) {
   for (const f of scan) {
     const rel = relative(root, f).replace(/\\/g, '/');
     const text = readLf(f);
+    const linktext = rel.startsWith('dist/') ? text.replace(/data-site-origin=["'][^"']*["']/gi, '').replace(/<(?:link|meta)\b[^>]*>/gi, '').replace(/<script[^>]+type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi, '') : text;
     for (const a of oldAddress) ok(!text.includes(a), 'старый адрес', `${rel}: найден фрагмент старого адреса «${a}» (должно быть ADDRESS_PENDING)`);
     if (rel.startsWith('dist/') && rel.endsWith('.html')) for (const m of MARKERS) ok(!text.includes(m), 'маркеры', `${rel}: внутренний маркер ${m} в собранной странице`);
     if (rel !== 'src/data/source/privacy.ts') {
-      for (const m of text.matchAll(/https?:\/\/[^\s'"`)<>]+/g)) {
-        if (/wa\.me|www\.w3\.org/.test(m[0]) && !/tilda/.test(m[0])) continue;
+      for (const m of linktext.matchAll(/https?:\/\/[^\s'"`)<>]+/g)) {
+        if (/^https:\/\/(?:wa\.me\/|www\.w3\.org\/)/.test(m[0]) && !/tilda/.test(m[0])) continue;
+        if (rel === 'src/pages/sitemap.xml.ts' && m[0] === 'http://www.sitemaps.org/schemas/sitemap/0.9') continue;
+        if (rel === 'src/data/site-config.ts' && m[0] === 'https://ses-dv.ru') continue;
+        if (rel === 'src/components/seo-head.astro' && m[0] === 'https://schema.org') continue;
+        if (rel === 'src/scripts/analytics.ts' && m[0] === 'https://mc.yandex.ru/metrika/tag.js') continue;
         fail('старый сайт', `${rel}: внешняя ссылка «${m[0]}»; допустимы только wa.me (SPEC-DEMO §7), адреса сайта — лишь в тексте политики`);
       }
     }
@@ -476,7 +515,7 @@ function finish() {
 finish();
 console.log(
   `check-copy: OK — проверок ${checks}; SourceText ${sourceTexts} (+ ${decisionTexts} по решению A-18); ` +
-    `услуг ${services.length}, проектов ${projects.length} (на главной ${homeProjects.ids.length}, страница у 1), видов работ ТЛТ ${workTypes.length}, ` +
+    `услуг ${services.length}, проектов ${projects.length} (на главной ${homeProjects.ids.length}, страницы у всех), видов работ ТЛТ ${workTypes.length}, ` +
     `преимуществ ${advantages.length} (на главной ${homeAdvantageIds.ids.length}), отделов ${departments.length}, абзацев политики ${priv.privacyParagraphs.length}; ` +
     `строк источника: использовано ${covered}, исключено с причиной ${excluded}`,
 );

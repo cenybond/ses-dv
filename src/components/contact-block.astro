@@ -1,0 +1,19 @@
+---
+import RequestButton from './request-button.astro';
+import {phones, email, ui} from '../data';
+import {pageui} from '../data/ui';
+interface Props { context?: string; heading?: string }
+const {context = 'general', heading = ui.cta.heading} = Astro.props;
+---
+<section class="page-contact container">
+  <div>
+    <p class="page-kicker">{pageui.contact}</p>
+    <h2>{heading}</h2>
+    <div class="page-contact__actions"><RequestButton context={context} label={ui.actions.discuss} /></div>
+  </div>
+  <div class="page-contact__links">
+    <a href={phones[0].href} data-goal="phone_click">{phones[0].display.text}</a>
+    <a href={email.href} data-goal="email_click">{email.display.text}</a>
+    <a class="page-inline-link" href="/contacts">{pageui.allcontacts} <span aria-hidden="true">↗</span></a>
+  </div>
+</section>

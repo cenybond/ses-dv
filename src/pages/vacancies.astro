@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/page-hero.astro';
+import ContactBlock from '../components/contact-block.astro';
+import {vacancygroups,vacanciesheading,company,email,ui} from '../data';
+import {pageui} from '../data/ui';
+---
+<BaseLayout title={`${ui.nav.vacancies} — ${company.name.text}`} description={pageui.vacanciesmeta}>
+  <PageHero title={vacanciesheading.text} eyebrow={company.name.text} lead={pageui.vacancynotice} />
+  <div class="container page-section page-section--flush">
+    {vacancygroups.map(group=><section class="vacancy-group" id={group.id}>
+      <h2>{group.title.text}</h2>
+      {group.vacancies.map(vacancy=><details class="vacancy" id={vacancy.id}>
+        <summary>{vacancy.title.text}<span>{pageui.vacancyarchive}</span></summary>
+        <div class="vacancy__body">{vacancy.paragraphs.map(paragraph=>paragraph.text.endsWith(':')?<h3>{paragraph.text}</h3>:<p>{paragraph.text}</p>)}<a class="page-inline-link" href={email.href} data-goal="email_click">{pageui.vacancycontact} <span aria-hidden="true">↗</span></a></div>
+      </details>)}
+    </section>)}
+  </div>
+  <ContactBlock heading={pageui.vacancycontact} />
+</BaseLayout>

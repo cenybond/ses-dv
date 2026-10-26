@@ -1,0 +1,37 @@
+---
+import { verify_publication_assets } from '../../scripts/lib/publication-assets.mjs';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/page-hero.astro';
+import NewsCard from '../components/news-card.astro';
+import DocumentCard from '../components/document-card.astro';
+import { published_news, published_documents, type news_entry } from '../data/publications';
+
+export function getStaticPaths() {
+  // Утверждение записи недостаточно: каждый файл должен реально существовать и совпадать с метаданными.
+  verify_publication_assets([...published_news.map((entry) => entry.image), ...published_documents.map((entry) => entry.asset)].filter((item) => item !== undefined));
+  return [
+    ...(published_news.length ? [
+      { params: { publication: 'news' }, props: { kind: 'news' } },
+      ...published_news.map((item) => ({ params: { publication: 'news/' + item.slug }, props: { kind: 'article', item } })),
+    ] : []),
+    ...(published_documents.length ? [{ params: { publication: 'documents' }, props: { kind: 'documents' } }] : []),
+  ];
+}
+interface Props { kind: 'news' | 'article' | 'documents'; item?: news_entry; }
+const { kind, item } = Astro.props;
+const title = kind === 'documents' ? 'Документы' : kind === 'article' && item ? item.title : 'Новости';
+const description = kind === 'article' && item ? item.summary : kind === 'documents' ? 'Действующие документы компании «Связь Энергострой».' : 'Публикации компании «Связь Энергострой».';
+---
+<BaseLayout title={`${title} — Связь Энергострой`} description={description}>
+  <PageHero title={title} breadcrumbs={kind === 'article' ? [{ label: 'Новости', href: '/news' }, { label: title }] : [{ label: title }]} />
+  <section class="container page-section page-section--flush" aria-label={title}>
+    {kind === 'news' && <ul class="service-catalog" role="list">{published_news.map((entry) => <NewsCard item={entry} />)}</ul>}
+    {kind === 'documents' && <ul class="service-catalog" role="list">{published_documents.map((entry) => <DocumentCard item={entry} />)}</ul>}
+    {kind === 'article' && item && <article class="project-prose">
+      <p class="page-kicker"><time datetime={item.published_on}>{new Date(item.published_on + 'T00:00:00Z').toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}</time></p>
+      {item.image && <figure class="project-gallery__images"><img src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} decoding="async" /></figure>}
+      {item.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      <a class="page-inline-link" href="/news">Ко всем новостям</a>
+    </article>}
+  </section>
+</BaseLayout>

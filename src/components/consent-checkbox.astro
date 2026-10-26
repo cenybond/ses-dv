@@ -1,0 +1,8 @@
+---
+interface Props { id: string; }
+const { id } = Astro.props;
+---
+<label class="lead-consent" for={id}>
+  <input id={id} name="consent" type="checkbox" required />
+  <span>Даю <a href="/consent">согласие на обработку персональных данных</a> и ознакомлен с <a href="/privacy">политикой обработки данных</a>.</span>
+</label>

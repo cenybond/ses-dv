@@ -1,27 +1,14 @@
 ---
-// Карточка проекта (DESIGN-SYSTEM §8.5). Есть страница (`href`) — стрелка-ссылка; нет — статичная плашка
-// «Страница в полной версии» без фокуса и hover. Фальшивых ссылок не бывает.
-import ImagePlaceholder from './ImagePlaceholder.astro';
-import { ui } from '../data';
-
-interface Props {
-  title: string;
-  href?: string;
-  photoSrc?: string;
-  photoAlt?: string;
-}
-const { title, href, photoSrc, photoAlt } = Astro.props;
+import {pageui} from '../data/ui';
+interface Props { title: string; href?: string; photoSrc?: string; photoAlt?: string; level?: 2 | 3 }
+const {title,href,photoSrc,photoAlt = '',level=3} = Astro.props;
 ---
-<li class:list={['project', !href && 'project--static']}>
-  <ImagePlaceholder src={photoSrc} alt={photoAlt} />
-  <div class="project__plate">
-    <h3 class="project__title">{title}</h3>
-    {href ? (
-      <a class="dot dot--lime dot--lg" href={href} aria-label={ui.a11y.openProject(title)}>
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
-    ) : (
-      <p class="project__off">{ui.placeholders.projectPage}</p>
-    )}
-  </div>
+<li class="project-card">
+  {href ? <a class="project-card__link" href={href} data-goal="project_open">
+    <div class="project-card__photo">{photoSrc ? <img src={photoSrc} alt={photoAlt} loading="lazy" /> : <span>{pageui.photo}</span>}</div>
+    <div class="project-card__body">{level===2?<h2 class="project-card__title">{title}</h2>:<h3 class="project-card__title">{title}</h3>}<span class="project-card__arrow" aria-hidden="true">↗</span></div>
+  </a> : <div class="project-card__link">
+    <div class="project-card__photo"><span>{pageui.photo}</span></div>
+    <div class="project-card__body">{level===2?<h2 class="project-card__title">{title}</h2>:<h3 class="project-card__title">{title}</h3>}</div>
+  </div>}
 </li>

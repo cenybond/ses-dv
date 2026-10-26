@@ -26,6 +26,14 @@
     "check-links": "node scripts/check-links.mjs",
     "test-check-links": "node scripts/test-check-links.mjs",
     "check-browser": "node scripts/check-browser.mjs",
-    "verify": "npm run check && npm run build && npm run check-tokens && npm run check-copy && npm run test-check-copy && npm run check-dist && npm run check-links && npm run test-check-links && npm run check-browser"
+    "verify": "npm run check && npm run build && npm run check-tokens && npm run check-copy && npm run test-check-copy && npm run check-dist && npm run check-links && npm run test-check-links && npm run check-browser && npm run test-forms && npm run test-privacy && npm run check-seo && npm run test-staging && npm run test-publications && npm run check-consent-browser",
+    "test-forms": "node --test --test-timeout=30000 scripts/test-forms.mjs",
+    "test-privacy": "node scripts/test-privacy.mjs",
+    "check-seo": "node scripts/check-seo.mjs",
+    "test-staging": "node scripts/test-staging.mjs",
+    "staging:serve": "node scripts/serve-staging.mjs",
+    "leads:serve": "node --env-file-if-exists=.env server/index.mjs",
+    "test-publications": "node scripts/test-publications.mjs",
+    "check-consent-browser": "node scripts/check-consent-browser.mjs"
   }
 }

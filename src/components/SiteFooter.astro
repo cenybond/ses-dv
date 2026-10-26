@@ -1,48 +1,32 @@
 ---
-// Подвал (DESIGN-SYSTEM §8.2): полный знак на тёмном, разделы, контакты, пометка демо. «Вакансии» — недоступная строка (не ссылка);
-// «Новости» и «Документы» не выводятся (SPEC-DEMO §6.8). #site-nav — цель кнопки «Меню» без JS.
 import Logo from './Logo.astro';
 import ContactLink from './ContactLink.astro';
 import NavigationLink from './NavigationLink.astro';
-import InertNote from './InertNote.astro';
 import { company, phones, email, ui, mainNav, privacyRoute } from '../data';
-
-interface Props {
-  currentPath?: string;
-}
+import { published_routes } from '../data/publications';
+interface Props { currentPath?: string; }
 const { currentPath = '' } = Astro.props;
+const staging = import.meta.env.PUBLIC_SITE_MODE !== 'production';
 ---
 <footer class="site-footer on-dark">
   <div class="container">
     <div class="footer__grid">
-      <div class="footer__brand">
-        <Logo variant="full-on-dark" />
-        <p>{company.name.text}</p>
-        <p class="footer__muted">{company.descriptor.text}</p>
-      </div>
-      <nav class="footer__col" id="site-nav" aria-label={ui.a11y.footerNav} tabindex="-1">
-        <h2 class="footer__h">{ui.nav.footerHeading}</h2>
-        <ul>
-          {mainNav.map((item) => <li><NavigationLink href={item.href} label={item.label} currentPath={currentPath} /></li>)}
-          <li><InertNote label={ui.nav.vacancies} onDark /></li>
-        </ul>
-      </nav>
-      <div class="footer__col">
-        <h2 class="footer__h">{ui.nav.contactsHeading}</h2>
-        <ul>
-          {phones.map((p) => <li><ContactLink href={p.href} label={p.display.text} /></li>)}
-          <li><ContactLink href={email.href} label={email.display.text} /></li>
-          <li><span class="footer__muted">{ui.placeholders.address}</span></li>
-        </ul>
-      </div>
-      <div class="footer__col">
-        <h2 class="footer__h">{ui.demo.title}</h2>
-        <p class="footer__muted">{ui.demo.text}</p>
-      </div>
+      <div class="footer__brand"><Logo variant="full-on-dark" /><p class="footer__muted">{company.descriptor.text}</p></div>
+      <nav class="footer__col" id="site-nav" aria-label={ui.a11y.footerNav} tabindex="-1"><h2 class="footer__h">{ui.nav.footerHeading}</h2><ul>
+        {mainNav.map(item => <li><NavigationLink href={item.href} label={item.label} currentPath={currentPath} /></li>)}
+        <li><NavigationLink href="/vacancies" label={ui.nav.vacancies} currentPath={currentPath} /></li>
+        {published_routes.includes('/news') && <li><NavigationLink href="/news" label="Новости" currentPath={currentPath} /></li>}
+        {published_routes.includes('/documents') && <li><NavigationLink href="/documents" label="Документы" currentPath={currentPath} /></li>}
+      </ul></nav>
+      <div class="footer__col"><h2 class="footer__h">{ui.nav.contactsHeading}</h2><ul>
+        {phones.map(phone => <li><ContactLink href={phone.href} label={phone.display.text} /></li>)}
+        <li><ContactLink href={email.href} label={email.display.text} /></li>
+      </ul></div>
+      <div class="footer__col"><h2 class="footer__h">Информация</h2><ul>
+        <li><NavigationLink href="/cookies" label="Cookie и аналитика" currentPath={currentPath} /></li>
+        <li><a href="/cookies#settings" data-cookie-settings>Настройки cookie</a></li>
+      </ul>{staging && <p class="footer__muted">Версия для согласования. Отправка заявок пока не подключена.</p>}</div>
     </div>
-    <div class="footer__bottom">
-      <p>{company.name.text}</p>
-      <NavigationLink class="link-inline link-inline--light" href={privacyRoute.href} label={privacyRoute.label} currentPath={currentPath} />
-    </div>
+    <div class="footer__bottom"><p>{company.name.text}</p><NavigationLink class="link-inline link-inline--light" href={privacyRoute.href} label={privacyRoute.label} currentPath={currentPath} /></div>
   </div>
 </footer>

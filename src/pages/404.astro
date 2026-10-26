@@ -1,19 +1,13 @@
 ---
-// Техническая страница ошибки (SPEC-DEMO PG-12): минимальная, со ссылками на разделы (IA §12). Не презентуется.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Container from '../components/Container.astro';
-import Button from '../components/Button.astro';
-import { company, mainNav, routes, ui } from '../data';
+import PageHero from '../components/page-hero.astro';
+import {ui,company} from '../data';
+import {pageui} from '../data/ui';
 ---
-<BaseLayout title={`${ui.notFound.title} — ${company.name.text} (демо)`} description={ui.notFound.lead}>
-  <Container class="page-head">
-    <h1 class="page-head__title">{ui.notFound.title}</h1>
-    <p class="page-head__lead">{ui.notFound.lead}</p>
-  </Container>
-  <Container class="section section--cta">
-    <div class="flex flex-wrap gap-4">
-      {mainNav.map((item) => <Button href={item.href} variant="ghost-dark">{item.label}</Button>)}
-      <Button href={routes.home}>{ui.stub.home}</Button>
-    </div>
-  </Container>
+<BaseLayout title={`${ui.notFound.title} — ${company.name.text}`} description={pageui.errormeta}>
+  <PageHero title={ui.notFound.title} eyebrow={pageui.errorcode} lead={ui.notFound.lead} />
+  <section class="container page-error">
+    <p class="page-error__number" aria-hidden="true">{pageui.errorcode}</p>
+    <div><h2>{pageui.errorheading}</h2><nav class="page-jumpnav" aria-label="Навигация со страницы ошибки"><a href="/">{pageui.home}</a><a href="/services">{ui.nav.services}</a><a href="/projects">{ui.nav.projects}</a><a href="/contacts">{ui.nav.contacts}</a></nav></div>
+  </section>
 </BaseLayout>

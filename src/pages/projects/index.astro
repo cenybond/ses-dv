@@ -1,10 +1,16 @@
 ---
-// Заготовка маршрута (DEMO-04): оболочка и навигация работают, содержимое страницы — в своей фазе PLAN-DEMO.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PageStub from '../../components/PageStub.astro';
-import { company, ui } from '../../data';
-const title = ui.nav.projects;
+import PageHero from '../../components/page-hero.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import ContactBlock from '../../components/contact-block.astro';
+import {projects,projectsPageTitle,projectsPageLead,ui,company,projectHref} from '../../data';
+import {pageui} from '../../data/ui';
 ---
-<BaseLayout title={`${title} — ${company.name.text} (демо)`} description={ui.stub.note}>
-  <PageStub title={title}></PageStub>
+<BaseLayout title={`${ui.nav.projects} — ${company.name.text}`} description={pageui.projectsmeta}>
+  <PageHero title={projectsPageTitle.text} eyebrow={company.descriptor.text} />
+  <section class="container page-section page-section--flush" aria-label={pageui.catalog}>
+    <div class="projects-intro"><p>{projectsPageLead.text}</p><span class="project-count">{pageui.projectcount}</span></div>
+    <ul class="project-catalog" role="list">{projects.map((project)=><ProjectCard level={2} title={project.title.text} href={projectHref(project) ?? undefined} />)}</ul>
+  </section>
+  <ContactBlock />
 </BaseLayout>

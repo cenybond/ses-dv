@@ -73,7 +73,7 @@ export interface WorkType {
   readonly title: SourceText;
   /** Снимок отдельной страницы вида работ (не реализуется в демо, A-24). */
   readonly snapshot: string;
-  readonly hasPage: false;
+  readonly hasPage: boolean;
   readonly serviceLinks: readonly ServiceLink[];
 }
 
@@ -103,4 +103,13 @@ export interface Email {
   readonly display: SourceText;
   readonly href: string;
   readonly status: ConfirmationStatus;
+}
+
+/** Содержимое страницы проекта. Фрагменты — только дословные источники. */
+export interface ProjectDetail {
+  readonly id: string;
+  readonly heading: SourceText;
+  readonly sections: readonly {readonly id: string; readonly heading?: SourceText; readonly paragraphs: readonly SourceText[]}[];
+  readonly galleries: readonly {readonly id: string; readonly title: SourceText}[];
+  readonly src: string;
 }

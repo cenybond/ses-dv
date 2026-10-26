@@ -1,10 +1,25 @@
 ---
-// Заготовка маршрута (DEMO-04): оболочка и навигация работают, содержимое страницы — в своей фазе PLAN-DEMO.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageStub from '../components/PageStub.astro';
-import { company, ui } from '../data';
-const title = ui.nav.about;
+import PageHero from '../components/page-hero.astro';
+import SectionHeading from '../components/section-heading.astro';
+import ContactBlock from '../components/contact-block.astro';
+import {company,advantages,departments,ui} from '../data';
+import {pageui} from '../data/ui';
 ---
-<BaseLayout title={`${title} — ${company.name.text} (демо)`} description={ui.stub.note}>
-  <PageStub title={title}></PageStub>
+<BaseLayout title={`${ui.nav.about} — ${company.name.text}`} description={pageui.aboutmeta}>
+  <PageHero title={company.name.text} eyebrow={ui.nav.about} breadcrumbs={[{label:ui.nav.about}]} />
+  <section class="container page-section page-section--flush company-intro" aria-label={pageui.company}>
+    <p class="page-kicker">{company.descriptor.text}</p>
+    <div><p class="company-intro__lead">{company.lead.text}</p><div class="page-jumpnav"><a href="/services">{ui.nav.services}</a><a href="/projects">{ui.nav.projects}</a><a href="/vacancies">{ui.nav.vacancies}</a></div></div>
+  </section>
+  <section class="container page-section">
+    <SectionHeading title={pageui.advantages} />
+    <ol class="company-advantages" role="list">{advantages.map((advantage,index)=><li><span aria-hidden="true">{String(index+1).padStart(2,'0')}</span><h3>{advantage.title.text}</h3></li>)}</ol>
+  </section>
+  <section class="container page-section">
+    <SectionHeading title={pageui.departments} />
+    <ul class="company-departments" role="list">{departments.map(department=><li>{department.title.text}</li>)}</ul>
+  </section>
+  <section class="container page-section"><SectionHeading title={ui.sections.documents} /><p class="page-notice">{pageui.documentsnotice}</p></section>
+  <ContactBlock context="about" />
 </BaseLayout>

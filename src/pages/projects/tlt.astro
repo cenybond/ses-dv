@@ -1,10 +1,25 @@
 ---
-// Заготовка страницы проекта (DEMO-04): содержимое ТЛТ — DEMO-09. Название проекта — из слоя данных.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PageStub from '../../components/PageStub.astro';
-import { company, projects, ui } from '../../data';
-const title = projects.find((p) => p.slug === 'tlt')!.title.text;
+import PageHero from '../../components/page-hero.astro';
+import ProjectGallery from '../../components/project-gallery.astro';
+import SectionHeading from '../../components/section-heading.astro';
+import ContactBlock from '../../components/contact-block.astro';
+import RequestButton from '../../components/request-button.astro';
+import {tlt,workdetails,projects,ui} from '../../data';
+import {pageui} from '../../data/ui';
+const project=projects.find(project=>project.slug==='tlt')!;
 ---
-<BaseLayout title={`${title} — ${company.name.text} (демо)`} description={ui.stub.note}>
-  <PageStub title={title} />
+<BaseLayout title={`${project.title.text} — СЭС`} description={tlt.heading.text}>
+  <PageHero title={project.title.text} eyebrow={pageui.project} lead={tlt.heading.text} breadcrumbs={[{label:ui.nav.projects,href:'/projects'},{label:pageui.tltshort}]} />
+  <section class="container page-section page-section--flush">
+    <div class="project-detail">
+      <aside class="project-detail__aside"><a class="page-inline-link" href="/projects"><span aria-hidden="true">←</span> {ui.actions.toCatalog}</a><RequestButton context="project:prj-14" label={ui.actions.discuss} /></aside>
+      <div class="project-detail__content"><div class="project-prose">{tlt.facts.map(fact=><p>{fact.text.text}</p>)}</div><ProjectGallery /></div>
+    </div>
+  </section>
+  <section class="container page-section page-section--flush">
+    <SectionHeading title={ui.sections.workTypes} eyebrow={pageui.work} />
+    <ol class="work-index" role="list">{workdetails.map((work,index)=><li><a href={`/projects/tlt/${work.slug}`}><span class="work-index__number" aria-hidden="true">{String(index+1).padStart(2,'0')}</span><span class="work-index__title">{work.title.text}</span><span aria-hidden="true">↗</span></a></li>)}</ol>
+  </section>
+  <ContactBlock context="project:prj-14" />
 </BaseLayout>

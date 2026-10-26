@@ -188,7 +188,7 @@ for (const [key, page] of pages) {
   if (mainNavLinks) {
     const pageCount = mainNavLinks.filter((l) => l.attrs['aria-current'] === 'page').length;
     const sectionCount = mainNavLinks.filter((l) => l.attrs['aria-current'] === 'true').length;
-    const isItem = path !== null && mainNav.some((i) => i.href === path);
+    const isItem = path !== null && (path === '/' || mainNav.some((i) => i.href === path));
     const inSection = path !== null && !isItem && mainNav.some((i) => path.startsWith(`${i.href}/`));
     const [wantPage, wantSection] = isItem ? [1, 0] : inSection ? [0, 1] : [0, 0];
     if (pageCount !== wantPage) fail(where, `в основной навигации aria-current="page": ${pageCount}, ожидается ${wantPage}`);

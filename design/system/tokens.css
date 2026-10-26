@@ -42,6 +42,7 @@
 
   /* ---------- Типографика: стили (font-shorthand: вес размер/интерлиньяж семейство) ---------- */
   --type-display:400 clamp(46px,5.2vw,76px)/1.02 var(--font-head);   /* H1 главной (hero) */
+  --type-display-mobile:400 clamp(1.9375rem,10.2vw,2.875rem)/1.02 var(--font-head); /* Перенос проверенной мобильной шкалы Hero V4 */
   --type-h1:500 clamp(36px,4.2vw,56px)/1.06 var(--font-head);        /* H1 внутренних страниц. Proposed: в прототипе не использовался */
   --type-h2:500 clamp(30px,3.3vw,44px)/1.08 var(--font-head);        /* Заголовок секции */
   --type-h2-sm:500 clamp(28px,3vw,38px)/1.08 var(--font-head);       /* Заголовок блока обращения */

@@ -1,0 +1,50 @@
+---
+import { phones, email } from '../data';
+import { legal_content_approved } from '../data/site-config';
+import ConsentCheckbox from './consent-checkbox.astro';
+import FormStatus from './form-status.astro';
+import '../styles/forms.css';
+
+interface Props { context: string; mode?: 'contact' | 'callback'; heading?: string; }
+const { context, mode = 'contact', heading = 'Обсудим вашу задачу' } = Astro.props;
+const consent_version = import.meta.env.PUBLIC_CONSENT_VERSION || '';
+const enabled = legal_content_approved && import.meta.env.PUBLIC_FORMS_ENABLED === 'true' && import.meta.env.PUBLIC_LEGAL_APPROVED === 'true' && /^[-\w.]{1,64}$/u.test(consent_version);
+const id = `lead-${crypto.randomUUID()}`;
+---
+<section class="contact-form" aria-labelledby={`${id}-heading`}>
+  <h2 id={`${id}-heading`}>{heading}</h2>
+  {!enabled && <p class="lead-unavailable" id={`${id}-notice`}>Отправка через сайт пока недоступна. Позвоните или напишите нам напрямую.</p>}
+  <div class="lead-alternatives">
+    <a href={phones[0].href} data-goal="phone_click">{phones[0].display.text}</a>
+    <a href={email.href} data-goal="email_click">{email.display.text}</a>
+  </div>
+  <form data-lead-form data-enabled={String(enabled)} data-context={context} data-mode={mode} data-consent-version={consent_version} action="/api/leads" method="post" aria-describedby={!enabled ? `${id}-notice` : undefined}>
+    <fieldset disabled data-lead-fields>
+      <legend class="visually-hidden">Контактные данные для обращения</legend>
+      <div class="lead-fields">
+        <div class="lead-field">
+          <label for={`${id}-name`}>Имя <span aria-hidden="true">*</span></label>
+          <input id={`${id}-name`} name="name" type="text" autocomplete="name" required maxlength="80" />
+        </div>
+        <div class="lead-field">
+          <label for={`${id}-contact`}>{mode === 'callback' ? 'Телефон' : 'Телефон или e-mail'} <span aria-hidden="true">*</span></label>
+          <input id={`${id}-contact`} name="contact" type={mode === 'callback' ? 'tel' : 'text'} inputmode={mode === 'callback' ? 'tel' : undefined} autocomplete={mode === 'callback' ? 'tel' : 'email'} required maxlength="254" aria-describedby={`${id}-contact-hint`} />
+          <p id={`${id}-contact-hint`} class="lead-hint">{mode === 'callback' ? 'Укажите номер с кодом страны.' : 'Достаточно одного способа связи.'}</p>
+        </div>
+      </div>
+      {mode !== 'callback' && <div class="lead-field">
+        <label for={`${id}-message`}>Ваша задача <span class="lead-optional">(необязательно)</span></label>
+        <textarea id={`${id}-message`} name="message" rows="3" maxlength="2000"></textarea>
+      </div>}
+      <div class="lead-honeypot" aria-hidden="true" inert>
+        <label for={`${id}-website`}>Сайт</label>
+        <input id={`${id}-website`} name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <ConsentCheckbox id={`${id}-consent`} />
+      <p class="lead-hint">Поля со звёздочкой обязательны.</p>
+      <button class="btn btn--lime lead-submit" type="submit" data-lead-submit disabled>{enabled ? 'Отправить обращение' : 'Отправка недоступна'}</button>
+    </fieldset>
+    <FormStatus id={`${id}-status`} />
+    <noscript><p class="lead-hint">Для формы необходим JavaScript. Вы также можете позвонить или написать по указанным выше контактам.</p></noscript>
+  </form>
+</section>

@@ -1,0 +1,9 @@
+---
+import ContactForm from './contact-form.astro';
+---
+<dialog id="request-dialog" class="request-dialog" aria-label="Связаться со Связь Энергострой">
+  <div class="request-dialog__inner">
+    <div class="request-dialog__top"><span class="lead-hint">Связь Энергострой</span><button class="request-dialog__close" type="button" data-request-close aria-label="Закрыть окно связи">×</button></div>
+    <ContactForm context="general" mode="contact" heading="Обсудим вашу задачу" />
+  </div>
+</dialog>

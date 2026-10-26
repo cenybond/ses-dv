@@ -12,3 +12,10 @@
    Утилита `container` Tailwind отключена: контейнер — `.container` из system.css (1200 px, поля `--gutter`). */
 @import "./theme.generated.css";
 @source not inline("container");
+
+/* Общая геометрия CTA из Hero V4; значения остаются в единой системе. */
+.btn{border-radius:var(--radius-pill)}
+.burger{border-radius:var(--radius-pill)}
+.btn{white-space:normal;text-align:center;line-height:1.35}
+.footer__bottom .link-inline{min-height:var(--size-touch)}
+@media(min-width:961px){.site-header__row{gap:var(--space-6)}.nav ul{gap:0}.nav a{padding-inline:var(--space-3)}.site-header__actions{gap:var(--space-4)}}

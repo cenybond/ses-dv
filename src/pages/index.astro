@@ -1,75 +1,42 @@
 ---
-// Служебная проверочная страница PHASE 5.1: подключает Layout, шапку, подвал и все общие компоненты.
-// Это НЕ главная страница демо: она переносится в DEMO-06 (hero, «О компании», преимущества, обращение). Подписи — служебные (U).
-// Названия услуг и проектов — из слоя данных (src/data, DEMO-03); подписи страницы служебные.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Container from '../components/Container.astro';
-import Button from '../components/Button.astro';
-import ServiceCard from '../components/ServiceCard.astro';
+import Hero from '../components/hero.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import ImagePlaceholder from '../components/ImagePlaceholder.astro';
-import ContactLink from '../components/ContactLink.astro';
-import { services, projects, phones, email } from '../data';
+import ContactForm from '../components/contact-form.astro';
+import { company, hero, services, getHomeProjects, getHomeAdvantages, ui } from '../data';
+import '../styles/home.css';
+import '../styles/pages.css';
+const selected = [services[0], services[1], services[4], services[5], services[8], services[9]];
 ---
-<BaseLayout
-  title="Проверка каркаса — Связь Энергострой (демо)"
-  description="Служебная страница проверки каркаса демонстрационного сайта ООО «Связь Энергострой». Не является действующим сайтом компании."
->
-  <Container class="page-head">
-    <h1 class="page-head__title">Проверка каркаса</h1>
-    <p class="page-head__lead">Служебная страница: общие компоненты и токены дизайн-системы. Главная страница демо переносится отдельным шагом.</p>
-  </Container>
-
-  <section class="section" aria-labelledby="check-buttons">
-    <Container>
-      <header class="section__head"><h2 class="h-section" id="check-buttons">Кнопки</h2></header>
-      <div class="flex flex-wrap items-center gap-4">
-        <Button href="#check-services" size="lg" arrow>Услуги</Button>
-        <Button href="#check-projects" variant="ghost-dark" size="lg">Проекты</Button>
-        <Button href="#check-buttons" variant="ghost-dark" size="sm">Малая</Button>
-        <Button variant="lime" size="sm">Действие</Button>
-      </div>
-      <div class="on-dark bg-bg-dark-alt mt-6 flex flex-wrap items-center gap-4 rounded-lg p-6">
-        <Button href="#check-services" size="lg" arrow>Услуги</Button>
-        <Button href="#check-projects" variant="ghost-light" size="lg">Проекты</Button>
-        <Button variant="text-light">Текстовая на тёмном</Button>
-      </div>
-    </Container>
-  </section>
-
-  <section class="section" id="check-services" aria-labelledby="check-services-title">
-    <Container>
-      <header class="section__head"><h2 class="h-section" id="check-services-title">Услуги</h2></header>
-      <ul class="services">
-        <ServiceCard number="04" title={services[3].title.text} />
-        <ServiceCard number="06" title={services[5].title.text} />
-        <ServiceCard number="10" title={services[9].title.text} descriptionPending={services[9].descriptionStatus === 'DESCRIPTION_PENDING'} />
+<BaseLayout title="Связь Энергострой — проектирование и строительство инженерных сетей" description={company.descriptor.text + '. Услуги, проекты и контакты ООО «Связь Энергострой».'} headerVariant="overlay">
+  <Hero />
+  <section class="section" aria-labelledby="home-services">
+    <div class="container">
+      <header class="section__head"><div><p class="eyebrow">Направления деятельности</p><h2 class="h-section" id="home-services">Наши услуги</h2></div><a class="link-inline" href="/services">Все направления <span aria-hidden="true">↗</span></a></header>
+      <ul class="home-services">
+        {selected.map((service) => <li><a href={'/services#' + service.id}><span class="home-services__number" aria-hidden="true">{service.id.slice(2)}</span><h3>{service.title.text}</h3><span class="home-services__arrow" aria-hidden="true">↗</span></a></li>)}
       </ul>
-    </Container>
+    </div>
   </section>
-
-  <section class="section" id="check-projects" aria-labelledby="check-projects-title">
-    <Container>
-      <header class="section__head"><h2 class="h-section" id="check-projects-title">Проекты</h2></header>
-      <ul class="projects">
-        <ProjectCard title={projects[13].title.text} />
-        <ProjectCard title={projects[7].title.text} />
-      </ul>
-    </Container>
+  <section class="section" aria-labelledby="home-about">
+    <div class="container home-about">
+      <div><p class="eyebrow">О компании</p><h2 class="h-section" id="home-about">{company.name.text}</h2><a class="link-inline" href="/about">{ui.actions.aboutMore} <span aria-hidden="true">↗</span></a></div>
+      <div><p class="home-about__lead">{company.lead.text}</p><p class="home-about__detail">{hero.lines[2].text}</p></div>
+    </div>
   </section>
-
-  <section class="section section--cta" aria-labelledby="check-slots">
-    <Container>
-      <header class="section__head"><h2 class="h-section" id="check-slots">Слоты изображений</h2></header>
-      <div class="grid gap-4 md:grid-cols-3">
-        <ImagePlaceholder ratio="16:10" />
-        <ImagePlaceholder ratio="4:3" />
-        <ImagePlaceholder ratio="21:9" class="md:col-span-3" />
-      </div>
-      <dl class="contacts">
-        <div><dt>Телефон</dt><dd><ContactLink href={phones[0].href} label={phones[0].display.text} /></dd></div>
-        <div><dt>E-mail</dt><dd><ContactLink href={email.href} label={email.display.text} /></dd></div>
-      </dl>
-    </Container>
+  <section class="section" aria-labelledby="home-projects">
+    <div class="container">
+      <header class="section__head"><div><p class="eyebrow">Опыт компании</p><h2 class="h-section" id="home-projects">Проекты</h2></div><a class="link-inline" href="/projects">{ui.actions.allProjects} <span aria-hidden="true">↗</span></a></header>
+      <ul class="projects home-projects">{getHomeProjects().map(project => <ProjectCard title={project.title.text} href={'/projects/' + project.slug} />)}</ul>
+    </div>
+  </section>
+  <section class="section" aria-labelledby="home-advantages">
+    <div class="container home-advantages">
+      <h2 class="h-section" id="home-advantages">Почему СЭС</h2>
+      <ol>{getHomeAdvantages().map((advantage, index) => <li><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><h3>{advantage.title.text}</h3></li>)}</ol>
+    </div>
+  </section>
+  <section class="section section--cta" id="request" aria-label="Обращение в компанию">
+    <div class="container"><ContactForm context="home" heading={ui.cta.heading} /></div>
   </section>
 </BaseLayout>

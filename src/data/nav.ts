@@ -13,6 +13,7 @@ export const routes = {
   about: '/about',
   contacts: '/contacts',
   privacy: '/privacy',
+  vacancies: '/vacancies',
 } as const;
 
 /** Маршрут страницы проекта: только для проектов с `hasPage` (data/source/projects.ts). */
@@ -25,7 +26,7 @@ export const mainNav: Route[] = [
   { href: routes.contacts, label: ui.nav.contacts, built: true }, // заготовка; DEMO-11
 ];
 
-export const privacyRoute: Route = { href: routes.privacy, label: ui.nav.privacy, built: false }; // DEMO-12
+export const privacyRoute: Route = { href: routes.privacy, label: ui.nav.privacy, built: true };
 
 export const pendingRoutes = [...mainNav, privacyRoute].filter((r) => !r.built).map((r) => r.href);
 

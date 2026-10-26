@@ -1,0 +1,24 @@
+---
+import { site_config } from '../data/site-config';
+---
+<dialog id="cookie-settings" class="cookie-settings" aria-labelledby="cookie-settings-title" aria-describedby="cookie-settings-description">
+  <div class="cookie-dialog-head">
+    <h2 id="cookie-settings-title">Настройки хранения данных</h2>
+    <button class="cookie-close" type="button" data-cookie-close aria-label="Закрыть настройки">×</button>
+  </div>
+  <p id="cookie-settings-description">Выбор можно изменить в любое время по ссылке внизу сайта.</p>
+  <section class="cookie-category">
+    <h3>Необходимые настройки</h3>
+    <p>Хранят только ваш выбор аналитики на этом устройстве до 180 дней. Нужны, чтобы не спрашивать его при каждом переходе.</p>
+    <span class="cookie-category-note">Всегда используются после сохранения выбора</span>
+  </section>
+  <section class="cookie-category">
+    <label class="cookie-toggle" for="cookie-analytics"><input type="checkbox" id="cookie-analytics" disabled={!site_config.analytics_enabled} /> <strong>Яндекс Метрика</strong></label>
+    <p>{site_config.analytics_enabled ? 'Статистика просмотров и действий. Вебвизор выключен. Данные из полей формы в цели не передаются.' : 'Аналитика сейчас отключена. Запросы к Яндекс Метрике не отправляются.'}</p>
+  </section>
+  <p>Отзыв останавливает новые события. Он не отменяет уже отправленные запросы и не удаляет данные на серверах сервиса. <a href="/cookies">Подробнее</a></p>
+  <div class="cookie-actions">
+    <button type="button" class="btn btn--secondary" data-cookie-save>Сохранить выбор</button>
+    <button type="button" class="btn btn--secondary" data-cookie-reject>Без аналитики</button>
+  </div>
+</dialog>

@@ -5,8 +5,8 @@
 import Logo from './Logo.astro';
 import ContactLink from './ContactLink.astro';
 import NavigationLink from './NavigationLink.astro';
-import Button from './Button.astro';
-import { phones, ui, mainNav, routes } from '../data';
+import RequestButton from './request-button.astro';
+import { phones, ui, mainNav } from '../data';
 
 interface Props {
   variant?: 'solid' | 'overlay';
@@ -19,12 +19,13 @@ const { variant = 'solid', currentPath = '' } = Astro.props;
     <Logo variant="wordmark" />
     <nav class="nav" aria-label={ui.a11y.mainNav}>
       <ul>
+        <li><NavigationLink href="/" label="Главная" currentPath={currentPath} /></li>
         {mainNav.map((item) => <li><NavigationLink href={item.href} label={item.label} currentPath={currentPath} /></li>)}
       </ul>
     </nav>
     <div class="site-header__actions">
       <ContactLink class="header-phone" href={phones[0].href} label={phones[0].display.text} />
-      <Button href={routes.contacts} size="sm">{ui.actions.orderCall}</Button>
+      <RequestButton context="callback" label={ui.actions.orderCall} arrow={false} />
       <a class="burger" href="#site-nav" data-open-menu aria-label={ui.a11y.menu}>
         <span class="burger__bars" aria-hidden="true"></span>
       </a>

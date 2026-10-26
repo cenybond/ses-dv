@@ -1,0 +1,12 @@
+---
+import {currentState} from '../data/nav';
+import { pageui } from '../data/ui';
+interface Props { items: { label: string; href?: string }[] }
+const {items} = Astro.props;
+---
+<nav class="page-breadcrumbs container" aria-label={pageui.breadcrumbs}>
+  <ol class="crumbs" role="list">
+    <li><a href="/">{pageui.home}</a></li>
+    {items.map((item) => <li>{item.href ? <a href={item.href} aria-current={currentState(item.href,Astro.url.pathname)}>{item.label}</a> : <span aria-current="page">{item.label}</span>}</li>)}
+  </ol>
+</nav>

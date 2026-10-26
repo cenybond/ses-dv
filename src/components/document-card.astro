@@ -1,0 +1,14 @@
+---
+import type { document_entry } from '../data/publications';
+import '../styles/pages.css';
+interface Props { item: document_entry; }
+const { item } = Astro.props;
+---
+<li class="service-entry">
+  <span class="service-entry__number">PDF · {Math.ceil(item.asset.bytes / 1024)} КБ</span>
+  <h2>{item.title}</h2>
+  <p>{item.description}</p>
+  <p class="service-entry__note">Действует с <time datetime={item.valid_from}>{item.valid_from}</time>{item.valid_until && <> до <time datetime={item.valid_until}>{item.valid_until}</time></>}</p>
+  <details><summary class="page-inline-link">Текст документа</summary><div class="project-prose">{item.accessible_text.map((paragraph) => <p>{paragraph}</p>)}</div></details>
+  <div class="service-entry__actions"><a class="page-inline-link" href={item.asset.src} download aria-label={`Скачать PDF: ${item.title}`}>Скачать PDF <span aria-hidden="true">↓</span></a></div>
+</li>

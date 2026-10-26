@@ -1,20 +1,12 @@
 ---
-// Карточка услуги (DESIGN-SYSTEM §8.4): название дословно, номер интерфейсный. Без описания — «Описание будет добавлено».
-// «Заказать» открывает диалог заявки (DEMO-05); data-атрибуты уже соответствуют контракту system.js.
-import { ui } from '../data';
-
-interface Props {
-  number: string;
-  title: string;
-  descriptionPending?: boolean;
-}
-const { number, title, descriptionPending = false } = Astro.props;
+import RequestButton from './request-button.astro';
+import {pageui} from '../data/ui';
+interface Props { number:string; title:string; descriptionPending?:boolean; id?:string; level?:2|3 }
+const {number,title,descriptionPending=false,level=3,id=`s-${number.padStart(2,'0')}`} = Astro.props;
 ---
-<li>
-  <button class="service" type="button" data-open-request data-context="Услуга" data-subject={title}>
-    <span class="num" aria-hidden="true">{number}</span>
-    <span class="service__title">{title}</span>
-    {descriptionPending && <span class="service__pending">{ui.placeholders.serviceDescription}</span>}
-    <span class="service__act">{ui.actions.order} <span class="dot" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></span>
-  </button>
+<li class="service-entry" id={id}>
+  <span class="service-entry__number" aria-hidden="true">{number}</span>
+  {level===2?<h2>{title}</h2>:<h3>{title}</h3>}
+  {descriptionPending && <p class="service-entry__note">{pageui.designnote}</p>}
+  <div class="service-entry__actions"><RequestButton context={`service:${id}`} label={pageui.servicelink} /></div>
 </li>

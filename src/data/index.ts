@@ -31,3 +31,7 @@ export const getHomeAdvantages = () =>
 
 /** Ссылка карточки проекта: только если страница есть в демо, иначе карточка не кликабельна. */
 export const projectHref = (project: ProjectItem): string | null => (project.hasPage ? projectRoute(project.slug) : null);
+
+export { projectdetails } from './source/project-details.ts';
+export { workdetails } from './source/work-details.ts';
+export { vacancygroups, vacanciesheading } from './source/vacancies.ts';

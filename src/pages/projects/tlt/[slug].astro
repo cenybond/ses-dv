@@ -1,0 +1,27 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/page-hero.astro';
+import ProjectGallery from '../../../components/project-gallery.astro';
+import ContactBlock from '../../../components/contact-block.astro';
+import RequestButton from '../../../components/request-button.astro';
+import {workdetails,ui} from '../../../data';
+import {pageui} from '../../../data/ui';
+export const getStaticPaths = (()=>workdetails.map(work=>({params:{slug:work.slug},props:{work}}))) satisfies GetStaticPaths;
+interface Props {work:(typeof workdetails)[number]}
+const {work}=Astro.props;
+const current=workdetails.findIndex(item=>item.id===work.id);
+const previous=workdetails[(current+workdetails.length-1)%workdetails.length];
+const next=workdetails[(current+1)%workdetails.length];
+---
+<BaseLayout title={`${work.title.text} — ТЛТ — СЭС`} description={work.paragraphs[0]?.text ?? work.title.text}>
+  <PageHero title={work.title.text} eyebrow={pageui.work} compact breadcrumbs={[{label:ui.nav.projects,href:'/projects'},{label:pageui.tltshort,href:'/projects/tlt'},{label:pageui.work}]} />
+  <article class="container page-section page-section--flush">
+    <div class="project-detail">
+      <aside class="project-detail__aside"><a class="page-inline-link" href="/projects/tlt"><span aria-hidden="true">←</span> {pageui.backtlt}</a><RequestButton context={`work:${work.id}`} label={ui.actions.discuss} /></aside>
+      <div class="project-detail__content"><div class="project-prose"><h2>{pageui.workdescription}</h2>{work.paragraphs.map(paragraph=><p>{paragraph.text}</p>)}</div><ProjectGallery /></div>
+    </div>
+    <nav class="project-pager" aria-label={pageui.worknavigation}><a href={`/projects/tlt/${previous.slug}`}><span>{pageui.previouswork}</span>{previous.title.text}</a><a href={`/projects/tlt/${next.slug}`}><span>{pageui.nextwork}</span>{next.title.text}</a></nav>
+  </article>
+  <ContactBlock context={`work:${work.id}`} />
+</BaseLayout>

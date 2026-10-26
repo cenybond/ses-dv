@@ -1,10 +1,18 @@
 ---
-// Заготовка маршрута (DEMO-04): оболочка и навигация работают, содержимое страницы — в своей фазе PLAN-DEMO.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageStub from '../components/PageStub.astro';
-import { company, ui } from '../data';
-const title = ui.nav.contacts;
+import PageHero from '../components/page-hero.astro';
+import ContactForm from '../components/contact-form.astro';
+import {company,phones,email,ui,contactsPageTitle,contactsLead} from '../data';
+import {pageui} from '../data/ui';
 ---
-<BaseLayout title={`${title} — ${company.name.text} (демо)`} description={ui.stub.note}>
-  <PageStub title={title}></PageStub>
+<BaseLayout title={`${ui.nav.contacts} — ${company.name.text}`} description={pageui.contactsmeta}>
+  <PageHero title={contactsPageTitle.text} eyebrow={company.name.text} lead={contactsLead.text} />
+  <section class="container page-section page-section--flush contact-layout" aria-label={ui.nav.contacts}>
+    <div><dl class="contact-details">
+      <div><dt>{ui.contactLabels.phone}</dt><dd>{phones.map(phone=><a href={phone.href} data-goal="phone_click">{phone.display.text}</a>)}</dd></div>
+      <div><dt>{ui.contactLabels.email}</dt><dd><a href={email.href} data-goal="email_click">{email.display.text}</a></dd></div>
+      <div><dt>{ui.contactLabels.address}</dt><dd>{pageui.addressnotice}</dd></div>
+    </dl></div>
+    <div id="contact-form"><ContactForm context="contacts" heading={pageui.inquiry} /></div>
+  </section>
 </BaseLayout>

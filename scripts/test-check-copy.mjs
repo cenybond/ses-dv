@@ -20,6 +20,8 @@ for (const p of ['src', 'docs/content/source', 'SPEC-DEMO.md', 'DECISIONS.md', '
 
 // find/replace — строки (первое вхождение) ; add — создать файл; expect — регулярка в выводе проверки.
 const cases = [
+  { name: 'подмена нового описания работ', file: 'src/data/source/content-texts.ts', find: 'Прокладка кабельных линий, установка и подключение ВРУ', replace: 'Другая работа без источника', expect: /дословность/ },
+  { name: 'вакансия объявлена активной без подтверждения', file: 'src/data/source/vacancies.ts', find: '"active": false', replace: '"active": true', expect: /актуальность вакансий/ },
   { name: 'регистр: «монтаж» со строчной буквы', file: 'src/data/source/services.ts', find: "text: 'Монтаж объектов видеонаблюдения'", replace: "text: 'монтаж объектов видеонаблюдения'", expect: /дословность.*регистр/ },
   { name: 'пунктуация: точка в конце названия услуги', file: 'src/data/source/services.ts', find: '(методом ГНБ)\'', replace: "(методом ГНБ).'", expect: /дословность.*пунктуация/ },
   { name: 'пунктуация: кавычки «» вместо "" в названии проекта', file: 'src/data/source/projects.ts', find: 'ГПОБУ АО "АКИК"', replace: 'ГПОБУ АО «АКИК»', expect: /дословность.*пунктуация/ },
@@ -46,9 +48,9 @@ const cases = [
   { name: 'проект главной с неизвестным ID', file: 'src/data/source/projects.ts', find: "'prj-08', 'prj-01'", replace: "'prj-88', 'prj-01'", expect: /неизвестный проект/ },
   { name: 'порядок проектов главной изменён относительно SPEC', file: 'src/data/source/projects.ts', find: "ids: ['prj-14', 'prj-08', 'prj-01', 'prj-02', 'prj-09', 'prj-03']", replace: "ids: ['prj-08', 'prj-14', 'prj-01', 'prj-02', 'prj-09', 'prj-03']", expect: /\[SPEC\]/ },
   { name: 'проектов главной пять', file: 'src/data/source/projects.ts', find: "'prj-09', 'prj-03']", replace: "'prj-09']", expect: /количество.*главной 5/ },
-  { name: 'вторая активная страница проекта', file: 'src/data/source/projects.ts', find: 'hasPage: false', replace: 'hasPage: true', expect: /страницы.*hasPage=true/ },
-  { name: 'у ТЛТ нет активной страницы', file: 'src/data/source/projects.ts', find: 'hasPage: true', replace: 'hasPage: false', expect: /\[страницы\]/ },
-  { name: 'вид работ ТЛТ получил страницу', file: 'src/data/source/tlt.ts', find: 'hasPage: false', replace: 'hasPage: true', expect: /страницы видов работ/ },
+  { name: 'проект потерял страницу', file: 'src/data/source/projects.ts', find: 'hasPage: true', replace: 'hasPage: false', expect: /страницы.*hasPage=false/ },
+  { name: 'у ТЛТ нет активной страницы', file: 'src/data/source/projects.ts', find: /slug: 'tlt',([\s\S]*?)hasPage: true/, replace: "slug: 'tlt',$1hasPage: false", expect: /\[страницы\]/ },
+  { name: 'вид работ ТЛТ потерял страницу', file: 'src/data/source/tlt.ts', find: 'hasPage: true', replace: 'hasPage: false', expect: /страницы видов работ/ },
   { name: 'у «Проектирования» появилось придуманное описание', file: 'src/data/source/services.ts', find: "description: null, descriptionStatus: 'DESCRIPTION_PENDING'", replace: "description: 'Полный цикл проектирования', descriptionStatus: 'DESCRIPTION_PENDING'", expect: /описание должно быть null|вне SourceText/ },
   { name: 'у «Проектирования» снят статус ожидания', file: 'src/data/source/services.ts', find: "description: null, descriptionStatus: 'DESCRIPTION_PENDING' }", replace: "description: null, descriptionStatus: 'NONE_IN_SOURCE' }", expect: /S-10/ },
   { name: 'придуманное название S-10', file: 'src/data/source/services.ts', find: "text: 'Проектирование', decision: 'A-18'", replace: "text: 'Проектирование зданий', decision: 'A-18'", expect: /S-10/ },

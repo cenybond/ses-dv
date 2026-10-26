@@ -1,0 +1,19 @@
+---
+import '../styles/pages.css';
+import Breadcrumbs from './breadcrumbs.astro';
+interface Props {
+  title: string;
+  eyebrow?: string;
+  lead?: string;
+  compact?: boolean;
+  breadcrumbs?: { label: string; href?: string }[];
+}
+const {title, eyebrow, lead, compact = false, breadcrumbs = [{label: title}]} = Astro.props;
+---
+<Breadcrumbs items={breadcrumbs} />
+<header class:list={['page-intro', 'container', compact && 'page-intro--compact', title.length > 180 && 'page-intro--long']}>
+  {eyebrow && <p class="page-kicker">{eyebrow}</p>}
+  <h1>{title}</h1>
+  {lead && <p class="page-intro__lead">{lead}</p>}
+  <slot />
+</header>

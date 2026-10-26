@@ -9,7 +9,7 @@
 // С --base проверяется уже запущенный сервер (например, dev), иначе поднимается свой сервер для dist/.
 import { createServer } from 'node:http';
 import { readFile, mkdtemp, rm, writeFile, mkdir } from 'node:fs/promises';
-import { existsSync, statSync } from 'node:fs';
+import { existsSync, statSync, readdirSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join, extname, normalize } from 'node:path';
@@ -69,7 +69,7 @@ for (let i = 0; i < 100 && !wsUrl; i++) {
     wsUrl = targets.find((t) => t.type === 'page')?.webSocketDebuggerUrl;
   } catch { /* ждём запуска */ }
 }
-if (!wsUrl) throw new Error('не удалось подключиться к браузеру');
+if (!wsUrl) { browser.kill(); server.close(); throw new Error('не удалось подключиться к браузеру'); }
 
 const ws = new WebSocket(wsUrl);
 await new Promise((r, j) => { ws.onopen = r; ws.onerror = j; });
@@ -79,14 +79,16 @@ const listeners = [];
 ws.onmessage = (e) => {
   const msg = JSON.parse(e.data);
   if (msg.id && pendingCalls.has(msg.id)) {
-    const { resolve, reject } = pendingCalls.get(msg.id);
+    const { resolve, reject, timer } = pendingCalls.get(msg.id);
+    clearTimeout(timer);
     pendingCalls.delete(msg.id);
     msg.error ? reject(new Error(`${msg.error.message}`)) : resolve(msg.result);
   } else listeners.forEach((l) => l(msg));
 };
 const send = (method, params = {}) => new Promise((resolve, reject) => {
   const id = ++seq;
-  pendingCalls.set(id, { resolve, reject });
+  const timer = setTimeout(() => { pendingCalls.delete(id); reject(new Error(`${method}: превышено время ожидания`)); }, 15000);
+  pendingCalls.set(id, { resolve, reject, timer });
   ws.send(JSON.stringify({ id, method, params }));
 });
 const evaluate = async (expression) => {
@@ -155,7 +157,7 @@ await send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
 const go = async (path) => {
   await send('Page.navigate', { url: origin + path });
   await sleep(350);
-  await evaluate('new Promise(r => document.readyState === "complete" ? r(true) : addEventListener("load", () => r(true)))');
+  if (!await until(`document.readyState === 'complete'`)) throw new Error(`Не загружена страница ${path}`);
   await evaluate('document.fonts.ready.then(() => true)');
 };
 const shot = async (name, clip) => {
@@ -163,6 +165,11 @@ const shot = async (name, clip) => {
   await mkdir(shotsDir, { recursive: true });
   const r = await send('Page.captureScreenshot', { format: 'png', ...(clip ? { clip: { ...clip, scale: 1 } } : {}) });
   await writeFile(join(shotsDir, `${name}.png`), Buffer.from(r.data, 'base64'));
+  if (args.includes('--full-shots') && /-(390|1440)$/.test(name)) {
+    const { cssContentSize } = await send('Page.getLayoutMetrics');
+    const full = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true, clip: { x: 0, y: 0, width: cssContentSize.width, height: cssContentSize.height, scale: 1 } });
+    await writeFile(join(shotsDir, `${name}-full.png`), Buffer.from(full.data, 'base64'));
+  }
 };
 const focusInfo = `(() => { const a = document.activeElement; const cs = getComputedStyle(a); const r = a.getBoundingClientRect();
   return { tag: a.tagName.toLowerCase(), cls: a.className, id: a.id, text: (a.getAttribute('aria-label') || a.textContent || '').trim().slice(0, 40),
@@ -174,7 +181,10 @@ const expectEq = (what, actual, expected) => {
 // Контракт оболочки: что должно быть на каждой странице. Подписи — из данных (src/data/ui.ts), пути — из src/data/nav.ts.
 const { ui } = await import(pathToFileURL(join(root, 'src/data/ui.ts')).href);
 const { mainNav, routes } = await import(pathToFileURL(join(root, 'src/data/nav.ts')).href);
-const PAGES = pagePath ? [pagePath] : ['/', ...mainNav.map((i) => i.href), '/projects/tlt', routes.privacy, '/404.html'];
+const { published_routes } = await import(pathToFileURL(join(root, 'src/data/publications.ts')).href);
+const walkpages = dir => readdirSync(dir).flatMap(name => { const file = join(dir, name); return statSync(file).isDirectory() ? walkpages(file) : file.endsWith('.html') ? [file] : []; });
+const PAGES = pagePath ? [pagePath] : walkpages(dist).map(file => '/' + file.slice(dist.length + 1).replaceAll('\\', '/').replace(/(?:^|\/)index\.html$/, ''));
+const headernav = [{ href: '/', label: 'Главная' }, ...mainNav];
 
 try {
   // --- 1. каждая страница на каждой ширине: нет прокрутки вбок, шрифты, логотипы, одна оболочка, доступные имена
@@ -217,7 +227,7 @@ try {
       expectEq('main', m.mains, 1);
       expectEq('header/footer', [m.headers, m.footers, m.skip], [1, 1, 1]);
       expectEq('lang', m.lang, 'ru');
-      expectEq('robots', m.robots, 'noindex, nofollow');
+      if (!m.robots?.includes('noindex')) fail(`${ctx}: staging должен быть noindex`);
       if (new Set(m.navLabels).size !== m.navLabels.length || m.navLabels.some((l) => !l)) fail(`${ctx}: у <nav> нет уникальных подписей: ${JSON.stringify(m.navLabels)}`);
       if (m.h1Top < m.headerBottom - 0.5) fail(`${ctx}: шапка перекрывает заголовок (h1 ${Math.round(m.h1Top)} < шапка ${Math.round(m.headerBottom)})`);
       // видимость элементов оболочки по ширине: десктоп ≥ 961 — меню в шапке, мобильное — бургер; нижняя панель ≤ 640
@@ -225,8 +235,10 @@ try {
       expectEq('CTA «Заказать звонок» в шапке', m.cta, width > 960);
       expectEq('телефон в шапке', m.phone, width > 1180);
       expectEq('нижняя панель', m.dock, width <= 640);
+      if (shotsDir && [390,1440].includes(width) && ['/', '/services', '/projects', '/projects/tlt', '/projects/pns', '/projects/tlt/gnb-d-1', '/about', '/vacancies', '/contacts'].includes(path)) await shot((path === '/' ? 'home' : path.slice(1).replaceAll('/', '-')) + '-' + width);
       if (path === '/') report.push(`${width}px: scrollWidth ${m.scrollW}/${m.clientW}, шрифты: ${[...new Set(m.fonts)].join(' + ')}, изображений ${m.imgs.length}, запросов ${requests.size}`);
     }
+    console.log(`checked ${path}: ${WIDTHS.length} widths`);
   }
   report.push(`страницы × ширины: ${PAGES.join(' ')} × ${WIDTHS.join('/')}`);
 
@@ -272,18 +284,18 @@ try {
     solid: document.querySelector('.site-header').classList.contains('is-solid'),
     logoShown: [...document.querySelectorAll('.site-header .logo__img')].filter((i) => getComputedStyle(i).display !== 'none').map((i) => i.src.split('/').pop().split('.')[0]),
     footer: [...document.querySelectorAll('#site-nav a')].map((a) => [a.textContent.trim(), a.getAttribute('href')]),
-    vacancy: (() => { const el = [...document.querySelectorAll('#site-nav li > .off')][0]; return { text: el.textContent.trim().replace(/\\s+/g, ' '), focusable: el.matches('a,button,[tabindex]'), tag: el.tagName.toLowerCase() }; })(),
+    vacancy: document.querySelector('#site-nav a[href="/vacancies"]')?.getAttribute('href'),
     privacy: document.querySelector('.footer__bottom a').getAttribute('href'),
   }))()`);
-  expectEq('пункты шапки', desk.nav.map((n) => n[0]), mainNav.map((i) => i.label));
-  expectEq('ссылки шапки', desk.nav.map((n) => n[1]), mainNav.map((i) => i.href));
-  expectEq('aria-current в шапке на /services', desk.nav.map((n) => n[2]), [ 'page', null, null, null ]);
-  expectEq('CTA шапки', desk.cta, [ui.actions.orderCall, routes.contacts]);
+  expectEq('пункты шапки', desk.nav.map((n) => n[0]), headernav.map((i) => i.label));
+  expectEq('ссылки шапки', desk.nav.map((n) => n[1]), headernav.map((i) => i.href));
+  expectEq('aria-current в шапке на /services', desk.nav.map((n) => n[2]), [null, 'page', null, null, null]);
+  expectEq('CTA шапки', desk.cta, [ui.actions.orderCall, '/contacts#contact-form']);
   expectEq('ссылка логотипа', desk.logo, routes.home);
   expectEq('логотип над светлой шапкой', desk.logoShown, ['logo-wordmark']);
   expectEq('телефон — tel:', desk.phone.startsWith('tel:+7'), true);
-  expectEq('разделы подвала', desk.footer.map((f) => f[1]), mainNav.map((i) => i.href));
-  expectEq('«Вакансии» не ссылка', [desk.vacancy.focusable, desk.vacancy.tag, desk.vacancy.text.startsWith(ui.nav.vacancies), desk.vacancy.text.includes(ui.placeholders.feature)], [false, 'span', true, true]);
+  expectEq('разделы подвала', desk.footer.map((f) => f[1]), [...mainNav.map((i) => i.href), '/vacancies', ...published_routes.filter(path => path === '/news' || path === '/documents')]);
+  expectEq('Вакансии доступны', desk.vacancy, '/vacancies');
   expectEq('политика в подвале', desk.privacy, routes.privacy);
   await shot('header-desktop', { x: 0, y: 0, width: 1440, height: 200 });
 
@@ -293,7 +305,7 @@ try {
     await evaluate(`document.querySelector('.nav a[href="${item.href}"]').click()`);
     await settled();
     const r = await evaluate(`({ path: location.pathname.replace(/\\/$/, ''), h1: document.querySelector('h1').textContent.trim(), cur: document.querySelector('.nav a[aria-current="page"]')?.getAttribute('href') })`);
-    expectEq(`переход «${item.label}»`, [r.path, r.cur, r.h1], [item.href, item.href, item.label]);
+    expectEq(`переход «${item.label}»`, [r.path, r.cur, !!r.h1], [item.href, item.href, true]);
   }
   await evaluate(`document.querySelector('.site-header .logo').click()`);
   await settled();
@@ -301,14 +313,17 @@ try {
   await go('/');
   await evaluate(`document.querySelector('.site-header__actions .btn').click()`);
   await settled();
-  expectEq('CTA «Заказать звонок» ведёт в контакты', await evaluate(`location.pathname.replace(/\\/$/, '')`), routes.contacts);
+  expectEq('CTA открывает доступный диалог', await evaluate(`document.querySelector('#request-dialog').matches(':modal')`), true);
+  await press('Escape', 'Escape', 27);
+  await sleep(150);
+  expectEq('Фокус возвращается к CTA', await evaluate(`document.activeElement.matches('[data-request-open]')`), true);
   await go('/projects/tlt');
   expectEq('/projects/tlt: «Проекты» отмечены aria-current=true', await evaluate(`document.querySelector('.nav a[href="/projects"]').getAttribute('aria-current')`), 'true');
   await go('/privacy');
   await evaluate('window.scrollTo(0, document.body.scrollHeight)');
   await sleep(300);
   await shot('footer-desktop');
-  report.push('desktop 1440: пункты шапки, активный пункт, CTA, логотип, подвал, «Вакансии» — не ссылка');
+  report.push('desktop 1440: пункты шапки, активный пункт, CTA, логотип, подвал, «Вакансии» доступны');
 
   // --- 4. mobile 390: шторка меню, нижняя панель
   await view(390, 844);
@@ -382,7 +397,7 @@ try {
   await evaluate(`document.querySelector('#menu .menu-list a[href="${routes.contacts}"]').click()`);
   await settled();
   const afterNav = await evaluate(`({ path: location.pathname.replace(/\\/$/, ''), open: document.querySelector('#menu').open, h1: document.querySelector('h1').textContent.trim() })`);
-  expectEq('переход из шторки на «Контакты»', [afterNav.path, afterNav.open, afterNav.h1], [routes.contacts, false, ui.nav.contacts]);
+  expectEq('переход из шторки на «Контакты»', [afterNav.path, afterNav.open, !!afterNav.h1], [routes.contacts, false, true]);
   // нижняя панель: переход «Оставить заявку» → /contacts
   await go('/services');
   await evaluate(`document.querySelector('.dock a[href="${routes.contacts}"]').click()`);
@@ -408,13 +423,13 @@ try {
   await evaluate(`document.querySelector('.burger').click()`);
   await sleep(900);
   const anchor = await evaluate(`(() => { const r = document.querySelector('#site-nav').getBoundingClientRect(); return { hash: location.hash, inView: r.top < innerHeight && r.bottom > 0, links: document.querySelectorAll('#site-nav a').length }; })()`);
-  expectEq('без JS: якорь #site-nav ведёт к навигации подвала', [anchor.hash, anchor.inView, anchor.links], ['#site-nav', true, mainNav.length]);
+  expectEq('без JS: якорь #site-nav ведёт к навигации подвала', [anchor.hash, anchor.inView, anchor.links], ['#site-nav', true, mainNav.length + 1]);
   await view(1440, 900);
   ctx = 'без JS @1440';
   await go('/services');
   const nojsDesk = await evaluate(`(() => ({ nav: [...document.querySelectorAll('.nav a')].filter((a) => a.getBoundingClientRect().width > 0).length, cta: document.querySelector('.site-header__actions .btn').getAttribute('href'),
     cur: document.querySelector('.nav a[aria-current="page"]')?.getAttribute('href') }))()`);
-  expectEq('без JS: меню шапки, CTA, активный пункт', [nojsDesk.nav, nojsDesk.cta, nojsDesk.cur], [mainNav.length, routes.contacts, '/services']);
+  expectEq('без JS: меню шапки, CTA, активный пункт', [nojsDesk.nav, nojsDesk.cta, nojsDesk.cur], [headernav.length, '/contacts#contact-form', '/services']);
   await send('Emulation.setScriptExecutionDisabled', { value: false });
   report.push('без JS: меню шапки, якорь #site-nav, CTA ведёт в контакты, шапка читаема');
 

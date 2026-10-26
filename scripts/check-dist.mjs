@@ -29,7 +29,8 @@ const walk = (dir) =>
 
 const all = walk(dist);
 const htmlFiles = all.filter((f) => f.endsWith('.html'));
-const demo = process.env.PUBLIC_DEMO !== 'false';
+if (all.some(file => /(?:\.map|\.env|package\.json)$/.test(file))) fail('служебный файл или source map попал в dist');
+const demo = process.env.PUBLIC_SITE_MODE !== 'production' || process.env.PUBLIC_LEGAL_APPROVED !== 'true';
 const isExternalOk = (u) => u.startsWith('tel:') || u.startsWith('mailto:') || u.startsWith('https://wa.me/');
 
 /** Путь URL ('/a/b') → файл в dist или null. */
@@ -58,9 +59,9 @@ for (const file of htmlFiles) {
   const rel = relative(root, file);
   const html = readFileSync(file, 'utf8');
   if (!/<html[^>]*\blang="ru"/.test(html)) fail(`${rel}: нет lang="ru"`);
-  const noindex = /<meta name="robots" content="noindex, nofollow"/.test(html);
+  const noindex = /<meta name="robots" content="[^"]*noindex/.test(html);
   if (demo && !noindex) fail(`${rel}: нет noindex в демо-сборке`);
-  if (!demo && noindex) fail(`${rel}: noindex в сборке PUBLIC_DEMO=false`);
+  if (!demo && noindex && !/(?:404|privacy|consent|cookies)/.test(rel)) fail(`${rel}: noindex в production-сборке`);
   const h1 = (html.match(/<h1[\s>]/g) ?? []).length;
   if (h1 !== 1) fail(`${rel}: <h1> ${h1} шт. (нужен один)`);
   for (const img of html.matchAll(/<img\b[^>]*>/g)) if (!/\balt=/.test(img[0])) fail(`${rel}: <img> без alt`);
@@ -70,9 +71,13 @@ for (const file of htmlFiles) {
   if (dup.length) fail(`${rel}: повторяющиеся id: ${[...new Set(dup)].join(', ')}`);
   for (const m of html.matchAll(/\shref="#([^"]+)"/g)) if (!ids.includes(m[1])) fail(`${rel}: якорь #${m[1]} не найден`);
 
-  for (const m of html.matchAll(/\s(?:href|src)="([^"]*)"/g)) checkRef(file, m[1]);
+  const withoutCanonical = html.replace(/<link\b[^>]*rel="canonical"[^>]*>/g, '');
+  for (const m of withoutCanonical.matchAll(/\s(?:href|src)="([^"]*)"/g)) checkRef(file, m[1]);
   if (/<script[^>]+src="https?:/.test(html)) fail(`${rel}: внешний скрипт`);
-  if (/<(?:iframe|form)\b[^>]*\baction=/.test(html)) fail(`${rel}: form/iframe с action`);
+  for (const form of html.matchAll(/<form\b[^>]*>/g)) {
+    if (!/action="\/api\/leads"/.test(form[0]) || !/method="post"/.test(form[0]) || !/data-lead-form/.test(form[0])) fail(`${rel}: неподтверждённый адрес или метод формы`);
+  }
+  if (/<iframe\b/i.test(html)) fail(`${rel}: внешний iframe не согласован`);
 }
 
 // CSS: url() и шрифты

@@ -1,0 +1,38 @@
+.contact-form { padding: var(--space-10); border-radius: var(--radius-xl); background: var(--color-bg-alt); color: var(--color-text); }
+.contact-form h2 { font: var(--type-h2-sm); letter-spacing: var(--ls-h2); margin: 0 0 var(--space-5); }
+.lead-unavailable { margin-block: 0 var(--space-4); font: var(--type-body); }
+.lead-alternatives { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); margin-block: var(--space-4) var(--space-6); }
+.lead-alternatives a { color: var(--color-brand); font: var(--type-h4); overflow-wrap: anywhere; }
+.contact-form fieldset { min-inline-size: 0; border: 0; padding: 0; margin: 0; }
+.contact-form .visually-hidden { position: absolute; inline-size: var(--border-w); block-size: var(--border-w); clip-path: inset(50%); overflow: hidden; white-space: nowrap; }
+.lead-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); align-items: start; }
+.lead-field { display: grid; align-content: start; gap: var(--space-2); margin-block-end: var(--space-5); }
+.lead-field label { font: var(--type-label); }
+.lead-field input, .lead-field textarea { inline-size: 100%; min-inline-size: 0; min-block-size: var(--size-field); border: var(--border-w) solid var(--color-border-strong); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-text); padding: var(--space-3) var(--space-4); font: var(--type-body); }
+.lead-field textarea { resize: vertical; }
+.lead-field input { block-size: var(--size-field); }
+.lead-field [aria-invalid="true"] { border-color: var(--color-error); }
+.lead-field input:disabled, .lead-field textarea:disabled { background: var(--color-disabled-bg); border-color: var(--color-border); cursor: not-allowed; }
+.lead-hint, .lead-optional { font: var(--type-body-sm); color: var(--color-text-muted); margin: 0; }
+.lead-consent { display: flex; align-items: flex-start; gap: var(--space-3); font: var(--type-body-sm); margin-block: var(--space-2) var(--space-4); }
+.lead-consent input { flex: 0 0 var(--space-5); inline-size: var(--space-5); block-size: var(--space-5); margin-block-start: var(--space-1); accent-color: var(--color-brand); }
+.lead-consent a { color: var(--color-brand); text-underline-offset: var(--space-1); }
+.lead-submit { margin-block-start: var(--space-5); border-radius: var(--radius-pill); }
+.lead-submit:disabled { background: var(--color-disabled-bg); color: var(--color-text-muted); cursor: not-allowed; }
+.lead-status { margin: 0; font: var(--type-body-sm); }
+.lead-status:not(:empty) { margin-block-start: var(--space-5); padding: var(--space-4); border-inline-start: var(--space-1) solid var(--color-brand); background: var(--color-surface); }
+.lead-status[data-state="error"] { border-color: var(--color-error); color: var(--color-error); }
+.lead-honeypot { display: none; }
+.request-button { gap: var(--space-5); border-radius: var(--radius-pill); }
+.request-dialog { border: 0; padding: 0; margin: auto; inline-size: min(calc(100% - var(--gutter) * 2), calc(var(--container) / 2)); max-block-size: calc(100dvh - var(--space-8)); color: var(--color-text); background: var(--color-bg-alt); border-radius: var(--radius-lg); overflow-y: auto; }
+.request-dialog::backdrop { background: var(--color-overlay); }
+.request-dialog__inner { padding: var(--space-6); }
+.request-dialog .contact-form { padding: var(--space-3) var(--space-2); }
+.request-dialog__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-block-end: var(--space-4); }
+.request-dialog__close { display: grid; place-items: center; inline-size: var(--size-touch); block-size: var(--size-touch); border-radius: var(--radius-pill); border: var(--border-w) solid var(--color-border-strong); background: var(--color-surface); color: var(--color-text); font: var(--type-h3); cursor: pointer; }
+@media (max-width: 640px) {
+  .contact-form { padding: var(--space-6); }
+  .lead-fields { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .lead-submit { inline-size: 100%; }
+  .request-dialog__inner { padding: var(--space-4); }
+}

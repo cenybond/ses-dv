@@ -1,0 +1,5 @@
+---
+interface Props { id: string; }
+const { id } = Astro.props;
+---
+<p class="lead-status" id={id} data-form-status role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></p>

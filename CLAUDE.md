@@ -37,7 +37,7 @@ Demo-first (A-17): Discovery → IA → SPEC демо (PHASE 2) → визуал
 - В `src/` нет HEX, `rgb()` и произвольных размеров вида `[12px]` (проверяет `check-tokens`); цвета, радиусы, тени — токенами/утилитами `bg-brand`, `rounded-lg`. Компоненты системы (`.btn`, `.service`…) не усложнять утилитами `display`/размеров (P-27).
 - Ссылки в интерфейсе только на существующие страницы; готовность маршрутов — `src/data/nav.ts` (`built`). `check-dist` печатает ожидающие страницы.
 - Данные (DEMO-03): тексты живут только в `src/data/` — `source/*` (S, дословно, каждая строка `{text, src}` со ссылкой на снимок `docs/content/source/`), `ui.ts` (U, подписи интерфейса), `index.ts` (выборки). Новый текст — только с `src`; опечатки источника не править; `*_PENDING`, `SOURCE_SUPPORTED`, `CLIENT_APPROVED` — внутренние маркеры, в интерфейс не выводить. После правки данных — `npm run check-copy`.
-- Навигация (DEMO-04): пути только из `src/data/nav.ts` (`routes`, `mainNav`), `aria-current` — через `NavigationLink`; недоступное в демо — `InertNote` (не ссылка, пометка текстом); новый маршрут = страница + `built: true` + проходит `check-links`. Поведение — `src/scripts/` (шапка, шторка меню); `design/system/system.js` в Astro не подключается (P-30).
+- Навигация (DEMO-04): пути только из `src/data/nav.ts` (`routes`, `mainNav`), `aria-current` — через `NavigationLink`; недоступное не выводить ссылкой (компонент `InertNote` удалён при чистке 2026-11-19 как неиспользуемый); новый маршрут = страница + `built: true` + проходит `check-links`. Поведение — `src/scripts/` (шапка, шторка меню); `design/system/system.js` в Astro не подключается (P-30).
 - Логотипы — `src/components/Logo.astro` (SVG из `design/system/logo/`, не менять; `check-dist` сверяет байты).
 
 ## Документы

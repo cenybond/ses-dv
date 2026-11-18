@@ -8,8 +8,7 @@
 .cookie-banner .btn--secondary { background: transparent; color: var(--color-on-brand); border-color: color-mix(in srgb, var(--color-on-brand) 50%, transparent); }
 .cookie-actions { display: flex; gap: var(--space-3); flex-wrap: wrap; }
 .cookie-actions .btn { border-radius: var(--radius-pill); }
-.cookie-link, .cookie-close { color: var(--color-brand); background: transparent; border: 0; min-height: var(--size-touch); padding: var(--space-3); font: var(--type-button); cursor: pointer; }
-.cookie-link { text-decoration: underline; }
+.cookie-close { color: var(--color-brand); background: transparent; border: 0; min-height: var(--size-touch); padding: var(--space-3); font: var(--type-button); cursor: pointer; }
 .cookie-settings { color: var(--color-text); background: var(--color-surface); border: var(--border-w) solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-6); max-width: calc(var(--container) / 2); width: calc(100% - var(--gutter) * 2); max-height: calc(100dvh - var(--space-8)); overflow-y: auto; margin: auto; }
 .cookie-settings::backdrop { background: var(--color-overlay); }
 .cookie-dialog-head { display: flex; align-items: flex-start; gap: var(--space-4); justify-content: space-between; }

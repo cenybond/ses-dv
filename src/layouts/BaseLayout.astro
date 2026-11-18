@@ -4,6 +4,8 @@
 import '../styles/global.css';
 // Значок вкладки браузера — полный знак (решение владельца 2026-11-18), а не только верхняя часть.
 import favicon from '../../design/system/logo/logo-mark-square.svg?url';
+// Кириллица Inter — шрифт H1 hero главной: заранее загружаем, чтобы заголовок первого экрана не перерисовывался после подмены шрифта.
+import interCyrillic from '../../design/system/fonts/inter-cyrillic-wght-normal.woff2?url';
 import SkipLink from '../components/SkipLink.astro';
 import SeoHead from '../components/seo-head.astro';
 import CookieBanner from '../components/cookie-banner.astro';
@@ -31,6 +33,7 @@ const currentPath = normalizePath(Astro.url.pathname);
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <SeoHead title={title} description={description} path={currentPath} />
     <link rel="icon" href={favicon} type="image/svg+xml" />
+    {headerVariant === 'hero' && <link rel="preload" href={interCyrillic} as="font" type="font/woff2" crossorigin />}
   </head>
   <body class={bare ? 'page-bare' : undefined}>
     {!bare && <SkipLink />}

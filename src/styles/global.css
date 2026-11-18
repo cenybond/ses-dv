@@ -17,7 +17,6 @@
 .btn{border-radius:var(--radius-pill)}
 .burger{border-radius:var(--radius-pill);border:0}
 .btn{white-space:normal;text-align:center;line-height:1.35}
-.footer__bottom .link-inline{min-height:var(--size-touch)}
 @media(min-width:961px){.site-header__row{gap:var(--space-6)}.nav ul{gap:0}.nav a{padding-inline:var(--space-3)}.site-header__actions{gap:var(--space-4)}}
 
 /* Lenis ведёт прокрутку сам: нативное smooth-поведение отключается, чтобы не конфликтовало. */

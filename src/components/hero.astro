@@ -16,6 +16,9 @@ const accent = 'инженерных сетей';
 const [first, second] = hero.lines[0].text.slice(0, -accent.length).trim().split(' ');
 const urls = (files: Record<string, string>) => Object.keys(files).sort().map((key) => files[key]);
 const framesLg = urls(import.meta.glob<string>('../../design/client-preview/hero/frames/lg/*.webp', { eager: true, query: '?url', import: 'default' }));
+// Кадр 0000 побайтно совпадает с фото: Vite склеивает их в один файл, а Astro удаляет оригинал, если к нему обращаются только через ?url
+// (кадр отдавал 404, и canvas не рисовал ни одного кадра). Берём адрес через photo.src — так Astro оставляет оригинал в сборке.
+framesLg[0] = photo.src;
 // Фото: на телефоне и планшете (≤ 960 px, решение владельца 2026-11-19) — вертикальное фото здания без кадров прокрутки, иначе — широкое фото и кадры.
 const MOBILE = '(max-width: 960px)';
 const variants = async (src: ImageMetadata, widths: number[]) => Promise.all((['avif', 'webp'] as const).map(async (format) => ({ format, srcset: (await getImage({ src, format, widths, sizes: '100vw' })).srcSet.attribute })));

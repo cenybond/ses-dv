@@ -1,9 +1,9 @@
 // Браузерная проверка собранного сайта (dist/) без Playwright: Edge/Chrome headless по CDP, встроенные http-сервер и WebSocket Node.
 // Все страницы демо на ширинах 320 / 390 / 768 / 1024 / 1440: нет горизонтальной прокрутки и элементов за границей окна, нет ошибок консоли и сети,
 // нет запросов вне локального сервера, загружены Manrope и Golos Text, логотипы отрисованы, у ссылок и кнопок есть имена, цели касания ≥ 44 px,
-// одна оболочка (header, main, footer, skip-link), шапка не перекрывает заголовок, меню/бургер/CTA/нижняя панель показаны по ширине.
+// одна оболочка (header, main, footer, skip-link; у 404 оболочки нет), шапка не перекрывает заголовок, меню/бургер/CTA показаны по ширине, нижней панели нет.
 // Сценарии (DEMO-04): клавиатурный обход и skip-link; desktop — пункты шапки, aria-current, CTA, логотип, подвал; mobile — шторка меню
-// (Esc, возврат фокуса, ловушка фокуса, фон, повторное открытие без дублей обработчиков), нижняя панель не перекрывает конец страницы;
+// (Esc, возврат фокуса, ловушка фокуса, фон, повторное открытие без дублей обработчиков); на главной пункты меню и CTA прокручивают к разделам;
 // режим без JavaScript (якорь #site-nav, меню шапки); шторка на 768 и 1024.
 // Использование: node scripts/check-browser.mjs [--shots <папка>] [--page /about] [--base http://localhost:4321]; браузер: переменная BROWSER_PATH или стандартные пути Windows.
 // С --base проверяется уже запущенный сервер (например, dev), иначе поднимается свой сервер для dist/.
@@ -108,6 +108,9 @@ listeners.push((msg) => {
   if (method === 'Runtime.consoleAPICalled' && ['error', 'warning', 'assert'].includes(params.type)) {
     fail(`${ctx}: console.${params.type}: ${params.args.map((a) => a.value ?? a.description).join(' ')}`);
   } else if (method === 'Runtime.exceptionThrown') {
+    // Встроенные расширения Edge изредка бросают это при отключённом JS страницы — к коду сайта не относится.
+    const text = params.exceptionDetails.exception?.description ?? params.exceptionDetails.text ?? '';
+    if (text.includes('Receiving end does not exist')) return;
     fail(`${ctx}: исключение: ${params.exceptionDetails.exception?.description ?? params.exceptionDetails.text}`);
   } else if (method === 'Log.entryAdded' && ['error', 'warning'].includes(params.entry.level)) {
     fail(`${ctx}: ${params.entry.level}: ${params.entry.text} ${params.entry.url ?? ''}`);
@@ -197,18 +200,22 @@ try {
 
       const m = await evaluate(`(() => {
         const de = document.documentElement, W = ${width};
+        // Элемент внутри предка с обрезкой (overflow hidden/clip, например бегущая лента заказчиков) за край не выходит — его не считаем.
+        const clipped = (el) => { for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) { const o = getComputedStyle(p).overflowX; if (o === 'hidden' || o === 'clip') { const r = p.getBoundingClientRect(); if (r.right <= W + 1 && r.left >= -1) return true; } } return false; };
         const wide = [...document.querySelectorAll('body *')].filter((el) => {
           const r = el.getBoundingClientRect(); const cs = getComputedStyle(el);
-          return r.width > 0 && cs.position !== 'fixed' && (r.right > W + 1 || r.left < -1);
+          return r.width > 0 && cs.position !== 'fixed' && (r.right > W + 1 || r.left < -1) && !el.closest('dialog:not([open])') && !clipped(el);
         }).slice(0, 5).map((el) => el.tagName.toLowerCase() + '.' + String(el.className).slice(0, 40) + ' [' + Math.round(el.getBoundingClientRect().left) + '…' + Math.round(el.getBoundingClientRect().right) + ']');
         const fonts = [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family.replace(/"/g, ''));
-        const imgs = [...document.images].map((i) => ({ src: i.currentSrc.split('/').pop(), ok: i.complete && i.naturalWidth > 0 }));
-        const visible = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden'; };
+        // Ленивые фото (окна проектов, плитки ниже экрана) грузятся по мере надобности — проверяем только обычные.
+        const imgs = [...document.images].filter((i) => i.loading !== 'lazy' && !i.closest('dialog:not([open])')).map((i) => ({ src: i.currentSrc.split('/').pop(), ok: i.complete && i.naturalWidth > 0 }));
+        const visible = (el) => { if (!el) return false; const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden'; };
         const unnamed = [...document.querySelectorAll('a[href], button')].filter((el) => visible(el) && !(el.getAttribute('aria-label') || el.textContent.trim() || el.querySelector('img[alt]:not([alt=""])')))
           .map((el) => el.tagName.toLowerCase() + '.' + el.className);
         const small = [...document.querySelectorAll('.nav a, .burger, .btn, .menu-list a, .footer__col a, .modal__close')].filter(visible)
-          .filter((el) => !(window.innerWidth > 1024 && el.matches('.footer__col a')))
-          .filter((el) => { const r = el.getBoundingClientRect(); return r.height < 43.5 || r.width < 43.5; }).map((el) => el.className + ' ' + Math.round(el.getBoundingClientRect().width) + '×' + Math.round(el.getBoundingClientRect().height));
+          // Подвал: пункты высотой --space-8 на десктопе и на телефоне ≤ 640 px (решение владельца 2026-11-19); текстовая ссылка проверяется по высоте строки, не по ширине слова.
+          .filter((el) => !((window.innerWidth > 1024 || window.innerWidth <= 640) && el.matches('.footer__col a')))
+          .filter((el) => { const r = el.getBoundingClientRect(); return r.height < 43.5 || (r.width < 43.5 && !el.matches('.footer__col a')); }).map((el) => el.className + ' ' + Math.round(el.getBoundingClientRect().width) + '×' + Math.round(el.getBoundingClientRect().height));
         const navLabels = [...document.querySelectorAll('nav')].map((n) => n.getAttribute('aria-label') || '');
         return { scrollW: de.scrollWidth, clientW: de.clientWidth, wide, fonts, imgs, unnamed, small, navLabels,
           h1: document.querySelectorAll('h1').length, mains: document.querySelectorAll('main').length, headers: document.querySelectorAll('body > header').length,
@@ -216,7 +223,8 @@ try {
           lang: de.lang, robots: document.querySelector('meta[name=robots]')?.content,
           burger: visible(document.querySelector('.burger')), nav: visible(document.querySelector('.nav')), dock: !!document.querySelector('.dock'),
           cta: visible(document.querySelector('.site-header__actions .btn')), phone: visible(document.querySelector('.header-phone')),
-          h1Top: document.querySelector('h1').getBoundingClientRect().top, headerBottom: document.querySelector('.site-header').getBoundingClientRect().bottom };
+          bare: document.body.classList.contains('page-bare'),
+          h1Top: document.querySelector('h1')?.getBoundingClientRect().top ?? 0, headerBottom: document.querySelector('.site-header')?.getBoundingClientRect().bottom ?? 0 };
       })()`);
       if (m.scrollW > m.clientW) fail(`${ctx}: горизонтальная прокрутка (scrollWidth ${m.scrollW} > ${m.clientW})`);
       if (m.wide.length) fail(`${ctx}: элементы за границей окна: ${m.wide.join(', ')}`);
@@ -226,16 +234,21 @@ try {
       if (m.small.length) fail(`${ctx}: цель касания меньше 44 px: ${m.small.join('; ')}`);
       expectEq('h1', m.h1, 1);
       expectEq('main', m.mains, 1);
-      expectEq('header/footer', [m.headers, m.footers, m.skip], [1, 1, 1]);
       expectEq('lang', m.lang, 'ru');
       if (!m.robots?.includes('noindex')) fail(`${ctx}: staging должен быть noindex`);
-      if (new Set(m.navLabels).size !== m.navLabels.length || m.navLabels.some((l) => !l)) fail(`${ctx}: у <nav> нет уникальных подписей: ${JSON.stringify(m.navLabels)}`);
-      if (m.h1Top < m.headerBottom - 0.5) fail(`${ctx}: шапка перекрывает заголовок (h1 ${Math.round(m.h1Top)} < шапка ${Math.round(m.headerBottom)})`);
-      // видимость элементов оболочки по ширине: десктоп ≥ 961 — меню в шапке, мобильное — бургер; нижняя панель ≤ 640
-      expectEq('меню в шапке / бургер', [m.nav, m.burger], width > 960 ? [true, false] : [false, true]);
-      expectEq('CTA «Заказать звонок» в шапке', m.cta, width > 960);
-      expectEq('телефон в шапке', m.phone, width > 1180);
       expectEq('нижней панели нет', m.dock, false);
+      // 404 — отдельная страница без шапки, подвала и меню (решение владельца 2026-11-18): оболочку на ней не проверяем
+      if (m.bare) {
+        expectEq('страница без оболочки: нет header/footer', [m.headers, m.footers], [0, 0]);
+      } else {
+        expectEq('header/footer', [m.headers, m.footers, m.skip], [1, 1, 1]);
+        if (new Set(m.navLabels).size !== m.navLabels.length || m.navLabels.some((l) => !l)) fail(`${ctx}: у <nav> нет уникальных подписей: ${JSON.stringify(m.navLabels)}`);
+        if (m.h1Top < m.headerBottom - 0.5) fail(`${ctx}: шапка перекрывает заголовок (h1 ${Math.round(m.h1Top)} < шапка ${Math.round(m.headerBottom)})`);
+        // видимость элементов оболочки по ширине: десктоп ≥ 961 — меню в шапке, мобильное — бургер
+        expectEq('меню в шапке / бургер', [m.nav, m.burger], width > 960 ? [true, false] : [false, true]);
+        expectEq('CTA «Заказать звонок» в шапке', m.cta, width > 960);
+        expectEq('телефон в шапке', m.phone, width > 1180);
+      }
       if (shotsDir && [390,1440].includes(width) && ['/', '/about', '/vacancies', '/contacts'].includes(path)) await shot((path === '/' ? 'home' : path.slice(1).replaceAll('/', '-')) + '-' + width);
       if (path === '/') report.push(`${width}px: scrollWidth ${m.scrollW}/${m.clientW}, шрифты: ${[...new Set(m.fonts)].join(' + ')}, изображений ${m.imgs.length}, запросов ${requests.size}`);
     }
@@ -300,24 +313,33 @@ try {
   expectEq('политика в подвале', desk.privacy, routes.privacy);
   await shot('header-desktop', { x: 0, y: 0, width: 1440, height: 200 });
 
-  // переходы: каждый пункт шапки открывает страницу, на ней он активен, затем логотип возвращает на главную
+  // переходы с внутренней страницы: пункт-страница открывает её и становится активным, пункт-раздел (/#…) ведёт на главную к разделу
   for (const item of mainNav) {
-    await go('/');
+    await go('/privacy');
     await evaluate(`document.querySelector('.nav a[href="${item.href}"]').click()`);
     await settled();
-    const r = await evaluate(`({ path: location.pathname.replace(/\\/$/, ''), h1: document.querySelector('h1').textContent.trim(), cur: document.querySelector('.nav a[aria-current="page"]')?.getAttribute('href') })`);
-    expectEq(`переход «${item.label}»`, [r.path, r.cur, !!r.h1], [item.href, item.href, true]);
+    const [itemPath, itemHash = ''] = item.href.split('#');
+    const r = await evaluate(`({ path: location.pathname.replace(/\\/$/, '') || '/', hash: location.hash, h1: !!document.querySelector('h1'), cur: document.querySelector('.nav a[aria-current="page"]')?.getAttribute('href') ?? null })`);
+    if (itemHash) expectEq(`переход «${item.label}» к разделу главной`, [r.path, r.hash, r.h1], [itemPath || '/', `#${itemHash}`, true]);
+    else expectEq(`переход «${item.label}»`, [r.path, r.cur, r.h1], [item.href, item.href, true]);
   }
+  await go('/about');
   await evaluate(`document.querySelector('.site-header .logo').click()`);
   await settled();
   expectEq('логотип ведёт на главную', await evaluate('location.pathname'), '/');
+  // главная (решение владельца): пункты шапки плавно прокручивают к своим разделам этой же страницы, «Заказать звонок» — к блоку обращения внизу
+  await go('/');
+  await evaluate(`document.querySelector('.nav a[href="/about"]').click()`);
+  expectEq('главная: «О нас» прокручивает к разделу без перехода', await until(`location.pathname === '/' && window.scrollY > 200`), true);
   await go('/');
   await evaluate(`document.querySelector('.site-header__actions .btn').click()`);
-  await settled();
-  expectEq('CTA открывает доступный диалог', await evaluate(`document.querySelector('#request-dialog').matches(':modal')`), true);
+  expectEq('главная: CTA ведёт к блоку обращения', await until(`location.pathname === '/' && Math.abs(document.getElementById('request').getBoundingClientRect().top) < innerHeight`), true);
+  // внутренняя страница: CTA открывает доступный диалог заявки, Esc закрывает, фокус возвращается
+  await go('/about');
+  await evaluate(`document.querySelector('.site-header__actions .btn').click()`);
+  expectEq('CTA открывает доступный диалог', await until(`document.querySelector('#request-dialog').matches(':modal')`), true);
   await press('Escape', 'Escape', 27);
-  await sleep(150);
-  expectEq('Фокус возвращается к CTA', await evaluate(`document.activeElement.matches('[data-request-open]')`), true);
+  expectEq('Фокус возвращается к CTA', await until(`!document.querySelector('#request-dialog').open && document.activeElement.matches('[data-request-open]')`), true);
   await go('/privacy');
   await evaluate('window.scrollTo(0, document.body.scrollHeight)');
   await sleep(300);
@@ -332,7 +354,6 @@ try {
   await shot('menu-closed-mobile');
   await evaluate('window.scrollTo(0, document.body.scrollHeight)');
   await sleep(300);
-  expectEq('нижней панели нет', await evaluate(`document.querySelector('.dock') === null`), true);
   await shot('footer-mobile-end');
   await evaluate('window.scrollTo(0, 0)');
 
@@ -348,7 +369,7 @@ try {
       cta: [m.querySelector('.btn').textContent.trim(), m.querySelector('.btn').getAttribute('href')], navLabel: m.querySelector('nav').getAttribute('aria-label') }; })()`);
   expectEq('шторка: открыта как модальная, фокус на кнопке закрытия внутри неё', [open.open, open.modal, open.inMenu, open.active.split(' ')[0]], [true, true, true, 'modal__close']);
   expectEq('шторка: aria-expanded у кнопки «Меню»', [open.expanded, open.role], ['true', 'button']);
-  expectEq('шторка: фон не прокручивается', open.overflow, 'hidden');
+  expectEq('шторка: фон не прокручивается', ['hidden', 'clip'].includes(open.overflow), true);
   if (open.hScroll) fail(`${ctx}: горизонтальная прокрутка при открытом меню`);
   expectEq('шторка: пункты', open.items.map((i) => [i[0], i[1]]), mainNav.map((i) => [i.label, i.href]));
   expectEq('шторка: активный раздел «О нас»', open.items.map((i) => i[2]), ['page', null, null, null]);
@@ -359,22 +380,22 @@ try {
   for (let i = 0; i < 14; i++) { await press('Tab', 'Tab', 9); const f = await evaluate(focusInfo); if (!f.inMenu && f.tag !== 'body') leaked = true; }
   if (leaked) fail(`${ctx}: фокус вышел за пределы шторки при Tab`);
   await press('Escape', 'Escape', 27);
-  await sleep(250);
+  // закрытие плавное (анимация до 500 мс, mobile-menu.ts) — ждём, пока диалог закроется и фокус вернётся
+  await until(`!document.querySelector('#menu').open && document.activeElement.classList.contains('burger') && document.querySelector('.burger').getAttribute('aria-expanded') === 'false'`);
   const closed = await evaluate(`({ open: document.querySelector('#menu').open, active: document.activeElement.className.split(' ')[0], expanded: document.querySelector('.burger').getAttribute('aria-expanded'), overflow: getComputedStyle(document.documentElement).overflow })`);
-  expectEq('Escape закрывает шторку, фокус возвращается на «Меню»', [closed.open, closed.active, closed.expanded, closed.overflow], [false, 'burger', 'false', 'visible']);
+  expectEq('Escape закрывает шторку, фокус возвращается на «Меню»', [closed.open, closed.active, closed.expanded, ['hidden', 'clip'].includes(closed.overflow)], [false, 'burger', 'false', false]);
   // повторное открытие: кнопкой закрытия, потом кликом по фону. Обработчики регистрируются один раз и не множатся при открытиях
   const listeners = () => evaluate('JSON.stringify(window.__listeners)');
   const before = await listeners();
   await evaluate(`document.querySelector('.burger').click()`);
-  await sleep(150);
-  expectEq('повторное открытие', await evaluate(`document.querySelector('#menu').open`), true);
+  expectEq('повторное открытие', await until(`document.querySelector('#menu').open`), true);
   await evaluate(`document.querySelector('[data-close-menu]').click()`);
-  await sleep(150);
+  await until(`!document.querySelector('#menu').open && document.activeElement.classList.contains('burger') && document.querySelector('.burger').getAttribute('aria-expanded') === 'false'`);
   expectEq('закрытие кнопкой: шторка закрыта, фокус на «Меню»', await evaluate(`[document.querySelector('#menu').open, document.activeElement.className.split(' ')[0]]`), [false, 'burger']);
   await evaluate(`document.querySelector('.burger').click()`);
-  await sleep(150);
+  await until(`document.querySelector('#menu').open`);
   await evaluate(`document.querySelector('#menu').dispatchEvent(new MouseEvent('click', { bubbles: true }))`);
-  await sleep(150);
+  await until(`!document.querySelector('#menu').open && document.activeElement.classList.contains('burger') && document.querySelector('.burger').getAttribute('aria-expanded') === 'false'`);
   expectEq('клик по фону закрывает шторку', await evaluate(`[document.querySelector('#menu').open, document.activeElement.className.split(' ')[0]]`), [false, 'burger']);
   const after = await listeners();
   expectEq('обработчики не добавляются при повторных открытиях', after, before);
@@ -384,23 +405,18 @@ try {
   }
   // переход по пункту шторки
   await evaluate(`document.querySelector('.burger').click()`);
-  await sleep(150);
+  await until(`document.querySelector('#menu').open`);
   await evaluate(`document.querySelector('#menu .menu-list a[href="${routes.contacts}"]').click()`);
   await settled();
   const afterNav = await evaluate(`({ path: location.pathname.replace(/\\/$/, ''), open: document.querySelector('#menu').open, h1: document.querySelector('h1').textContent.trim() })`);
   expectEq('переход из шторки на «Контакты»', [afterNav.path, afterNav.open, !!afterNav.h1], [routes.contacts, false, true]);
-  // нижняя панель: переход «Оставить заявку» → /contacts
-  await go('/about');
-  await evaluate(`document.querySelector('.dock a[href="${routes.contacts}"]').click()`);
-  await settled();
-  expectEq('«Оставить заявку» ведёт в контакты', await evaluate(`location.pathname.replace(/\\/$/, '')`), routes.contacts);
   // расширение окна при открытой шторке закрывает её
   await go('/about');
   await evaluate(`document.querySelector('.burger').click()`);
-  await sleep(150);
+  await until(`document.querySelector('#menu').open`);
   await view(1440, 900);
   expectEq('рост окна до десктопа закрывает шторку', await until(`!document.querySelector('#menu').open`), true);
-  report.push('mobile 390: шторка (открытие/закрытие, Esc, фокус, ловушка, фон), нижняя панель, переходы');
+  report.push('mobile 390: шторка (открытие/закрытие, Esc, фокус, ловушка, фон), переходы; нижней панели нет');
 
   // --- 5. без JavaScript
   await send('Emulation.setScriptExecutionDisabled', { value: true });
@@ -408,9 +424,9 @@ try {
   ctx = 'без JS @390';
   await go('/about');
   const nojs = await evaluate(`(() => ({ js: document.documentElement.dataset.js, burger: [document.querySelector('.burger').getAttribute('href'), document.querySelector('.burger').getAttribute('role')],
-    solid: document.querySelector('.site-header').classList.contains('is-solid'), dock: getComputedStyle(document.querySelector('.dock')).display, menuOpen: document.querySelector('#menu').open }))()`);
+    solid: document.querySelector('.site-header').classList.contains('is-solid'), dock: !!document.querySelector('.dock'), menuOpen: document.querySelector('#menu').open }))()`);
   expectEq('без JS: «Меню» — якорь на навигацию подвала', nojs.burger, ['#site-nav', null]);
-  expectEq('без JS: шапка светлая, нижняя панель на месте, шторка закрыта', [nojs.solid, nojs.dock, nojs.menuOpen], [true, 'grid', false]);
+  expectEq('без JS: шапка светлая, нижней панели нет, шторка закрыта', [nojs.solid, nojs.dock, nojs.menuOpen], [true, false, false]);
   await evaluate(`document.querySelector('.burger').click()`);
   await sleep(900);
   const anchor = await evaluate(`(() => { const r = document.querySelector('#site-nav').getBoundingClientRect(); return { hash: location.hash, inView: r.top < innerHeight && r.bottom > 0, links: document.querySelectorAll('#site-nav a').length }; })()`);
@@ -429,19 +445,21 @@ try {
     ctx = `шторка @${width}`;
     await view(width, 900);
     await go('/about');
-    const t = await evaluate(`(() => ({ burger: getComputedStyle(document.querySelector('.burger')).display, nav: getComputedStyle(document.querySelector('.nav')).display, dock: getComputedStyle(document.querySelector('.dock')).display }))()`);
-    expectEq('меню на ширине', [t.burger !== 'none', t.nav !== 'none', t.dock !== 'none'], width <= 960 ? [true, false, false] : [false, true, false]);
+    const t = await evaluate(`(() => ({ burger: getComputedStyle(document.querySelector('.burger')).display, nav: getComputedStyle(document.querySelector('.nav')).display, dock: !!document.querySelector('.dock') }))()`);
+    expectEq('меню на ширине', [t.burger !== 'none', t.nav !== 'none', t.dock], width <= 960 ? [true, false, false] : [false, true, false]);
     if (width <= 960) {
       await evaluate(`document.querySelector('.burger').click()`);
-      await sleep(200);
-      expectEq('шторка открывается', await evaluate(`document.querySelector('#menu').open`), true);
+      expectEq('шторка открывается', await until(`document.querySelector('#menu').open`), true);
       await shot(`menu-open-${width}`);
       await press('Escape', 'Escape', 27);
       await sleep(200);
-      await until(`!document.querySelector('#menu').open && document.activeElement.classList.contains('burger')`);
+      await until(`!document.querySelector('#menu').open && document.activeElement.classList.contains('burger') && document.querySelector('.burger').getAttribute('aria-expanded') === 'false'`);
       expectEq('Escape закрывает, фокус на «Меню»', await evaluate(`[document.querySelector('#menu').open, document.activeElement.className.split(' ')[0]]`), [false, 'burger']);
     }
   }
+} catch (error) {
+  // сценарий оборвался: сообщаем, где именно, и печатаем всё, что уже найдено
+  fail(`${ctx}: сценарий прерван: ${error.message.split('\n')[0]}`);
 } finally {
   ws.close();
   browser.kill();
@@ -456,4 +474,4 @@ if (errors.length) {
   console.error(`\ncheck-browser: ${new Set(errors).size} ошибок`);
   process.exit(1);
 }
-console.log(`check-browser: OK — ${WIDTHS.join(' / ')} px × ${PAGES.length} стр., консоль и сеть чистые, внешних запросов нет, меню, нижняя панель и режим без JS проверены`);
+console.log(`check-browser: OK — ${WIDTHS.join(' / ')} px × ${PAGES.length} стр., консоль и сеть чистые, внешних запросов нет, меню, шторка, сценарии главной и режим без JS проверены`);

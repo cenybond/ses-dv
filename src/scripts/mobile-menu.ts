@@ -21,26 +21,28 @@ export function initMobileMenu(): void {
   // Закрытие плавное: шторка уезжает вниз (класс is-closing), затем диалог закрывается. Без анимации — при «уменьшении движения»,
   // при расширении окна и возврате из bfcache.
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const box = menu.querySelector('.modal__box--menu');
   let closing = false;
+  let timer = 0;
+  const finish = () => {
+    if (!closing) return;
+    closing = false;
+    window.clearTimeout(timer);
+    menu.classList.remove('is-closing');
+    menu.close();
+  };
+  // Конец анимации ухода слушаем один раз на всю жизнь страницы (раньше слушатель добавлялся при каждом закрытии и оставался,
+  // если первым срабатывал запасной таймер). Срабатывает только во время закрытия: анимация открытия finish не вызывает.
+  box?.addEventListener('animationend', finish);
   const close = (animated = true) => {
     if (!menu.open || closing) return;
-    const box = menu.querySelector('.modal__box--menu');
     if (!animated || reduced.matches || !box) {
       menu.close();
       return;
     }
     closing = true;
     menu.classList.add('is-closing');
-    let finished = false;
-    const finish = () => {
-      if (finished) return;
-      finished = true;
-      menu.classList.remove('is-closing');
-      closing = false;
-      menu.close();
-    };
-    box.addEventListener('animationend', finish, { once: true });
-    window.setTimeout(finish, 500);
+    timer = window.setTimeout(finish, 500); // запасной путь, если animationend не придёт
   };
 
   // Ссылка-якорь становится кнопкой: роль, раскрытие, Space как у кнопки.

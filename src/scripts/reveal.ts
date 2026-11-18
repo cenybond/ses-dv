@@ -30,8 +30,9 @@ function init() {
 
   const blocks = items.filter((element) => element.matches(BLOCKS));
   const texts = items.filter((element) => !element.matches(BLOCKS));
-  gsap.set(texts, { opacity: 0, y: 28 });
-  gsap.set(blocks, { opacity: 0, y: 48 });
+  // Пустой список GSAP считает ошибкой («target not found») — на страницах без блоков или без текста вызов пропускаем.
+  if (texts.length) gsap.set(texts, { opacity: 0, y: 28 });
+  if (blocks.length) gsap.set(blocks, { opacity: 0, y: 48 });
 
   ScrollTrigger.batch(items, {
     start: 'top 92%',

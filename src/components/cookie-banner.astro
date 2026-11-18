@@ -2,15 +2,11 @@
 import { site_config } from '../data/site-config';
 import '../styles/privacy.css';
 ---
-<aside class="cookie-banner" aria-label="Настройки аналитики" data-cookie-banner data-analytics-available={String(site_config.analytics_enabled)} data-metrica-id={site_config.metrica_id || ''} data-site-origin={site_config.origin} hidden>
-  <div>
-    <h2>Аналитика — с вашего разрешения</h2>
-    <p>Яндекс Метрика помогает понять, как используют сайт. Вы можете разрешить её или продолжить без аналитики. <a href="/cookies">О технологиях хранения</a></p>
-  </div>
+<aside class="cookie-banner" aria-label="Куки и аналитика" data-cookie-banner data-analytics-available={String(site_config.analytics_enabled)} data-metrica-id={site_config.metrica_id || ''} data-site-origin={site_config.origin} hidden>
+  <p>Яндекс Метрика помогает понять, как используют сайт. Вы можете согласиться на аналитику или отказаться. <a href="/cookies">Куки и аналитика</a></p>
   <div class="cookie-actions">
-    <button type="button" class="btn btn--secondary" data-cookie-accept>Разрешить аналитику</button>
-    <button type="button" class="btn btn--secondary" data-cookie-reject>Без аналитики</button>
-    <button type="button" class="cookie-link" data-cookie-open>Настроить</button>
+    <button type="button" class="btn btn--lime" data-cookie-accept>Согласиться</button>
+    <button type="button" class="btn btn--secondary" data-cookie-reject>Отказаться</button>
   </div>
 </aside>
 <p class="cookie-status" role="status" data-cookie-status></p>

@@ -2,18 +2,25 @@
 // Логотип заказчика из design/system/logo/ (SVG собраны brand/build_logo_svg.py из векторного PDF). Не перерисовывать, не перекрашивать.
 // wordmark: две картинки под варианты фона шапки (над hero — белая, на светлой шапке — оригинальная; переключает `.site-header.is-solid`).
 // full-on-dark: полный знак на тёмном (подвал).
+// horizontal: знак слева и название в две строки — шапка главной по макету Figma (решение владельца 2026-11-18).
 import wordmarkOnDark from '../../design/system/logo/logo-wordmark-on-dark.svg?url';
 import wordmark from '../../design/system/logo/logo-wordmark.svg?url';
 import fullOnDark from '../../design/system/logo/logo-full-on-dark.svg?url';
+import markSquare from '../../design/system/logo/logo-mark-square.svg?url';
 import { ui, routes } from '../data';
 
 interface Props {
-  variant: 'wordmark' | 'full-on-dark';
+  variant: 'wordmark' | 'full-on-dark' | 'horizontal';
 }
 const { variant } = Astro.props;
 const label = ui.a11y.logo;
 ---
-{variant === 'wordmark' ? (
+{variant === 'horizontal' ? (
+  <a class="logo logo--horizontal" href={routes.home} aria-label={label}>
+    <img class="logo__mark" src={markSquare} width="63" height="63" alt="" />
+    <span class="logo__name" aria-hidden="true">Связь<br />Энергострой</span>
+  </a>
+) : variant === 'wordmark' ? (
   <a class="logo" href={routes.home} aria-label={label}>
     <img class="logo__img logo__img--on-dark" src={wordmarkOnDark} width="1366.73" height="133.91" alt="" />
     <img class="logo__img logo__img--on-light" src={wordmark} width="1366.73" height="133.91" alt="" />

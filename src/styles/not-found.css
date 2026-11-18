@@ -1,0 +1,19 @@
+/* Страница 404: тёмный фон, фраза и кнопка по центру сверху, графика «404» на всю ширину внизу целиком. */
+body.page-bare{background:var(--color-bg-dark);color:var(--color-text-on-dark);padding-block-end:0}
+.not-found{min-height:100dvh;display:flex;flex-direction:column;justify-content:space-between;gap:var(--space-8);background:var(--color-bg-dark)}
+.not-found__top{display:flex;flex-direction:column;align-items:center;gap:var(--space-8);padding:var(--space-16) var(--gutter) 0;text-align:center}
+.not-found__title{font:var(--type-about-title);letter-spacing:var(--ls-about-title);color:var(--color-on-brand);text-wrap:balance}
+.not-found .btn{border-radius:var(--radius-md)}
+.not-found__art{inline-size:100%;line-height:0;overflow:hidden}
+/* Графика перевёрнута на 180° (так «404» читается); оси внутри svg тоже перевёрнуты, поэтому translateY(-…) в keyframes — это движение вверх на экране. */
+.not-found__art svg{display:block;inline-size:100%;block-size:auto;transform:rotate(180deg)}
+.not-found__art .a{fill:var(--color-accent-mid)}
+.not-found__art .b{fill:var(--color-accent-deep)}
+.not-found__art .c{fill:var(--color-accent)}
+/* Взлёт от центра (решение владельца 2026-11-18): сначала поднимается центральный «0», затем обе «4», затем боковые крылья; в конце всё стоит ровно на нижнем краю. */
+@media (prefers-reduced-motion:no-preference){
+  .not-found__art path{animation:not-found-rise calc(var(--motion-base) * 7) cubic-bezier(.22,1,.36,1) both}
+  .not-found__art .b{animation-delay:calc(var(--motion-base) * 1.5)}
+  .not-found__art .a{animation-delay:calc(var(--motion-base) * 3)}
+}
+@keyframes not-found-rise{from{transform:translateY(-110%);opacity:0}30%{opacity:1}to{transform:none;opacity:1}}

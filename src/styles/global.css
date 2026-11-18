@@ -15,7 +15,77 @@
 
 /* Общая геометрия CTA из Hero V4; значения остаются в единой системе. */
 .btn{border-radius:var(--radius-pill)}
-.burger{border-radius:var(--radius-pill)}
+.burger{border-radius:var(--radius-pill);border:0}
 .btn{white-space:normal;text-align:center;line-height:1.35}
 .footer__bottom .link-inline{min-height:var(--size-touch)}
 @media(min-width:961px){.site-header__row{gap:var(--space-6)}.nav ul{gap:0}.nav a{padding-inline:var(--space-3)}.site-header__actions{gap:var(--space-4)}}
+
+/* Lenis ведёт прокрутку сам: нативное smooth-поведение отключается, чтобы не конфликтовало. */
+html.lenis{scroll-behavior:auto}
+/* Когда открыто окно или меню, Lenis ставит html overflow:hidden, и полоса прокрутки пропадает: страница под окном шире на её ширину и «прыгает».
+   Резерв под полосу (scrollbar-gutter) держит ширину неизменной. */
+html{scrollbar-gutter:stable}
+
+/* Подвал: верхние углы скруглены, как у блока «О нас» на главной (он наезжает на hero). */
+.site-footer{border-radius:var(--radius-xl) var(--radius-xl) 0 0}
+
+/* Телефон (решение владельца 2026-11-19): пункты в колонках подвала стоят ближе друг к другу (как на десктопе, высота строки --space-8); заголовки колонок и их отступы прежние. */
+@media (max-width: 640px) {
+  .footer__col a,
+  .footer__col .off { min-height: var(--space-8); }
+}
+
+/* Меню-шторка (решение владельца 2026-11-19): выезжает плавно снизу вверх и так же уезжает вниз (класс is-closing ставит mobile-menu.ts),
+   затемнение проявляется и гаснет; телефон и почта стоят ближе друг к другу; кнопка — со скруглением остальных кнопок сайта (--radius-md).
+   Анимацию отключает «уменьшение движения». */
+#menu[open] { animation: none; }
+#menu[open]::backdrop { animation: menu-fade 0.35s ease-out; }
+#menu[open] .modal__box--menu { animation: menu-up 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+#menu.is-closing::backdrop { animation: menu-fade 0.35s ease-in reverse forwards; }
+#menu.is-closing .modal__box--menu { animation: menu-down 0.35s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
+@keyframes menu-up { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes menu-down { from { transform: none; } to { transform: translateY(100%); } }
+@keyframes menu-fade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  #menu[open]::backdrop,
+  #menu[open] .modal__box--menu,
+  #menu.is-closing::backdrop,
+  #menu.is-closing .modal__box--menu { animation: none; }
+}
+.menu-contacts { gap: 0; }
+.menu-contacts a { min-height: var(--space-8); }
+#menu .modal__box--menu > .btn { border-radius: var(--radius-md); }
+
+/* Телефон (≤ 640 px) и горизонтальное положение: крестик стоит там же, где кнопка бургера в шапке (48 px, справа на ширину поля, по центру высоты шапки). */
+@media (max-width: 640px), (max-width: 960px) and (orientation: landscape) and (max-height: 600px) {
+  #menu .modal__close {
+    top: calc((var(--header-h) - var(--space-12)) / 2);
+    inset-inline-end: var(--gutter);
+    width: var(--space-12);
+    height: var(--space-12);
+  }
+}
+
+/* Телефон в горизонтальном положении (решение владельца 2026-11-19): шторка на весь экран в две колонки — слева разделы,
+   справа контакты и кнопка «Заказать звонок»; верх колонок на одной линии, низ кнопки на уровне последнего раздела. */
+@media (max-width: 960px) and (orientation: landscape) and (max-height: 600px) {
+  #menu[open] { padding: 0; place-items: stretch; }
+  #menu .modal__box--menu {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: start;
+    column-gap: var(--space-12);
+    row-gap: var(--space-4);
+    padding: var(--header-h) max(var(--gutter), env(safe-area-inset-right)) var(--space-6) max(var(--gutter), env(safe-area-inset-left));
+  }
+  #menu .modal__box--menu nav { grid-column: 1; grid-row: 1 / 3; align-self: start; }
+  #menu .menu-list { margin-top: 0; }
+  #menu .menu-list a { min-height: var(--space-12); }
+  #menu .menu-contacts { grid-column: 2; grid-row: 1; align-self: start; margin-top: 0; }
+  #menu .modal__box--menu > .btn { grid-column: 2; grid-row: 2; align-self: end; }
+}

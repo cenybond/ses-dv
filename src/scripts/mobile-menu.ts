@@ -18,8 +18,29 @@ export function initMobileMenu(): void {
     menu.showModal();
     openers.forEach((o) => o.setAttribute('aria-expanded', 'true'));
   };
-  const close = () => {
-    if (menu.open) menu.close();
+  // Закрытие плавное: шторка уезжает вниз (класс is-closing), затем диалог закрывается. Без анимации — при «уменьшении движения»,
+  // при расширении окна и возврате из bfcache.
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let closing = false;
+  const close = (animated = true) => {
+    if (!menu.open || closing) return;
+    const box = menu.querySelector('.modal__box--menu');
+    if (!animated || reduced.matches || !box) {
+      menu.close();
+      return;
+    }
+    closing = true;
+    menu.classList.add('is-closing');
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      menu.classList.remove('is-closing');
+      closing = false;
+      menu.close();
+    };
+    box.addEventListener('animationend', finish, { once: true });
+    window.setTimeout(finish, 500);
   };
 
   // Ссылка-якорь становится кнопкой: роль, раскрытие, Space как у кнопки.
@@ -39,7 +60,12 @@ export function initMobileMenu(): void {
     });
   });
 
-  menu.querySelector('[data-close-menu]')?.addEventListener('click', close);
+  menu.querySelector('[data-close-menu]')?.addEventListener('click', () => close());
+  // Esc: вместо мгновенного закрытия — то же плавное.
+  menu.addEventListener('cancel', (e) => {
+    e.preventDefault();
+    close();
+  });
   // Клик по затемнённому фону (сам <dialog>, а не коробка внутри) закрывает шторку.
   menu.addEventListener('click', (e) => {
     if (e.target === menu) close();
@@ -59,10 +85,10 @@ export function initMobileMenu(): void {
   // Окно расширилось до десктопа: шторка не нужна, а кнопка исчезла бы из дерева доступности вместе с фокусом.
   const wide = window.matchMedia(MENU_BREAKPOINT);
   wide.addEventListener('change', (e) => {
-    if (!e.matches) close();
+    if (!e.matches) close(false);
   });
   // Возврат по истории из bfcache не должен показывать открытую шторку.
   window.addEventListener('pageshow', (e) => {
-    if (e.persisted) close();
+    if (e.persisted) close(false);
   });
 }

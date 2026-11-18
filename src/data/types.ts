@@ -63,7 +63,7 @@ export interface Project {
   readonly snapshot: string;
   /** Путь к изображению или null: до получения фото — заглушка (A-06). */
   readonly image: ImageAsset | null;
-  /** Страница проекта есть в демо (маршрут /projects/{slug}). */
+  /** У проекта есть своё окно на главной (отдельных страниц проектов нет, решение владельца 2026-11-18). */
   readonly hasPage: boolean;
   readonly serviceLinks: readonly ServiceLink[];
 }

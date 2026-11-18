@@ -1,22 +1,50 @@
 ---
-import { hero, routes } from '../data';
-import photo from '../../design/client-preview/hero/assets/hero-bg-house.webp?url';
+// Hero главной — повтор макета Figma «Главная — desktop 1440» (файл vnzVAkzaxq8GFCf6tV89DL, узел 15:69):
+// карточка 1392 × 720 со скруглением 28, фото здания, затемнение слева, текст слева снизу на одной оси.
+// Прокрутка: scripts/hero-frame.ts. Hero «залипает» вверху (.hero-track), кадры видео (камера уходит от здания под землю, к кабелям)
+// проигрываются на canvas, поля и скругление карточки уходят, шапка превращается в плашки. Заголовок и кнопка стоят на месте.
+// Кадры нарезаны scripts/build-hero-frames.py: кадр 0000 — это само фото 1 в 1, до отклика JS показывается оно же (img).
+// На телефоне и планшете (≤ 960 px) hero — компактная карточка с вертикальным фото, без закрепления и без кадров.
+import { hero, ui } from '../data';
+import RequestButton from './request-button.astro';
+import { getImage } from 'astro:assets';
+import photo from '../../design/client-preview/hero/assets/hero-building.webp';
+import photoMobile from '../../design/client-preview/hero/assets/hero-building-mobile.webp';
+import '../styles/header-hero.css';
 import '../styles/hero.css';
 const accent = 'инженерных сетей';
-const prefix = hero.lines[0].text.slice(0, -accent.length);
-const subtitle = hero.lines[1].text.split('строительно-монтажная');
+const [first, second] = hero.lines[0].text.slice(0, -accent.length).trim().split(' ');
+const urls = (files: Record<string, string>) => Object.keys(files).sort().map((key) => files[key]);
+const framesLg = urls(import.meta.glob<string>('../../design/client-preview/hero/frames/lg/*.webp', { eager: true, query: '?url', import: 'default' }));
+// Фото: на телефоне и планшете (≤ 960 px, решение владельца 2026-11-19) — вертикальное фото здания без кадров прокрутки, иначе — широкое фото и кадры.
+const MOBILE = '(max-width: 960px)';
+const variants = async (src: ImageMetadata, widths: number[]) => Promise.all((['avif', 'webp'] as const).map(async (format) => ({ format, srcset: (await getImage({ src, format, widths, sizes: '100vw' })).srcSet.attribute })));
+const [desktopSources, mobileSources] = await Promise.all([variants(photo, [800, 1280, 1792]), variants(photoMobile, [480, 885])]);
+const fallback = await getImage({ src: photo, format: 'jpeg', width: 1280 });
 ---
-<section class="hero on-dark" aria-labelledby="hero-title">
-  <div class="container hero__inner">
-    <p class="hero__lead">{hero.intro.text}</p>
-    <h1 id="hero-title">{prefix}<span class="accent">{accent}</span></h1>
-    <p class="hero__sub">{subtitle[0]}<span class="hero__nw">строительно-монтажная</span>{subtitle[1]}</p>
-    <div class="hero__actions">
-      <a class="btn btn--lime btn--lg" href={routes.services} data-goal="services_click">Наши услуги <span class="btn__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
-      <a class="btn btn--text-light" href={routes.projects} data-goal="projects_click">Проекты <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+<div class="hero-track">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__card">
+      <picture>
+        {mobileSources.map((source) => <source media={MOBILE} type={`image/${source.format}`} srcset={source.srcset} sizes="100vw" />)}
+        {desktopSources.map((source) => <source type={`image/${source.format}`} srcset={source.srcset} sizes="100vw" />)}
+        <img class="hero__photo" src={fallback.src} width={fallback.attributes.width} height={fallback.attributes.height} alt="" loading="eager" fetchpriority="high" decoding="async" />
+      </picture>
+      <canvas class="hero__frames" aria-hidden="true" data-frames-lg={JSON.stringify(framesLg)}></canvas>
+      <div class="hero__shade" aria-hidden="true"></div>
+      <div class="hero__content">
+        <h1 id="hero-title">
+          <span class="hero__line"><span class="hero__line-in">{first}&nbsp;</span></span>
+          <span class="hero__line"><span class="hero__line-in">{second} </span></span>
+          <span class="hero__line"><span class="hero__line-in hero__accent">{accent}</span></span>
+        </h1>
+        <p class="hero__sub">{ui.hero.subtitle.join(' ')}</p>
+        <RequestButton class="btn--lg hero__btn" context="callback" label={ui.actions.orderCall} arrow={false} />
+      </div>
     </div>
-  </div>
-  <div class="hero__photo" aria-hidden="true"><img src={photo} alt="" width="1672" height="941" fetchpriority="high" decoding="async" /></div>
-  <div class="hero__shade" aria-hidden="true"></div>
-  <p class="hero__credit">Временный кадр: иллюстрация, не объект СЭС</p>
-</section>
+  </section>
+</div>
+<script>
+  import '../scripts/hero-frame.ts';
+  import '../scripts/hero-title.ts';
+</script>

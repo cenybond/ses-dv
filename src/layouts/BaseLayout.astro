@@ -2,7 +2,8 @@
 // Оболочка страницы: head (noindex в демо, favicon), skip-link, полоса демо, шапка, <main>, подвал.
 // Меню-шторка и нижняя панель — общие для всех страниц; диалог заявки добавляется в DEMO-05.
 import '../styles/global.css';
-import favicon from '../../design/system/logo/favicon.svg?url';
+// Значок вкладки браузера — полный знак (решение владельца 2026-11-18), а не только верхняя часть.
+import favicon from '../../design/system/logo/logo-mark-square.svg?url';
 import SkipLink from '../components/SkipLink.astro';
 import SeoHead from '../components/seo-head.astro';
 import CookieBanner from '../components/cookie-banner.astro';
@@ -10,16 +11,17 @@ import CookieSettings from '../components/cookie-settings.astro';
 import RequestDialog from '../components/request-dialog.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import MobileMenu from '../components/MobileMenu.astro';
-import MobileBottomBar from '../components/MobileBottomBar.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { normalizePath } from '../data';
 
 interface Props {
   title: string;
   description: string;
-  headerVariant?: 'solid' | 'overlay';
+  headerVariant?: 'solid' | 'overlay' | 'hero';
+  /** Отдельная страница без шапки, подвала, меню и нижней панели (страница 404). */
+  bare?: boolean;
 }
-const { title, description, headerVariant = 'solid' } = Astro.props;
+const { title, description, headerVariant = 'solid', bare = false } = Astro.props;
 const currentPath = normalizePath(Astro.url.pathname);
 ---
 <!doctype html>
@@ -30,16 +32,15 @@ const currentPath = normalizePath(Astro.url.pathname);
     <SeoHead title={title} description={description} path={currentPath} />
     <link rel="icon" href={favicon} type="image/svg+xml" />
   </head>
-  <body>
-    <SkipLink />
-    <SiteHeader variant={headerVariant} currentPath={currentPath} />
+  <body class={bare ? 'page-bare' : undefined}>
+    {!bare && <SkipLink />}
+    {!bare && <SiteHeader variant={headerVariant} currentPath={currentPath} />}
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <SiteFooter currentPath={currentPath} />
-    <MobileMenu currentPath={currentPath} />
-    <MobileBottomBar />
-    <RequestDialog />
+    {!bare && <SiteFooter currentPath={currentPath} />}
+    {!bare && <MobileMenu currentPath={currentPath} />}
+    {!bare && <RequestDialog />}
     <CookieBanner />
     <CookieSettings />
     <script>

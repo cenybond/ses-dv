@@ -66,14 +66,15 @@ export function init_analytics() {
   window.addEventListener('ses:goal', (event) => goal((event as CustomEvent<{ goal?: unknown }>).detail?.goal));
   document.addEventListener('visibilitychange', () => { if (!document.hidden && !allowed()) stop(); });
   document.addEventListener('click', (event) => {
+    // Окно проекта (плитка галереи или пункт списка «Еще работы») открывается без перехода по адресу.
+    if (event.target instanceof Element && event.target.closest('[data-project-modal],[data-modal-open^="project-modal-"]')) goal('project_open');
     const target = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>('a') : null;
     if (!target) return;
     const href = target.getAttribute('href') || '';
     if (href.startsWith('tel:')) goal('phone_click');
     else if (href.startsWith('mailto:')) goal('email_click');
-    else if (href === '/services' || href.startsWith('/services#')) goal('services_click');
-    else if (href === '/projects') goal('projects_click');
-    else if (href.startsWith('/projects/')) goal('project_open');
+    else if (href === '/#home-services') goal('services_click');
+    else if (href === '/#home-projects') goal('projects_click');
   });
   start();
 }

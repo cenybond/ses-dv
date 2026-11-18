@@ -1,13 +1,21 @@
 ---
+// Страница 404 (решение владельца 2026-11-18): отдельная страница без шапки и подвала, фон #141A15, фраза и кнопка по центру сверху,
+// графика «404» из Figma (файл vnzVAkzaxq8GFCf6tV89DL, узел 50:543) на всю ширину внизу — целиком, без обрезки.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageHero from '../components/page-hero.astro';
-import {ui,company} from '../data';
-import {pageui} from '../data/ui';
+import Button from '../components/Button.astro';
+import art from '../assets/404/404.svg?raw';
+import { ui, company } from '../data';
+import { pageui } from '../data/ui';
+import '../styles/not-found.css';
+// Инлайн-SVG в HTML не нуждается в xmlns (адрес пространства имён проверки check-copy считает внешней ссылкой).
+const inlineArt = art.replace(/\sxmlns(?::\w+)?="[^"]*"/g, '');
 ---
-<BaseLayout title={`${ui.notFound.title} — ${company.name.text}`} description={pageui.errormeta}>
-  <PageHero title={ui.notFound.title} eyebrow={pageui.errorcode} lead={ui.notFound.lead} />
-  <section class="container page-error">
-    <p class="page-error__number" aria-hidden="true">{pageui.errorcode}</p>
-    <div><h2>{pageui.errorheading}</h2><nav class="page-jumpnav" aria-label="Навигация со страницы ошибки"><a href="/">{pageui.home}</a><a href="/services">{ui.nav.services}</a><a href="/projects">{ui.nav.projects}</a><a href="/contacts">{ui.nav.contacts}</a></nav></div>
-  </section>
+<BaseLayout bare title={`${ui.notFound.title} — ${company.name.text}`} description={pageui.errormeta}>
+  <div class="not-found">
+    <div class="not-found__top">
+      <h1 class="not-found__title">{ui.notFound.heading}</h1>
+      <Button href="/" size="lg">{ui.notFound.back}</Button>
+    </div>
+    <div class="not-found__art" aria-hidden="true" set:html={inlineArt} />
+  </div>
 </BaseLayout>

@@ -1,28 +1,140 @@
+/* Сетка главной: все секции под hero стоят на той же левой оси, что заголовок hero (поле карточки + отступ текста: 24 + 48 px),
+   и симметричная правая. Ширина не ограничена контейнером 1200 px: hero тоже тянется на весь экран. Значения повторяют hero.css. */
+.home-rest{--axis:calc(var(--space-6) + var(--space-12))}
+.home-rest .container{width:calc(100% - 2 * var(--axis));max-width:none}
+@media(max-width:960px){.home-rest{--axis:calc(var(--gutter) + var(--space-6))}}
+@media(max-width:360px){.home-rest{--axis:calc(var(--gutter) + var(--space-3))}}
 .eyebrow{font:var(--type-label);color:var(--color-brand);margin-block-end:var(--space-4)}
-.home-services{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-4)}
-.home-services a{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 1fr auto;gap:var(--space-6);height:100%;min-height:calc(var(--space-16)*4);padding:var(--space-6);background:var(--color-surface);border-radius:var(--radius-lg);color:var(--color-text);text-decoration:none}
-.home-services li:first-child{grid-column:span 2}
-.home-services li:first-child a{background:var(--color-brand);color:var(--color-on-brand)}
-.home-services h3{grid-column:1/-1;max-width:32ch;font:var(--type-h3);line-height:1.4;letter-spacing:var(--ls-h3)}
-.home-services__number{font:var(--type-label);font-variant-numeric:tabular-nums}
-.home-services__arrow{grid-column:2;display:grid;place-items:center;align-self:end;border:var(--border-w) solid currentColor;border-radius:var(--radius-pill);width:var(--size-touch);height:var(--size-touch);font:var(--type-h3)}
-.home-services a:hover h3{text-decoration:underline;text-underline-offset:var(--space-1)}
-.home-services li:last-child{grid-column:span 2}
-.home-about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:var(--space-16);padding-block:var(--space-12);border-block:var(--border-w) solid var(--color-border)}
-.home-about .link-inline{margin-block-start:var(--space-8)}
-.home-about__lead{font:var(--type-lead);letter-spacing:var(--ls-lead);text-wrap:pretty}
-.home-about__detail{font:var(--type-body-lg);color:var(--color-text-muted);margin-block-start:var(--space-8);max-width:52ch}
-.home-projects{grid-template-columns:repeat(4,minmax(0,1fr))}
-.home-projects .project-card:first-child{grid-column:span 2}
-.home-projects .project-card:first-child .project-card__photo{aspect-ratio:21/9}
-.home-projects .project-card:nth-child(4){grid-column:span 2}
-.home-projects .project-card:nth-child(4) .project-card__photo{aspect-ratio:21/9}
-.home-advantages{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:var(--space-16)}
-.home-advantages ol{display:grid;gap:var(--space-6)}
-.home-advantages li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-8);padding-block-end:var(--space-6);border-bottom:var(--border-w) solid var(--color-border)}
-.home-advantages li span{color:var(--color-brand);font:var(--type-label)}
-.home-advantages h3{font:var(--type-h3);line-height:1.4}
-@media(max-width:960px){.home-projects{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:640px){.home-projects{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:960px){.home-services{grid-template-columns:repeat(2,minmax(0,1fr))}.home-services li:first-child,.home-services li:last-child{grid-column:auto}.home-about,.home-advantages{gap:var(--space-8)}.home-projects .project-card:first-child,.home-projects .project-card:nth-child(4){grid-column:auto}.home-projects .project-card:first-child .project-card__photo,.home-projects .project-card:nth-child(4) .project-card__photo{aspect-ratio:16/10}}
-@media(max-width:640px){.home-services,.home-about,.home-advantages{grid-template-columns:minmax(0,1fr)}.home-services a{min-height:0;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto;gap:var(--space-4);padding:var(--space-5)}.home-services h3{grid-column:2;font:var(--type-h4);line-height:1.4}.home-services__arrow{grid-column:3;align-self:center}.home-services__number{padding-block-start:var(--space-2)}.home-about__lead{font:var(--type-h3);font-weight:400;line-height:1.5}.home-about{padding-block:var(--space-8)}}
+/* Услуги на главной: «бенто» из семи карточек на шести колонках (решение владельца 2026-11-18): две малых и широкая слева, высокая в центре, широкая и две малых справа.
+   Расстановка по порядку списка в index.astro; визуал (фото, цвета) будет дорабатываться. */
+.home-services{--cell:var(--color-surface);display:grid;grid-template-columns:repeat(2,minmax(0,1.2fr)) repeat(2,minmax(0,1fr)) repeat(2,minmax(0,1.2fr));grid-auto-rows:minmax(calc(var(--space-16) * 4),auto);gap:var(--space-4)}
+.home-services li{display:grid;min-width:0}
+.home-services li:nth-child(1){grid-area:1/1}
+.home-services li:nth-child(2){grid-area:1/2}
+.home-services li:nth-child(3){grid-area:2/1/3/3}
+.home-services li:nth-child(4){grid-area:1/3/3/5}
+.home-services li:nth-child(5){grid-area:1/5/2/7}
+.home-services li:nth-child(6){grid-area:2/5}
+.home-services li:nth-child(7){grid-area:2/6}
+.home-services__card{appearance:none;border:0;width:100%;text-align:start;font:inherit;cursor:pointer;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;gap:var(--space-4);padding:var(--space-4) var(--space-3);background:var(--cell);border-radius:var(--radius-lg);color:var(--color-text);text-decoration:none}
+.home-services li:nth-child(2) .home-services__card,.home-services li:nth-child(7) .home-services__card{background:var(--color-brand);color:var(--color-on-brand)}
+.home-services li:nth-child(3) .home-services__card{background:var(--color-bg-alt)}
+.home-services li:nth-child(4) .home-services__card{background:var(--color-bg-dark);color:var(--color-on-brand)}
+.home-services li:nth-child(5) .home-services__card{background:var(--color-bg-dark-alt);color:var(--color-on-brand)}
+.home-services h3{grid-column:1/-1;font:var(--type-h3);letter-spacing:var(--ls-h3);overflow-wrap:break-word;hyphens:manual}
+.home-services li:nth-child(3) .home-services__card,.home-services li:nth-child(4) .home-services__card,.home-services li:nth-child(5) .home-services__card{padding:var(--space-6)}
+/* Кнопка-стрелка (решение владельца 2026-11-18): на карточках услуг залитая зелёная, как плитка «Еще работы», и видна только при наведении (на сенсорных экранах всегда);
+   на тёмных и зелёных карточках — белая с зелёной стрелкой. Исключение — последняя карточка «Подробный перечень услуг»: стрелка всегда, салатовая с тёмной стрелкой, как в «Еще работы». */
+.home-services__arrow{grid-column:2;display:grid;place-items:center;align-self:end;border-radius:var(--radius-pill);width:var(--size-touch);height:var(--size-touch);font:var(--type-h3);background:var(--color-brand-cta);color:var(--color-on-brand);opacity:0;transform:scale(.8);transition:opacity var(--motion-fast),transform var(--motion-fast)}
+.home-services li:nth-child(2) .home-services__arrow,.home-services li:nth-child(4) .home-services__arrow,.home-services li:nth-child(5) .home-services__arrow{background:var(--color-on-brand);color:var(--color-brand-cta)}
+.home-services li:nth-child(7) .home-services__arrow{background:var(--color-accent);color:var(--color-on-accent);opacity:1;transform:none}
+.home-services__card:hover .home-services__arrow,.home-services__card:focus-visible .home-services__arrow{opacity:1;transform:none}
+@media (hover:none){.home-services__arrow{opacity:1;transform:none}}
+/* Карточка с фото («Монтаж объектов видеонаблюдения», решение владельца 2026-11-18): в покое фото выбелено, красок почти не видно; при наведении оно проявляется в цвете.
+   Белая подложка сверху (под тёмный текст) остаётся всегда, зелёного нет. */
+.home-services__card--photo{--film:var(--color-surface);position:relative;overflow:hidden;isolation:isolate}
+/* <picture> вокруг фото не занимает ячейку сетки карточки: само фото вынуто из потока (position:absolute). */
+.home-services__card > picture{position:absolute;inset:0;display:block;pointer-events:none}
+.home-services__photo{position:absolute;inset:0;z-index:-3;width:100%;height:100%;object-fit:cover;object-position:62% 50%;filter:grayscale(1) contrast(.85) brightness(1.1);transition:filter var(--motion-base)}
+/* Плёнка и верхний градиент — цвета самой карточки (--film). */
+.home-services li:nth-child(2) .home-services__card--photo{--film:var(--color-brand)}
+.home-services li:nth-child(2) .home-services__photo{object-position:22% 50%}
+.home-services li:nth-child(3) .home-services__card--photo{--film:var(--color-bg-alt)}
+.home-services li:nth-child(4) .home-services__card--photo{--film:var(--color-bg-dark)}
+.home-services li:nth-child(5) .home-services__card--photo{--film:var(--color-bg-dark-alt)}
+/* Видеонаблюдение: кадр приподнят, чтобы землю снизу подрезало. */
+.home-services li:nth-child(6) .home-services__photo{transform-origin:50% 0;transform:translateY(-14%) scale(1.2)}
+.home-services__card--photo::before,.home-services__card--photo::after{content:"";position:absolute;inset:0;pointer-events:none}
+.home-services__card--photo::before{z-index:-1;background:linear-gradient(to bottom,var(--film) 22%,color-mix(in srgb,var(--film) 0%,transparent) 62%)}
+.home-services__card--photo::after{z-index:-2;background:color-mix(in srgb,var(--film) 55%,transparent);transition:opacity var(--motion-base)}
+.home-services__card--photo:hover .home-services__photo,.home-services__card--photo:focus-visible .home-services__photo{filter:none}
+.home-services__card--photo:hover::after,.home-services__card--photo:focus-visible::after{opacity:0}
+/* Наведение (решение владельца 2026-11-18): карточка слегка увеличивается, подчёркивания у названия нет. */
+.home-services__card{transition:transform var(--motion-fast)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){.home-services__card:hover{transform:scale(1.03)}}
+/* «О нас» — первый блок .home-rest, он наезжает на hero (макет Figma, Frame 4): заголовок и лид слева, пять пунктов справа с линиями между ними. */
+.home-about{padding-block:var(--space-16) 0}
+.home-about__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto 1fr;column-gap:var(--space-16);row-gap:var(--space-8);align-items:start}
+/* Заголовок «Наши услуги» — как «О нас» и «Проекты» (Inter SemiBold, токены about). */
+.home-services__title{font:var(--type-about-title);letter-spacing:var(--ls-about-title);color:var(--color-text)}
+.home-about__title{grid-column:1;grid-row:1;font:var(--type-about-title);letter-spacing:var(--ls-about-title);color:var(--color-text)}
+.home-about__lead{grid-column:1;grid-row:2;max-width:25.25em;font:var(--type-about-lead);letter-spacing:var(--ls-about-lead);color:var(--color-text);text-wrap:pretty}
+.home-about__list{--pad:calc(var(--space-2) + var(--space-1) / 3);grid-column:2;grid-row:2;margin-block-start:calc(var(--pad) * -1)}
+.home-about__list li{position:relative;isolation:isolate;padding-block:var(--pad);font:var(--type-about-item);letter-spacing:var(--ls-about-item);color:var(--color-text)}
+.home-about__list li + li{margin-block-start:1px}
+.home-about__list li > span{display:block;transform-origin:left center}
+/* Разделитель живёт у нижнего края пункта: при наведении верхний уходит вверх вместе с предыдущим пунктом, нижний вниз вместе с наведённым. */
+.home-about__list li:not(:last-child)::after{content:"";position:absolute;inset:auto 0 -1px;height:1px;background:color-mix(in srgb,var(--color-text) 20%,transparent)}
+/* Наведение: слегка серая прямоугольная плашка (без скруглений) за пунктом, шире текста на 12 px с каждой стороны (решение владельца 2026-11-18). */
+.home-about__list li::before{content:"";position:absolute;z-index:-1;inset:0 calc(var(--space-3) * -1);background:transparent;transition:background-color var(--motion-fast),inset var(--motion-fast)}
+@media (hover:hover){
+  .home-about__list li:hover::before{background:color-mix(in srgb,var(--color-text) 6%,transparent)}
+}
+/* Наведение (решение владельца 2026-11-18): текст пункта чуть крупнее, соседние строки и линии раздвигаются на 4 px. Без «уменьшения движения» — только плашка. */
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .home-about__list li > span,.home-about__list li,.home-about__list li::after{transition:transform var(--motion-fast)}
+  .home-about__list li:hover > span{transform:scale(1.04)}
+  .home-about__list li:hover::before{inset:calc(var(--space-1) * -1) calc(var(--space-3) * -1)}
+  .home-about__list li:hover::after{transform:translateY(var(--space-1))}
+  .home-about__list li:has(~ li:hover){transform:translateY(calc(var(--space-1) * -1))}
+  .home-about__list li:hover ~ li{transform:translateY(var(--space-1))}
+}
+/* Телефон и планшет (решение владельца 2026-11-19): «О нас» ближе к карточке hero; правило после базового .home-about, иначе оно его не перебивает. */
+@media(max-width:960px){.home-about{padding-block-start:var(--space-6)}}
+@media(max-width:960px){.home-services{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:auto}.home-services li:nth-child(n){grid-area:auto}.home-services li:nth-child(3),.home-services li:nth-child(4),.home-services li:nth-child(5){grid-column:1/-1}.home-services li:nth-child(4) .home-services__card{min-height:calc(var(--space-16) * 4)}}
+@media(max-width:640px){.home-services{grid-template-columns:minmax(0,1fr)}.home-about__grid{grid-template-columns:minmax(0,1fr);grid-template-rows:none;row-gap:var(--space-6)}.home-about__title,.home-about__lead,.home-about__list{grid-column:1;grid-row:auto}.home-about__lead{margin-block-end:var(--space-4)}.home-services__card{min-height:0;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto;gap:var(--space-4);padding:var(--space-5)}.home-services h3,.home-services li:nth-child(n) h3{grid-column:1;font:var(--type-h3);max-width:none}.home-services__arrow{grid-column:2;align-self:center}.home-about{padding-block-start:var(--space-6)}}
+/* Блок обращения: заголовок и лид слева, справа поля-линии (src/styles/forms.css). Шапка 84 px, поля как у остальных секций.
+   Блок закрепляется под шапкой на путь --cta-travel (его пишет cta-pin.ts): подвал поднимается снизу со скруглёнными верхними углами и
+   останавливается в 40 px под блоком (путь закрепления не больше 128 px, чтобы между формой и подвалом не было пустого поля), ничего не перекрывая. Без JS --cta-travel = 0, блок идёт обычным потоком. */
+.home-cta{--cta-travel:0px;--cta-gap:var(--space-10);padding-block:var(--space-16) var(--cta-gap)}
+.home-cta::after{content:"";display:block;height:min(var(--cta-travel),calc(var(--u) * 2))}
+.home-cta__pin{position:sticky;top:calc(var(--header-h) + var(--space-6))}
+@media(max-width:960px){.home-cta{padding-block:var(--space-12) var(--space-10)}.home-cta__pin{position:static}}
+/* Бегущая строка заказчиков под «О нас»: серые одноцветные логотипы, края растворяются. Лента сдвигается на ширину одной группы (-50 % дорожки),
+   поэтому цикл бесшовный. Наведение — пауза. Без анимации (reduce) — одна группа, перенос строк, по оси сетки. */
+.home-clients{padding-block:var(--space-16) 0}
+.clients{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,var(--color-text) 10%,var(--color-text) 90%,transparent);mask-image:linear-gradient(90deg,transparent,var(--color-text) 10%,var(--color-text) 90%,transparent)}
+.clients__track{display:flex;width:max-content;animation:clients-run 50s linear infinite}
+.clients:hover .clients__track{animation-play-state:paused}
+.clients__group{display:flex;flex:none;align-items:center;gap:calc(var(--space-16) + var(--space-4));padding-inline-end:calc(var(--space-16) + var(--space-4))}
+.clients__item{--u:var(--space-16);flex:none;height:var(--u);color:color-mix(in srgb,var(--color-text) 50%,var(--color-bg))}
+.clients__item svg{display:block;width:auto;height:100%}
+/* Высота знака в долях 64 px (mobile — 48 px): широкие слова ниже, квадратные и круглые знаки выше. */
+.clients__item--drsk{height:calc(var(--u) * 1.04)}.clients__item--rks{height:calc(var(--u) * 1.04)}.clients__item--rostelecom{height:calc(var(--u) * 1.08)}.clients__item--region{height:calc(var(--u) * .88)}
+.clients__item--rzd{height:calc(var(--u) * .62)}.clients__item--octet{height:calc(var(--u) * .67)}.clients__item--kanikurgan{height:calc(var(--u) * .88)}.clients__item--mts{height:var(--u)}
+@keyframes clients-run{to{transform:translateX(-50%)}}
+@media(max-width:640px){.home-clients{padding-block-start:var(--space-12)}.clients__group{gap:var(--space-10);padding-inline-end:var(--space-10)}.clients__item{--u:var(--space-12)}}
+@media(prefers-reduced-motion:reduce){.clients{-webkit-mask-image:none;mask-image:none}.clients__track{width:auto;animation:none}.clients__group{flex-wrap:wrap;gap:var(--space-8) var(--space-12);padding-inline-end:0}.clients__group[aria-hidden]{display:none}}
+
+/* Окно «Наши услуги» (решение владельца 2026-11-18): шторка на весь экран с закруглёнными верхними углами, выезжает снизу быстро и плавно и так же уходит.
+   Открывается по клику на карточку услуги (src/scripts/list-modal.ts). Перечень — тот же, что был на странице услуг, которой больше нет; список в стиле «О нас». */
+.list-modal{--pad:calc(var(--space-2) + var(--space-1) / 3);border:0;padding:0;margin:auto 0 0;inline-size:100%;max-inline-size:none;block-size:calc(100dvh - var(--space-4));max-block-size:none;background:var(--color-bg);color:var(--color-text);border-radius:var(--radius-xl) var(--radius-xl) 0 0;overflow:hidden;transform:translateY(100%);transition:transform calc(var(--motion-base) * 1.5) cubic-bezier(.22,1,.36,1)}
+.list-modal::backdrop{background:var(--color-overlay);opacity:0;transition:opacity calc(var(--motion-base) * 1.5) ease}
+.list-modal.is-visible{transform:none}
+.list-modal.is-visible::backdrop{opacity:1}
+.list-modal:not([open]){display:none}
+.list-modal__scroll{block-size:100%;overflow-y:auto;overscroll-behavior:contain}
+.list-modal__inner{inline-size:calc(100% - 2 * var(--axis,var(--gutter)));margin-inline:auto;padding-block:var(--space-8) var(--space-16)}
+.list-modal__head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);margin-block-end:var(--space-8)}
+.list-modal__head h2{font:var(--type-about-title);letter-spacing:var(--ls-about-title)}
+.list-modal__close{display:grid;place-items:center;inline-size:var(--size-touch);block-size:var(--size-touch);border:var(--border-w) solid var(--color-text);border-radius:var(--radius-pill);background:transparent;color:var(--color-text);cursor:pointer;transition:background-color var(--motion-fast),color var(--motion-fast)}
+.list-modal__close:hover{background:var(--color-text);color:var(--color-bg)}
+/* Пункты — как список справа в «О нас»: линия на нижнем краю, при наведении плашка шире текста на 12 px, текст чуть крупнее, соседние строки и линии раздвигаются на 4 px. */
+.list-modal__list li{position:relative;isolation:isolate;padding-block:var(--pad);font:var(--type-about-item);letter-spacing:var(--ls-about-item);color:var(--color-text);text-wrap:pretty}
+.list-modal__list li + li{margin-block-start:1px}
+.list-modal__list li > :is(span,a,button){display:block;inline-size:100%;transform-origin:left center;color:inherit;text-decoration:none;font:inherit;letter-spacing:inherit;text-align:start;margin:0;padding:0;border:0;background:transparent}
+.list-modal__list li > button{cursor:pointer}
+.list-modal__list :is(a,button):focus-visible{outline:var(--border-w) solid var(--color-brand);outline-offset:var(--space-1)}
+.list-modal__list li:not(:last-child)::after{content:"";position:absolute;inset:auto 0 -1px;height:1px;background:color-mix(in srgb,var(--color-text) 20%,transparent)}
+.list-modal__list li::before{content:"";position:absolute;z-index:-1;inset:0 calc(var(--space-3) * -1);background:transparent;transition:background-color var(--motion-fast),inset var(--motion-fast)}
+.list-modal__list [data-active]::before{background:color-mix(in srgb,var(--color-text) 6%,transparent)}
+@media (hover:hover){.list-modal__list li:hover::before{background:color-mix(in srgb,var(--color-text) 6%,transparent)}}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .list-modal__list li > :is(span,a,button),.list-modal__list li,.list-modal__list li::after{transition:transform var(--motion-fast)}
+  .list-modal__list li:hover > :is(span,a,button){transform:scale(1.04)}
+  .list-modal__list li:hover::before{inset:calc(var(--space-1) * -1) calc(var(--space-3) * -1)}
+  .list-modal__list li:hover::after{transform:translateY(var(--space-1))}
+  .list-modal__list li:has(~ li:hover){transform:translateY(calc(var(--space-1) * -1))}
+  .list-modal__list li:hover ~ li{transform:translateY(var(--space-1))}
+}
+@media(prefers-reduced-motion:reduce){.list-modal,.list-modal::backdrop{transition:none}}

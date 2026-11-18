@@ -8,32 +8,32 @@ export type Route = { href: string; label: string; built: boolean };
 
 export const routes = {
   home: '/',
-  services: '/services',
-  projects: '/projects',
+  services: '/#home-services', // отдельной страницы услуг нет (решение владельца 2026-11-18): пункт ведёт к разделу «Наши услуги» на главной
+  projects: '/#home-projects', // отдельной страницы каталога нет (решение владельца 2026-11-18): пункт ведёт к разделу «Проекты» на главной; полный перечень — окно по плитке «Еще работы»
   about: '/about',
   contacts: '/contacts',
   privacy: '/privacy',
   vacancies: '/vacancies',
 } as const;
 
-/** Маршрут страницы проекта: только для проектов с `hasPage` (data/source/projects.ts). */
-export const projectRoute = (slug: string) => `${routes.projects}/${slug}`;
-
 export const mainNav: Route[] = [
-  { href: routes.services, label: ui.nav.services, built: true }, // заготовка; наполнение DEMO-07
-  { href: routes.projects, label: ui.nav.projects, built: true }, // заготовка; DEMO-08
-  { href: routes.about, label: ui.nav.about, built: true }, // заготовка; DEMO-10
+  { href: routes.about, label: ui.nav.about, built: true }, // порядок пунктов — решение владельца 2026-11-18: Главная, О нас, Услуги, Проекты, Контакты
+  { href: routes.services, label: ui.nav.services, built: true },
+  { href: routes.projects, label: ui.nav.projects, built: true },
   { href: routes.contacts, label: ui.nav.contacts, built: true }, // заготовка; DEMO-11
 ];
+
+/** Вакансии компании на hh.ru (решение владельца 2026-11-18): пункт «Вакансии» в подвале ведёт на этот адрес в новой вкладке. Единственная разрешённая внешняя ссылка кроме tel:, mailto: и wa.me; внутренняя страница /vacancies остаётся. */
+export const vacanciesExternalUrl = 'https://blagoveschensk.hh.ru/employer/9992331?hhtmFrom=vacancy&tab=VACANCIES';
 
 export const privacyRoute: Route = { href: routes.privacy, label: ui.nav.privacy, built: true };
 
 export const pendingRoutes = [...mainNav, privacyRoute].filter((r) => !r.built).map((r) => r.href);
 
-/** Путь без завершающего слэша: `/services/` и `/services` — один маршрут (dev и build отдают разные формы). */
+/** Путь без завершающего слэша: `/about/` и `/about` — один маршрут (dev и build отдают разные формы). */
 export const normalizePath = (pathname: string): string => (pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname) || '/';
 
-/** Состояние пункта навигации для `aria-current`: `page` — это сама страница, `true` — страница внутри раздела (`/projects/tlt` в «Проектах»). */
+/** Состояние пункта навигации для `aria-current`: `page` — это сама страница, `true` — страница внутри раздела. */
 export const currentState = (href: string, pathname: string): 'page' | 'true' | undefined => {
   const path = normalizePath(pathname);
   if (path === href) return 'page';

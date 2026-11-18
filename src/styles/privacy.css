@@ -1,7 +1,11 @@
-.cookie-banner { margin: var(--space-6) var(--gutter); padding: var(--space-6); border: var(--border-w) solid var(--color-border-strong); border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); display: grid; gap: var(--space-4); }
+/* Окно выбора куки: справа внизу над страницей (решение владельца 2026-11-18); на телефоне — над нижней панелью. */
+.cookie-banner { position: fixed; z-index: 40; inset-inline-end: var(--space-6); inset-block-end: var(--space-6); inline-size: min(calc(100% - 2 * var(--space-6)), calc(var(--space-16) * 6)); padding: var(--space-5) var(--space-6); border-radius: var(--radius-lg); background: var(--color-bg-dark); color: var(--color-on-brand); display: grid; gap: var(--space-4); box-shadow: var(--shadow-float); }
 .cookie-banner[hidden] { display: none; }
-.cookie-banner h2 { font: var(--type-h3); margin: 0 0 var(--space-2); }
 .cookie-banner p, .cookie-settings p { font: var(--type-body-sm); }
+.cookie-banner a { color: var(--color-accent); text-decoration: underline; text-underline-offset: var(--space-1); }
+.cookie-banner .cookie-actions { flex-wrap: nowrap; }
+.cookie-banner .btn { flex: 1; min-height: var(--size-touch); padding-inline: var(--space-3); border-radius: var(--radius-md); }
+.cookie-banner .btn--secondary { background: transparent; color: var(--color-on-brand); border-color: color-mix(in srgb, var(--color-on-brand) 50%, transparent); }
 .cookie-actions { display: flex; gap: var(--space-3); flex-wrap: wrap; }
 .cookie-actions .btn { border-radius: var(--radius-pill); }
 .cookie-link, .cookie-close { color: var(--color-brand); background: transparent; border: 0; min-height: var(--size-touch); padding: var(--space-3); font: var(--type-button); cursor: pointer; }
@@ -16,14 +20,22 @@
 .cookie-category-note { font: var(--type-caption); color: var(--color-text-muted); }
 .cookie-toggle { display: flex; gap: var(--space-3); align-items: center; min-height: var(--size-touch); cursor: pointer; }
 .cookie-toggle input { accent-color: var(--color-brand); width: var(--space-5); height: var(--space-5); }
-.cookie-status { font: var(--type-body-sm); text-align: center; margin: 0 var(--gutter); }
-.legal-page { padding-block: var(--section-gap); }
-.legal-page h1 { font: var(--type-h1); max-width: var(--container); }
-.legal-copy { max-width: calc(var(--container) * .66); font: var(--type-body); }
-.legal-copy h2 { font: var(--type-h3); margin-block: var(--space-8) var(--space-4); }
+/* Сообщение «Настройки сохранены» не показывается на странице (решение владельца 2026-11-18), но остаётся для скринридеров. */
+.cookie-status { position: absolute; inline-size: 1px; block-size: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* Юридические страницы (решение владельца 2026-11-18): та же сетка и типографика, что у «О нас» на главной — слева заголовок и пометка, справа текст разделами с тонкими линиями. */
+.legal-page { --axis: calc(var(--space-6) + var(--space-12)); width: calc(100% - 2 * var(--axis)); max-width: none; padding-block: var(--space-16) var(--section-gap); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-16); row-gap: var(--space-8); align-items: start; }
+.legal-head { position: sticky; inset-block-start: var(--space-16); display: grid; gap: var(--space-8); }
+.legal-page h1 { font: var(--type-about-title); letter-spacing: var(--ls-about-title); color: var(--color-text); text-wrap: balance; hyphens: auto; overflow-wrap: break-word; }
+.legal-draft { max-width: 25.25em; padding: var(--space-5) var(--space-6); background: var(--color-bg-alt); border-radius: var(--radius-lg); font: var(--type-body-sm); color: var(--color-text); }
+.legal-copy { font: var(--type-body); color: var(--color-text); }
+.legal-copy h2 { font: var(--type-about-item); letter-spacing: var(--ls-about-item); margin-block: var(--space-8) var(--space-3); padding-block-start: var(--space-6); border-block-start: 1px solid color-mix(in srgb, var(--color-text) 20%, transparent); }
+.legal-copy h2:first-child { margin-block-start: 0; padding-block-start: 0; border-block-start: 0; }
 .legal-copy h3 { font: var(--type-h4); }
-.legal-copy p, .legal-copy ul { margin-block: var(--space-4); }
+.legal-copy p, .legal-copy ul { margin-block: var(--space-3); }
 .legal-copy ul { padding-inline-start: var(--space-6); }
-.legal-copy a, .cookie-banner a, .cookie-settings a { color: var(--color-brand); text-decoration: underline; text-underline-offset: var(--space-1); }
-.legal-draft { padding: var(--space-5); margin-block: var(--space-6); background: var(--color-bg-alt); border-inline-start: var(--space-1) solid var(--color-brand); border-radius: var(--radius-sm); }
-@media (max-width: 640px) { .cookie-actions { flex-direction: column; } .cookie-actions .btn { width: 100%; } .cookie-settings { padding: var(--space-5); } }
+.legal-copy li + li { margin-block-start: var(--space-2); }
+.legal-copy a, .cookie-settings a { color: var(--color-brand); text-decoration: underline; text-underline-offset: var(--space-1); }
+.legal-copy .btn { margin-block: var(--space-3); border-radius: var(--radius-md); }
+@media (max-width: 960px) { .legal-page { --axis: calc(var(--gutter) + var(--space-6)); grid-template-columns: minmax(0, 1fr); padding-block-start: var(--space-10); } .legal-head { position: static; } }
+@media (max-width: 360px) { .legal-page { --axis: calc(var(--gutter) + var(--space-3)); } }
+@media (max-width: 640px) { .cookie-banner { inset-inline-end: var(--gutter); inset-block-end: calc(var(--dock-h, 0px) + var(--space-3)); inline-size: calc(100% - 2 * var(--gutter)); } .cookie-actions .btn { flex: 1; } .cookie-settings { padding: var(--space-5); } }

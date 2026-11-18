@@ -33,6 +33,10 @@ const defined = new Set([...tokens.keys(), ...[...systemCss.matchAll(/(--[\w-]+)
 const files = walk(join(root, 'src')).filter(
   (f) => ['.astro', '.ts', '.css'].includes(extname(f)) && !f.endsWith('theme.generated.css'),
 );
+// Локальные переменные поведения (например, --header-p: прогресс прокрутки), объявленные в самом src/*.css, — допустимы.
+for (const f of files.filter((f) => extname(f) === '.css')) {
+  for (const m of readFileSync(f, 'utf8').matchAll(/(--[\w-]+)\s*:/g)) defined.add(m[1]);
+}
 const HEX = /(?<![\w&"'/=#-])#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/g;
 const FUNC = /\b(?:rgba?|hsla?|oklch|oklab|lab|lch)\(/g;
 const ARBITRARY = /\[(?:-?\d*\.?\d+(?:px|rem|em|vw|vh|%))\]/g;

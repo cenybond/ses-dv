@@ -1,12 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Container from '../components/Container.astro';
+import '../styles/header-hero.css';
 ---
-<BaseLayout title="Согласие на обработку обращения — Связь Энергострой" description="Проект отдельного согласия на обработку данных обращения для юридического согласования.">
+<BaseLayout headerVariant="hero" title="Согласие на обработку обращения — Связь Энергострой" description="Проект отдельного согласия на обработку данных обращения для юридического согласования.">
   <Container as="section" class="legal-page">
-    <h1>Согласие на обработку обращения</h1>
-    <div class="legal-copy">
+    <div class="legal-head">
+      <h1>Согласие на обработку обращения</h1>
       <p class="legal-draft">Проект для юридического согласования. Согласие по этому тексту сейчас не принимается. Форма будет включена после утверждения окончательной редакции.</p>
+    </div>
+    <div class="legal-copy">
       <h2>Предмет согласия</h2>
       <p>Отдельное согласие должно разрешать обработку добровольно предоставленных имени, телефона или e-mail, сообщения и темы обращения для ответа на запрос. В него не включаются реклама, резюме или аналитические технологии.</p>
       <h2>Что необходимо заполнить до запуска</h2>
@@ -22,4 +25,7 @@ import Container from '../components/Container.astro';
       <p><a href="/privacy">Проект политики обработки персональных данных</a> · <a href="/contacts">Контакты</a></p>
     </div>
   </Container>
+  <script>
+    import '../scripts/header-morph.ts';
+  </script>
 </BaseLayout>

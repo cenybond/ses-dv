@@ -1,0 +1,140 @@
+/* Проекты главной: слева заголовок, справа «аккордеон» панелей (макет-образец «Каталог объектов» + React Bits AccordionGallery).
+   Скругления и цвета — из токенов дизайн-системы. Фото нет: серая заглушка с видимой пометкой (решение владельца 2026-11-18). */
+.projects-gal{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.6fr);column-gap:var(--space-16);align-items:start}
+/* Заголовок — как «О нас» (Inter SemiBold, токены --type-about-title). */
+.projects-gal__title{font:var(--type-about-title);letter-spacing:var(--ls-about-title);color:var(--color-text)}
+
+/* Подпись — как лид «О нас» (Inter Regular, токены --type-about-lead). */
+.projects-gal__note{margin-block-start:var(--space-8);font:var(--type-about-lead);letter-spacing:var(--ls-about-lead);color:var(--color-text)}
+
+.pg{display:flex;gap:var(--space-3);height:calc(var(--space-16) * 7);perspective:1400px;perspective-origin:50% 50%}
+.pg__panel{
+  position:relative;flex:1 1 0;min-width:0;min-height:0;overflow:hidden;
+  border-radius:var(--radius-lg);transform-style:preserve-3d;transform-origin:center;will-change:flex-grow,transform;
+  background:color-mix(in srgb,var(--color-text) 28%,var(--color-bg));
+  transition:background-color var(--motion-base);
+}
+/* Без JS раскрыта средняя панель (JS задаёт flex-grow сам); коэффициент 7.04 — доля 52 % при шести панелях и плитке «Еще работы». */
+.pg__panel.is-active{flex-grow:7.04;background:color-mix(in srgb,var(--color-text) 38%,var(--color-bg))}
+/* У панели с фото нет серой подложки: она просвечивала, пока снимок не загружен, и по краям наклонённых панелей. */
+.pg__panel.pg__panel--photo,.pg__panel.pg__panel--photo.is-active{background:transparent}
+.pg__link{position:absolute;inset:0;display:block;inline-size:100%;block-size:100%;margin:0;padding:0;border:0;background:transparent;font:inherit;text-align:start;cursor:pointer;color:var(--color-text);text-decoration:none;-webkit-tap-highlight-color:transparent}
+.pg__link:focus-visible{outline-offset:calc(var(--border-w) * -2)}
+
+/* Водяной знак «Фото ожидается»: одна надпись по центру раскрытой панели под углом (на узких панелях она обрезалась бы обрывками, поэтому там скрыта). */
+.pg__photo{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-28deg);pointer-events:none;user-select:none;
+  font:var(--type-h2-sm);letter-spacing:var(--ls-h2);text-transform:uppercase;white-space:nowrap;
+  color:color-mix(in srgb,var(--color-surface) 45%,transparent);opacity:0;transition:opacity var(--motion-base)
+}
+.pg__link > picture{position:absolute;inset:0;display:block}
+.pg__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+/* Подпись на фото: тёмная подложка снизу, чтобы белый текст читался на светлых снимках. */
+.pg__panel--photo .pg__link::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,color-mix(in srgb,var(--color-bg-dark) 85%,transparent),transparent 55%);opacity:0;transition:opacity var(--motion-base);pointer-events:none}
+.pg__panel--photo.is-active .pg__link::after{opacity:1}
+.pg__panel--photo .pg__caption{z-index:1;color:var(--color-on-brand)}
+.pg__caption{
+  position:absolute;left:var(--space-5);right:var(--space-5);bottom:var(--space-5);display:flex;align-items:stretch;gap:var(--space-3);
+  opacity:0;transform:translateX(calc(var(--space-3) * -1));transition:opacity var(--motion-base),transform var(--motion-base)
+}
+.pg__bar{flex:none;width:var(--space-1);border-radius:var(--radius-pill);background:var(--color-accent)}
+.pg__title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;font:var(--type-h4);line-height:1.3;letter-spacing:var(--ls-h4)}
+.pg__panel.is-active .pg__caption{opacity:1;transform:none}
+.pg__panel.is-active .pg__photo{opacity:1}
+
+/* Плитка «Еще работы»: вертикальная, всегда закрыта, чуть шире свёрнутых панелей (вес 1.5 против 1), цвет #106014 (PROD-08). Кнопка открывает окно со всеми проектами. */
+.pg__panel.pg__panel--cta{flex-grow:1.5;background:var(--color-brand-cta);transform:none!important}
+.pg__cta{display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:var(--space-4);padding:var(--space-6) var(--space-3);color:var(--color-on-brand)}
+.pg__cta-label{font:var(--type-about-item);letter-spacing:var(--ls-about-item);writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}
+.pg__cta-arrow{display:grid;place-items:center;flex:none;width:var(--size-touch);height:var(--size-touch);border-radius:var(--radius-pill);background:var(--color-accent);color:var(--color-on-accent)}
+/* Кнопка-стрелка там, где есть наведение (мышь), появляется только при наведении на плитку или фокусе: плавно и быстро (0.15 с), без сдвига.
+   Место под неё занято всегда, поэтому ничего не прыгает. На телефоне и планшете наведения нет — кнопка видна сразу. */
+@media (hover:hover){
+  .pg__cta-arrow{opacity:0;transition:opacity var(--motion-fast)}
+  .pg__cta:hover .pg__cta-arrow,.pg__cta:focus-visible .pg__cta-arrow{opacity:1}
+}
+.pg__cta:focus-visible{outline-color:var(--color-focus-on-dark)}
+
+.pg__controls{display:flex;justify-content:flex-end;gap:var(--space-3);margin-block-start:var(--space-5)}
+.pg__controls[hidden]{display:none}
+.pg__btn{display:grid;place-items:center;width:var(--size-touch);height:var(--size-touch);border:var(--border-w) solid var(--color-text);border-radius:var(--radius-pill);background:transparent;color:var(--color-text);cursor:pointer;transition:background-color var(--motion-fast),color var(--motion-fast)}
+.pg__btn:hover{background:color-mix(in srgb,var(--color-text) 8%,transparent)}
+.pg__btn--next{border-color:var(--color-text);background:var(--color-text);color:var(--color-on-brand)}
+.pg__btn--next:hover{background:color-mix(in srgb,var(--color-text) 82%,var(--color-bg))}
+
+/* Окно «Еще работы»: сетка фото-плиток по сетке страницы (поля окна — ось, как у всех секций). Скругления и отступы — как у карточек услуг (home.css).
+   Фото в цвете, без осветления сверху; снизу лёгкий светлый градиент и подпись (название проекта). Нет фото — серая заглушка с водяным знаком. */
+.pj{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-4)}
+.pj li{display:grid;min-width:0}
+.pj__card{appearance:none;position:relative;isolation:isolate;overflow:hidden;display:block;inline-size:100%;aspect-ratio:1;margin:0;padding:0;border:0;border-radius:var(--radius-lg);background:color-mix(in srgb,var(--color-text) 28%,var(--color-bg));font:inherit;text-align:start;color:var(--color-text);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform var(--motion-fast)}
+.pj__card:focus-visible{outline-offset:calc(var(--border-w) * -2)}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){.pj__card:hover{transform:scale(1.02)}}
+.pj__media{position:absolute;inset:0;z-index:-2;overflow:hidden;border-radius:var(--radius-lg);background:color-mix(in srgb,var(--color-text) 28%,var(--color-bg))}
+.pj__media picture{display:block;block-size:100%}
+.pj__img{display:block;inline-size:100%;block-size:100%;object-fit:cover;object-position:center}
+.pj__card::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,color-mix(in srgb,var(--color-surface) 88%,transparent),color-mix(in srgb,var(--color-surface) 0%,transparent) 62%);pointer-events:none;transition:opacity var(--motion-base)}
+.pj__caption{position:absolute;inset:auto var(--space-3) var(--space-4);transition:opacity var(--motion-base)}
+.pj__title{display:block;font:var(--type-h4);line-height:1.25;letter-spacing:var(--ls-h4);color:var(--color-text);overflow-wrap:break-word;hyphens:manual;text-wrap:balance}
+.pj__ph{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%) rotate(-28deg);pointer-events:none;user-select:none;font:var(--type-h2-sm);letter-spacing:var(--ls-h2);text-transform:uppercase;white-space:nowrap;color:color-mix(in srgb,var(--color-surface) 45%,transparent)}
+
+/* Окно проекта (вместо отдельной страницы): шторка как у перечней (home.css, .list-modal). Слева снимки (листаются), справа название и текст из источника.
+   Поля и сетка — те же, что у всех разделов (ось из .list-modal__inner); скругление и отступы — как у карточек услуг. */
+.list-modal__head.list-modal__head--end{justify-content:flex-end;margin-block-end:var(--space-4)}
+/* Крестик остаётся на месте при прокрутке окна проекта (решение владельца 2026-11-19): шапка прилипает к верху, пропускает клики мимо крестика. */
+.project-modal .list-modal__head--end{position:sticky;inset-block-start:var(--space-4);z-index:3;pointer-events:none}
+.project-modal .list-modal__head--end .list-modal__close{pointer-events:auto}
+.project-modal .list-modal__close:not(:hover){background:var(--color-bg)}
+/* Открытие морфингом: окно сразу на месте, без выезда снизу (иначе фото плитки «улетало» бы вместе со шторкой). */
+.list-modal[data-morph],.list-modal[data-morph]::backdrop{transition:none}
+.project-modal__body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-8) var(--space-16);align-items:start}
+.project-modal__gallery{position:sticky;inset-block-start:var(--space-4);display:grid;gap:var(--space-4);min-width:0}
+.project-modal__stage{position:relative;overflow:hidden;aspect-ratio:4/3;border-radius:var(--radius-lg);background:color-mix(in srgb,var(--color-text) 28%,var(--color-bg))}
+.project-modal__slides{display:flex;block-size:100%;margin:0;padding:0;list-style:none;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none}
+.project-modal__slides::-webkit-scrollbar{display:none}
+.project-modal__slides li{position:relative;flex:0 0 100%;block-size:100%;scroll-snap-align:start}
+.project-modal__slides picture{display:block;block-size:100%}
+.project-modal__photo{display:block;inline-size:100%;block-size:100%;object-fit:cover}
+.project-modal__ph{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-28deg);pointer-events:none;user-select:none;font:var(--type-h2-sm);letter-spacing:var(--ls-h2);text-transform:uppercase;white-space:nowrap;color:color-mix(in srgb,var(--color-surface) 45%,transparent)}
+.project-modal__nav{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+.project-modal__count{font:var(--type-label);color:var(--color-text)}
+.project-modal__text{display:grid;gap:var(--space-6);justify-items:start;min-width:0;font:var(--type-about-lead);letter-spacing:var(--ls-about-lead);color:var(--color-text);text-wrap:pretty;view-transition-name:project-info}
+.project-modal__text h2{font:var(--type-about-title);letter-spacing:var(--ls-about-title);text-wrap:balance;overflow-wrap:anywhere}
+.project-modal__text h3{font:var(--type-about-item);letter-spacing:var(--ls-about-item);margin-block-end:var(--space-3)}
+.project-modal__text section{display:grid;gap:var(--space-3)}
+.project-modal__text ul{display:grid;gap:var(--space-2)}
+.project-modal__works{display:grid;list-style:none;margin:0;padding:0}
+.project-modal__works li{padding-block:var(--space-4);border-block-start:1px solid color-mix(in srgb,var(--color-text) 20%,transparent)}
+.project-modal__works li > span{display:block;font:var(--type-about-item);letter-spacing:var(--ls-about-item)}
+.project-modal__works li > p{margin-block-start:var(--space-2);font:var(--type-body);color:var(--color-text)}
+
+/* Пока фото плитки летит обратно (класс на кнопке-плитке ставит list-modal.ts), градиент и подпись скрыты: в переходе они лежат под летящим фото
+   и иначе появились бы рывком в конце; после перехода класс снимается, и они плавно проявляются обычным переходом opacity. */
+.is-morphing::after,.is-morphing .pg__caption,.is-morphing .pj__caption{opacity:0!important;transition:none!important}
+/* Морфинг фото плитки в большое фото окна (View Transitions API; без неё то же делает GSAP Flip, src/scripts/list-modal.ts).
+   Остальное содержимое («root») уходит плавным растворением, текст справа (project-info) появляется с задержкой, когда фото уже на месте. */
+::view-transition-group(project-photo){animation-duration:.65s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+::view-transition-old(project-photo),::view-transition-new(project-photo){block-size:100%;object-fit:cover;overflow:hidden;border-radius:var(--radius-lg)}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.35s}
+::view-transition-old(project-info){animation:project-info-out .2s ease both}
+::view-transition-new(project-info){animation:project-info-in .5s cubic-bezier(.22,1,.36,1) .4s both}
+@keyframes project-info-out{to{opacity:0}}
+@keyframes project-info-in{from{opacity:0;transform:translateY(var(--space-6))}}
+@media(prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+
+@media(max-width:1200px){.pj{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* Чем уже экран, тем меньше полос в ряду: до 960 px скрыта последняя, до 640 px — две последние (проекты остаются в окне «Еще работы»). */
+@media(max-width:960px){.pg__panel--hide-md{display:none}}
+@media(max-width:640px){.pg__panel--hide-sm{display:none}}
+@media(max-width:960px){.projects-gal{grid-template-columns:minmax(0,1fr);row-gap:var(--space-8)}.pj{grid-template-columns:repeat(2,minmax(0,1fr))}.project-modal__body{grid-template-columns:minmax(0,1fr)}.project-modal__gallery{position:static}}
+@media(max-width:640px){
+  /* Телефон: те же вертикальные полосы, что и на десктопе (раскрытая шире, остальные узкие), в одну строку; плитка «Еще работы» — отдельной строкой под ними. */
+  .pg{flex-wrap:wrap;height:auto;gap:var(--space-2);row-gap:var(--space-3);perspective:none}
+  .pg__panel:not(.pg__panel--cta){block-size:calc(var(--space-16) * 7)}
+  .pg__panel.pg__panel--cta{flex:1 1 100%;block-size:var(--space-16)}
+  .pg__cta{flex-direction:row;padding:var(--space-3) var(--space-5)}
+  .pg__cta-label{writing-mode:horizontal-tb;transform:none}
+  .pg__caption{left:var(--space-3);right:var(--space-3);bottom:var(--space-4);gap:var(--space-2)}
+  .pg__title{font:var(--type-label);line-height:1.25;hyphens:auto;overflow-wrap:break-word;-webkit-line-clamp:6}
+}
+@media(max-width:480px){.pj{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.pg__panel,.pg__caption,.pg__photo,.pg__panel--photo .pg__link::after{transition:none}}

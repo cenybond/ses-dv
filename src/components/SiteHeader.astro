@@ -9,14 +9,14 @@ import RequestButton from './request-button.astro';
 import { phones, ui, mainNav } from '../data';
 
 interface Props {
-  variant?: 'solid' | 'overlay';
+  variant?: 'solid' | 'overlay' | 'hero';
   currentPath?: string;
 }
 const { variant = 'solid', currentPath = '' } = Astro.props;
 ---
-<header class:list={['site-header', variant === 'solid' && 'is-solid']} id="top" data-header={variant === 'solid' ? 'solid' : ''}>
+<header class:list={['site-header', variant !== 'overlay' && 'is-solid', variant === 'hero' && 'site-header--hero']} id="top" data-header={variant !== 'overlay' ? 'solid' : ''}>
   <div class="container site-header__row">
-    <Logo variant="wordmark" />
+    <Logo variant={variant === 'hero' ? 'horizontal' : 'wordmark'} />
     <nav class="nav" aria-label={ui.a11y.mainNav}>
       <ul>
         <li><NavigationLink href="/" label="Главная" currentPath={currentPath} /></li>

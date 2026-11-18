@@ -83,7 +83,12 @@ try {
     await evaluate('new Promise(r => document.readyState === "complete" ? r(true) : addEventListener("load", () => r(true), { once: true }))');
     await evaluate('document.fonts.ready.then(() => true)');
     await evaluate('localStorage.removeItem("ses-consent")');
-    assert.equal(await evaluate('document.querySelector("[data-cookie-banner]").hidden'), true);
+    // Окно выбора читает сохранённый выбор при загрузке: после сброса страницу нужно открыть заново.
+    await send('Page.navigate', { url: origin + '/cookies' });
+    await sleep(300);
+    await evaluate('new Promise(r => document.readyState === "complete" ? r(true) : addEventListener("load", () => r(true), { once: true }))');
+    await evaluate('document.fonts.ready.then(() => true)');
+    assert.equal(await evaluate('document.querySelector("[data-cookie-banner]").hidden'), false);
     assert.equal(await evaluate('document.querySelector("#cookie-analytics").disabled'), true);
     await evaluate('document.querySelector("[data-cookie-settings]").focus()');
     await press('Enter', 'Enter', 13);

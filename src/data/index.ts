@@ -3,7 +3,6 @@
 import { advantages, homeAdvantageIds } from './source/advantages.ts';
 import { projects, homeProjects } from './source/projects.ts';
 import { services } from './source/services.ts';
-import { projectRoute } from './nav.ts';
 
 export { company, hero, departments, departmentsHeading, documents } from './source/company.ts';
 export { phones, email, address, contactsPageTitle, contactsLead } from './source/contacts.ts';
@@ -13,7 +12,7 @@ export { projects, projectsPageTitle, projectsPageLead, homeProjects } from './s
 export { tlt, tltWorkTypes } from './source/tlt.ts';
 export { privacyTitle, privacyParagraphs } from './source/privacy.ts';
 export { ui } from './ui.ts';
-export { routes, mainNav, privacyRoute, projectRoute, currentState, normalizePath } from './nav.ts';
+export { routes, mainNav, privacyRoute, vacanciesExternalUrl, currentState, normalizePath } from './nav.ts';
 export type * from './types.ts';
 
 type ProjectItem = (typeof projects)[number];
@@ -29,8 +28,10 @@ export const getHomeProjects = (): ProjectItem[] =>
 export const getHomeAdvantages = () =>
   homeAdvantageIds.ids.map((id) => advantages.find((a) => a.id === id)).filter((a) => a !== undefined);
 
-/** Ссылка карточки проекта: только если страница есть в демо, иначе карточка не кликабельна. */
-export const projectHref = (project: ProjectItem): string | null => (project.hasPage ? projectRoute(project.slug) : null);
+/** Порядок пунктов блока «О нас» главной — по макету Figma (Frame 4), тексты те же, что в списке преимуществ. */
+const homeAboutAdvantageIds = ['adv-05', 'adv-02', 'adv-01', 'adv-03', 'adv-04'] as const;
+export const getHomeAboutAdvantages = () =>
+  homeAboutAdvantageIds.map((id) => advantages.find((a) => a.id === id)).filter((a) => a !== undefined);
 
 export { projectdetails } from './source/project-details.ts';
 export { workdetails } from './source/work-details.ts';

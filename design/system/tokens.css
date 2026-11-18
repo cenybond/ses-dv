@@ -4,11 +4,12 @@
 :root{
   /* ---------- Цвет: бренд ---------- */
   --color-brand:#116315;              /* Approved A-12. Основной UI-цвет: ссылки, фокус, плитки, заголовочные акценты */
+  --color-brand-cta:#106014;          /* PROD-08 (решение владельца 2026-11-18): плитка «Еще работы» в галерее проектов главной. Белый текст на ней 7,8 : 1 */
   --color-accent:#88D600;             /* Approved A-12. Главная кнопка, метки, подчёркивания; НИКОГДА не несёт текст/смысл на светлом (1,66 : 1) */
   --color-accent-hover:#97E61A;       /* Proposed. Hover главной кнопки */
   --color-accent-mid:#6BAD04;         /* Approved A-12 (резерв, цвет из знака). В UI пока не используется */
   --color-accent-deep:#4D9600;        /* Approved A-12 (резерв, цвет из знака). В UI пока не используется. Белый текст на нём 3,7 : 1 — нельзя */
-  --color-on-accent:#111111;          /* Текст на --color-accent: 10,5 : 1 */
+  --color-on-accent:#141A15;          /* Текст на --color-accent (решение владельца 2026-11-18: весь тёмный текст — #141A15) */
   --color-on-brand:#FFFFFF;           /* Текст на --color-brand и тёмных зонах: 7,5 : 1 */
 
   /* ---------- Цвет: фон и поверхности (Proposed, V-3) ---------- */
@@ -39,6 +40,17 @@
   /* ---------- Типографика: семейства ---------- */
   --font-head:"Manrope","Segoe UI",system-ui,sans-serif;       /* Заголовки, кнопки, навигация, подписи */
   --font-text:"Golos Text","Segoe UI",system-ui,sans-serif;    /* Текст и интерфейс */
+  --font-hero:"Inter","Segoe UI",system-ui,sans-serif;          /* Approved 2026-11-18 (макет Figma): H1 и подзаголовок hero главной, название в логотипе шапки */
+  --type-hero:600 clamp(44px,4.135vw,59.55px)/.85 var(--font-hero);   /* H1 hero главной (Figma: Inter SemiBold 59,55 / 85 %) */
+  --type-hero-sub:400 clamp(17px,1.495vw,21.52px)/1.15 var(--font-hero); /* Подзаголовок hero (Figma: Inter Regular 21,52 / 115 %) */
+  --type-logo-name:700 16.89px/.916 var(--font-hero);              /* Название рядом со знаком в шапке главной (Figma) */
+  --type-phone:600 14px/1.2 var(--font-head);                       /* Телефон в шапке главной (Figma: Manrope SemiBold 14) */
+  --ls-hero:-.05em; --ls-hero-sub:-.03em; --ls-logo-name:-.02em;
+  /* Блок «О нас» главной (Figma, Frame 4, узел 37:472, файл vnzVAkzaxq8GFCf6tV89DL; решение владельца 2026-11-18): размеры при макете 1440 → 44 / 24 / 22 px. */
+  --type-about-title:600 clamp(32px,3.056vw,44px)/1.08 var(--font-hero);  /* «О нас»: Inter SemiBold 44, интерлиньяж 108 %, трекинг −5 % */
+  --type-about-lead:400 clamp(18px,1.667vw,24px)/1.25 var(--font-hero);   /* Лид: Inter Regular 24, интерлиньяж 125 %, трекинг −2 % */
+  --type-about-item:600 clamp(17px,1.528vw,22px)/1.25 var(--font-head);   /* Пункты справа: Manrope SemiBold 22, интерлиньяж 125 %, трекинг −3 % */
+  --ls-about-title:-.05em; --ls-about-lead:-.02em; --ls-about-item:-.03em;
 
   /* ---------- Типографика: стили (font-shorthand: вес размер/интерлиньяж семейство) ---------- */
   --type-display:400 clamp(46px,5.2vw,76px)/1.02 var(--font-head);   /* H1 главной (hero) */

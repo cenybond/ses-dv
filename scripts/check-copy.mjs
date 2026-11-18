@@ -493,6 +493,7 @@ for (const file of fullsnapshots) {
     if (rel !== 'src/data/source/privacy.ts') {
       for (const m of linktext.matchAll(/https?:\/\/[^\s'"`)<>]+/g)) {
         if (/^https:\/\/(?:wa\.me\/|www\.w3\.org\/)/.test(m[0]) && !/tilda/.test(m[0])) continue;
+        if (m[0].replaceAll('&amp;', '&') === 'https://blagoveschensk.hh.ru/employer/9992331?hhtmFrom=vacancy&tab=VACANCIES') continue; // «Вакансии» в подвале — решение владельца 2026-11-18
         if (rel === 'src/pages/sitemap.xml.ts' && m[0] === 'http://www.sitemaps.org/schemas/sitemap/0.9') continue;
         if (rel === 'src/data/site-config.ts' && m[0] === 'https://ses-dv.ru') continue;
         if (rel === 'src/components/seo-head.astro' && m[0] === 'https://schema.org') continue;

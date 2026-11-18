@@ -1,0 +1,43 @@
+---
+// Бегущая строка заказчиков под «О нас» (на действующем сайте — блок «Наши заказчики», 8 логотипов, docs/content/source/home.md).
+// Логотипы — векторные SVG одного цвета (scripts/build-client-logos.py, src/assets/clients/), цвет задаёт CSS: серый, знак и название вместе.
+// Лента идёт без остановки, замирает при наведении; при «уменьшении движения» (и без CSS-анимации) — обычная сетка без дубля.
+// Права на показ логотипов заказчиков подтверждает владелец (Q-10).
+import drsk from '../assets/clients/drsk.svg?raw';
+import rks from '../assets/clients/rks.svg?raw';
+import rostelecom from '../assets/clients/rostelecom.svg?raw';
+import region from '../assets/clients/region.svg?raw';
+import rzd from '../assets/clients/rzd.svg?raw';
+import octet from '../assets/clients/octet.svg?raw';
+import kanikurgan from '../assets/clients/kanikurgan.svg?raw';
+import mts from '../assets/clients/mts.svg?raw';
+
+// Высота каждого логотипа задана в home.css (класс clients__item--<id>): выравнивает визуальный вес широких и квадратных знаков.
+const clients = [
+  { name: 'ДРСК', svg: drsk, id: 'drsk' },
+  { name: 'РКС Благовещенск', svg: rks, id: 'rks' },
+  { name: 'Ростелеком', svg: rostelecom, id: 'rostelecom' },
+  { name: 'Регион, группа компаний', svg: region, id: 'region' },
+  { name: 'РЖД, Российские железные дороги', svg: rzd, id: 'rzd' },
+  { name: 'ОСТЕТ Invest', svg: octet, id: 'octet' },
+  { name: 'Каникурган', svg: kanikurgan, id: 'kanikurgan' },
+  { name: 'МТС', svg: mts, id: 'mts' },
+];
+---
+<section class="home-clients" aria-label="Наши заказчики">
+  <div class="container">
+    <div class="clients">
+      <div class="clients__track">
+        {[false, true].map((copy) => (
+          <ul class="clients__group" aria-hidden={copy ? 'true' : undefined}>
+            {clients.map((client) => (
+              <li class={`clients__item clients__item--${client.id}`} role={copy ? undefined : 'img'} aria-label={copy ? undefined : client.name}>
+                <Fragment set:html={(copy ? client.svg.replace(/<defs>.*?<\/defs>/s, '') : client.svg).replace(/ xmlns="[^"]*"/, '')} />
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

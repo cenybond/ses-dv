@@ -1,6 +1,6 @@
-// Проект «Таможенно-логистический терминал» (PRJ-14, /projects/tlt). Тексты — docs/content/source/tlt.md дословно.
+// Проект «Таможенно-логистический терминал» (PRJ-14, окно на главной). Тексты — docs/content/source/tlt.md дословно.
 // Название карточки каталога — в projects.ts (одна запись, без дубля); связанные услуги — `serviceLinks` проекта prj-14 (SOURCE_SUPPORTED, не CLIENT_APPROVED).
-// 12 видов работ доступны на отдельных страницах полной версии.
+// 12 видов работ показываются списком в окне проекта (отдельных страниц нет).
 import type { SourceText, WorkType } from '../types.ts';
 import { routes } from '../nav.ts';
 

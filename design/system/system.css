@@ -7,6 +7,8 @@
 @font-face{font-family:"Manrope";src:url("fonts/manrope-latin-wght-normal.woff2") format("woff2");font-weight:200 800;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:"Golos Text";src:url("fonts/golos-text-cyrillic-wght-normal.woff2") format("woff2");font-weight:400 900;font-display:swap;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
 @font-face{font-family:"Golos Text";src:url("fonts/golos-text-latin-wght-normal.woff2") format("woff2");font-weight:400 900;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Inter";src:url("fonts/inter-cyrillic-wght-normal.woff2") format("woff2");font-weight:100 900;font-display:swap;unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Inter";src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");font-weight:100 900;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 
 /* ---------- База ---------- */
 *,*::before,*::after{box-sizing:border-box}
@@ -222,9 +224,18 @@ button.dot:hover,button.dot.is-hover,a.dot:hover,a.dot.is-hover{transform:transl
 .form__nojs{margin-bottom:12px;font-weight:600}
 
 /* ---------- Footer ---------- */
-.site-footer{background:var(--color-bg-dark);color:var(--color-text-on-dark);padding-block:clamp(40px,4.5vw,64px) 28px}
-.footer__grid{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));gap:32px}
-.footer__brand{display:grid;gap:14px;align-content:start;font-weight:600}
+.site-footer{background:var(--color-bg-dark);color:var(--color-text-on-dark);padding-block:clamp(40px,4.5vw,64px) 0;overflow:hidden}
+/* Поля как у заголовка hero (24 + 48 = 72 px): первая колонка у левого поля, последняя — у правого, остальные между ними поровну. */
+.footer__wrap{padding-inline:calc(var(--space-6) + var(--space-12))}
+.footer__grid{display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;gap:32px}
+.footer__grid .footer__muted{max-width:30ch}
+.footer__brand{display:grid;gap:14px;align-content:start}
+.footer__lead{font:700 15px/1.35 var(--font-head);max-width:26ch}
+/* Крупный знак внизу: пять фигур на всю ширину, ровные зазоры и единый наклон кровель; цвета — из знака компании (токены). */
+.footer__mark{display:block;width:100%;height:auto;margin-top:clamp(40px,5vw,80px)}
+.footer__mark-side{fill:var(--color-accent-mid)}
+.footer__mark-mid{fill:var(--color-accent-deep)}
+.footer__mark-core{fill:var(--color-accent)}
 .footer__muted{color:var(--color-text-on-dark-muted);font-size:14px;line-height:1.5;font-weight:400}
 .footer__h{font:700 15px/1.2 var(--font-head);margin-bottom:14px}
 .footer__col ul{display:grid;gap:0}
@@ -232,6 +243,8 @@ button.dot:hover,button.dot.is-hover,a.dot:hover,a.dot.is-hover{transform:transl
 .footer__col a:hover,.footer__col a.is-hover{color:var(--color-on-brand);text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--color-accent)}
 .footer__col a[aria-current]{color:var(--color-on-brand);text-decoration:underline;text-decoration-color:var(--color-accent);text-underline-offset:4px}
 .footer__col .off{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 8px;min-height:var(--size-touch);color:var(--color-text-on-dark-muted);font-size:15px}
+/* Десктоп (мышь): пункты подвала плотнее, шаг 32 px. Ниже 1025 px остаётся цель касания 44 px. */
+@media (min-width:1025px){.footer__col a,.footer__col .off{min-height:var(--space-8)}}
 .badge{display:inline-flex;align-items:center;padding:2px 10px;border:1px solid var(--color-border-strong);border-radius:var(--radius-pill);font:var(--type-caption);color:var(--color-text-muted);white-space:nowrap}
 .badge--on-dark{border-color:rgba(255,255,255,.28);color:var(--color-text-on-dark-muted)}
 .footer__bottom{align-items:center;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14);color:var(--color-text-on-dark-muted);font-size:14px}
@@ -264,7 +277,6 @@ html:has(.modal[open]){overflow:hidden}
 .stub-note{max-width:60ch;margin:32px 0 var(--section-gap);padding:20px 24px;border:1px dashed var(--color-border-strong);border-radius:var(--radius-md);background:var(--color-bg-alt);color:var(--color-text-muted)}
 
 /* ---------- Нижняя панель mobile ---------- */
-.dock{display:none}
 
 /* ---------- Адаптив (канонические брейкпоинты: 640 / 960; локальные: 820, 1024, 1180) ---------- */
 @media (max-width:1180px){
@@ -279,6 +291,7 @@ html:has(.modal[open]){overflow:hidden}
   .gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
   :root{--header-h:72px}
   .nav,.site-header__actions .btn{display:none}
+  .footer__wrap{padding-inline:var(--gutter)}
   .burger{display:grid}
   .projects{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cta{grid-template-columns:1fr}
@@ -298,9 +311,6 @@ html:has(.modal[open]){overflow:hidden}
   .service{min-height:0}
 }
 @media (max-width:640px){
-  :root{--dock-h:76px}
-  html{scroll-padding-bottom:calc(var(--dock-h) + env(safe-area-inset-bottom))}
-  body{padding-bottom:calc(var(--dock-h) + env(safe-area-inset-bottom))}
   .demo-strip{font-size:12px;padding:8px 0;text-align:start}
   .logo{--logo-w:168px}
   /* услуги — компактные строки вместо сжатых карточек */
@@ -323,15 +333,8 @@ html:has(.modal[open]){overflow:hidden}
   .cta{border-radius:var(--radius-lg)}
   .footer__grid{grid-template-columns:1fr}
   .footer__bottom{margin-top:28px}
-  .dock{position:fixed;inset-inline:0;bottom:0;z-index:60;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px;padding:10px var(--gutter) calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.98);box-shadow:0 -1px 0 var(--color-border)}
-  .dock .btn{min-height:52px;padding:0 12px}
-  .dock .btn{white-space:normal;text-align:center}
   .modal[open]{padding:0;place-items:end center}
   .modal__box{border-radius:var(--radius-lg) var(--radius-lg) 0 0;max-height:92dvh}
   .modal__box--small{border-radius:var(--radius-lg) var(--radius-lg) 0 0}
   .modal__box--menu{width:100%;height:100%;max-height:none;border-radius:0}
-}
-@media (max-width:360px){
-  .dock{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}
-  .dock .btn{padding:0 8px;font-size:14px}
 }

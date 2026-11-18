@@ -1,0 +1,54 @@
+/* Шапка главной (плашки логотипа, меню и действий): подключается на главной и на юридических страницах. Вынесено из hero.css. */
+/* СЭС — шапка и hero главной, повтор макета Figma «Главная — desktop 1440» (vnzVAkzaxq8GFCf6tV89DL, узлы 18:699 и 15:69).
+   Подключается только на главной. Мобильная версия по макету не верстается — ниже только безопасный перенос. */
+
+/* ---------- Шапка: 84 px, фон страницы, поля 24 px ---------- */
+.site-header--hero.is-solid{background:var(--color-bg);box-shadow:none;color:var(--color-text)}
+.site-header--hero .site-header__row{transition:none}
+
+/* Логотип: знак 63 × 63 и название в две строки через 6 px. */
+.logo--horizontal{gap:calc(var(--space-2) - var(--space-1) / 2)}
+.logo__mark{display:block;width:calc(var(--space-16) - var(--space-1) / 4);height:auto;flex:none;transition:width var(--motion-base)}
+.logo__name{font:var(--type-logo-name);letter-spacing:var(--ls-logo-name);text-transform:uppercase;color:var(--color-accent-deep)}
+
+@media (min-width:961px){
+  .site-header--hero .site-header__row{width:auto;padding-inline:var(--space-6);display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-6)}
+  /* Логотип не растягивается на всю колонку сетки: иначе плашка под ним тянется до меню. */
+  .site-header--hero .logo{justify-self:start}
+  .site-header--hero .nav{justify-self:center}
+  .site-header--hero .nav ul{gap:0}
+  /* Пункт 48 px высотой (как кнопка), поля 12 px. Подчёркивание (зелёное, растёт слева за 0,3 с) стоит под пунктом, раздел которого сейчас на экране (home-nav.ts, решение владельца 2026-11-18). */
+  .site-header--hero .nav a{min-height:var(--size-btn);padding-inline:var(--space-3);opacity:1;color:var(--color-text)}
+  .site-header--hero .nav a::after{left:var(--space-3);right:var(--space-3);bottom:var(--space-2);background:var(--color-brand)}
+  .site-header--hero .site-header__actions{justify-self:end;gap:var(--space-4)}
+  .site-header--hero .header-phone{font:var(--type-phone)}
+  .site-header--hero .site-header__actions .btn{min-height:var(--size-btn);border-radius:var(--radius-md)}
+}
+
+/* После начала прокрутки (макет Figma: Frame 3, Frame 2, «Действия») белая полоса шапки не гаснет, а перетекает в три плашки
+   (логотип, меню, действия). Полоса — это те же три плашки в состоянии --header-p = 0: они стыкуются встык, на всю высоту шапки
+   и до краёв экрана, без скругления и тени. Прогресс прокрутки 0…1 пишет hero-frame.ts; по мере роста плашки сжимаются до 56 px,
+   отходят от краёв и друг от друга и получают скругление. Тени нет (решение владельца 2026-11-18). Элементы не двигаются: плашка — псевдоэлемент вокруг элемента.
+   --ext-l / --ext-r (px) — на сколько плашка в состоянии полосы выступает за элемент; их измеряет hero-frame.ts.
+   Без JS остаётся обычная сплошная полоса (::before у шапки). */
+.site-header--hero{--header-p:0;transition:none}
+.site-header--hero.is-solid{background:transparent}
+.site-header--hero::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--color-bg);pointer-events:none}
+.site-header--hero.is-morph::before{display:none}
+.site-header--hero .logo,.site-header--hero .nav,.site-header--hero .site-header__actions{position:relative;--ext-l:0px;--ext-r:0px}
+.site-header--hero .logo{--tight-l:var(--space-1);--tight-r:var(--space-4)}
+.site-header--hero .nav{--tight-l:var(--space-1);--tight-r:var(--space-1)}
+.site-header--hero .site-header__actions{--tight-l:var(--space-4);--tight-r:var(--space-1)}
+/* Телефон: в плашке справа только бургер (без круглой обводки), поэтому отступ слева такой же, как справа. */
+@media (max-width:960px){.site-header--hero .site-header__actions{--tight-l:var(--space-1)}}
+/* 961–1180 px: номер телефона скрыт (system.css), слева от кнопки пустого места под него быть не должно — плашка обнимает кнопку так же, как справа (решение владельца 2026-11-19). */
+@media (min-width:961px) and (max-width:1180px){.site-header--hero .site-header__actions{--tight-l:var(--space-1)}}
+.site-header--hero .logo::before,.site-header--hero .nav::before,.site-header--hero .site-header__actions::before{
+  content:"";display:none;position:absolute;z-index:-1;top:50%;transform:translateY(-50%);pointer-events:none;
+  height:calc(var(--header-h) - (var(--header-h) - var(--space-14)) * var(--header-p));
+  left:calc(var(--ext-l) * -1 * (1 - var(--header-p)) - var(--tight-l) * var(--header-p));
+  right:calc(var(--ext-r) * -1 * (1 - var(--header-p)) - var(--tight-r) * var(--header-p));
+  border-radius:calc((var(--radius-md) + var(--space-1)) * var(--header-p));background:var(--color-bg);
+}
+.site-header--hero.is-morph .logo::before,.site-header--hero.is-morph .nav::before,.site-header--hero.is-morph .site-header__actions::before{display:block}
+

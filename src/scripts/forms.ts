@@ -1,5 +1,7 @@
 // Значения полей живут только в текущей странице до подтверждённой доставки; browser storage не используется.
 // Аналитика получает лишь имя цели.
+import { lenis, reducedMotion } from './smooth-scroll.ts';
+
 const initialized = new WeakSet<HTMLFormElement>();
 const goal = (name: string) => window.dispatchEvent(new CustomEvent('ses:goal', { detail: { goal: name } }));
 const contact_valid = (text: string, callback: boolean) => {
@@ -120,10 +122,29 @@ function init_form(form: HTMLFormElement): void {
     }
   });
   if (enabled) { fields.disabled = false; submit.disabled = false; }
+  // Блок обращения на главной: поля открыты для ввода, пока отправка выключена; кнопка остаётся недоступной, данные никуда не уходят и не сохраняются.
+  else if (form.hasAttribute('data-open-fill')) fields.disabled = false;
 }
 
 export function init_forms(): void {
   document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach(init_form);
+  // На главной внизу страницы есть готовый блок обращения (#request): кнопки «Заказать звонок» плавно ведут к нему вместо диалога.
+  const inline = document.getElementById('request');
+  if (inline) {
+    for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-request-open]')) {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        document.querySelector<HTMLDialogElement>('#menu[open]')?.close();
+        document.querySelectorAll<HTMLDialogElement>('dialog.list-modal[open]').forEach((modal) => modal.close()); // кнопка в окне проекта: окна закрываются, страница едет к блоку обращения
+        const offset = -(document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 0) - 12;
+        const focusField = () => inline.querySelector<HTMLElement>('input:not([tabindex="-1"]):not([disabled]), textarea:not([disabled])')?.focus({ preventScroll: true });
+        if (lenis && !reducedMotion) lenis.scrollTo(inline, { offset, duration: 1.6, force: true, onComplete: focusField });
+        else { inline.scrollIntoView({ block: 'start' }); focusField(); }
+        goal('callback_click');
+      });
+    }
+    return;
+  }
   const dialog = document.querySelector<HTMLDialogElement>('#request-dialog');
   if (!dialog || typeof dialog.showModal !== 'function' || dialog.dataset.initialized) return;
   dialog.dataset.initialized = 'true';

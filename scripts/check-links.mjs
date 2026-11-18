@@ -6,7 +6,7 @@
 //  4. нет ссылок на старый сайт (ses-dv.ru, Tilda, /pageNNN.html, адреса снимков docs/content/source/);
 //  5. нет ссылок на исключённые разделы («Благодарности», «Оснащение»: снимки с classification: EXCLUDE и тексты ссылок);
 //  6. внутренние пути абсолютные и чистые: без //, \, .., .html, /index, пробелов, query;
-//  7. внешние только tel:+7XXXXXXXXXX, mailto:адрес (без префикса «e-mail:»), https://wa.me/7XXXXXXXXXX;
+//  7. внешние только tel:+7XXXXXXXXXX, mailto:адрес (без префикса «e-mail:»), https://wa.me/7XXXXXXXXXX и вакансии на hh.ru (nav.ts, с target=_blank rel=noopener);
 //  8. target="_blank" только с rel="noopener";
 //  9. aria-current: у ссылок навигации на текущую страницу — «page», на страницы раздела — «true», нигде больше; в основной навигации
 //     страницы-пункта ровно один «page», на странице внутри раздела — ровно один «true», на остальных страницах (главная, политика, 404) — ни одного.
@@ -22,7 +22,7 @@ if (!existsSync(dist)) {
   console.error(`${dist} не найден: сначала npm run build`);
   process.exit(1);
 }
-const { mainNav, normalizePath } = await import(pathToFileURL(join(repo, 'src/data/nav.ts')).href);
+const { mainNav, normalizePath, vacanciesExternalUrl: HH_VACANCIES } = await import(pathToFileURL(join(repo, 'src/data/nav.ts')).href);
 const { ui } = await import(pathToFileURL(join(repo, 'src/data/ui.ts')).href);
 
 const errors = [];
@@ -121,6 +121,11 @@ for (const [key, page] of pages) {
       if (!/^https:\/\/wa\.me\/7\d{10}$/.test(href)) fail(where, `некорректная ссылка WhatsApp ${name} (нужно https://wa.me/7 и 10 цифр, без текста)`);
       continue;
     }
+    if (href.replaceAll('&amp;', '&') === HH_VACANCIES) {
+      stats.contact++;
+      if (attrs.target !== '_blank' || !/\bnoopener\b/.test(attrs.rel ?? '')) fail(where, `ссылка на hh.ru должна открываться с target="_blank" rel="noopener noreferrer": ${name}`);
+      continue;
+    }
     if (/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(href)) {
       if (/tilda|ses-dv\.ru/i.test(href)) fail(where, `ссылка на старый сайт ${name}`);
       else fail(where, `недопустимая внешняя ссылка ${name} (разрешены tel:, mailto:, https://wa.me/)`);
@@ -165,7 +170,8 @@ for (const [key, page] of pages) {
     const nav = navs.find((n) => n.attrs['aria-label'] === ui.a11y.mainNav);
     return nav ? links.filter((l) => l.index > nav.start && l.index < nav.end) : null;
   })();
-  if (!mainNavLinks) fail(where, `нет навигации «${ui.a11y.mainNav}»`);
+  // 404 — отдельная страница без шапки (решение владельца 2026-11-18): навигации на ней нет и быть не должно.
+  if (!mainNavLinks && page.path !== null) fail(where, `нет навигации «${ui.a11y.mainNav}»`);
   const path = page.path;
   for (const l of current) {
     const v = l.attrs['aria-current'];

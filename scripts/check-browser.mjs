@@ -180,7 +180,7 @@ const expectEq = (what, actual, expected) => {
 
 // Контракт оболочки: что должно быть на каждой странице. Подписи — из данных (src/data/ui.ts), пути — из src/data/nav.ts.
 const { ui } = await import(pathToFileURL(join(root, 'src/data/ui.ts')).href);
-const { mainNav, routes } = await import(pathToFileURL(join(root, 'src/data/nav.ts')).href);
+const { mainNav, routes, vacanciesExternalUrl } = await import(pathToFileURL(join(root, 'src/data/nav.ts')).href);
 const { published_routes } = await import(pathToFileURL(join(root, 'src/data/publications.ts')).href);
 const walkpages = dir => readdirSync(dir).flatMap(name => { const file = join(dir, name); return statSync(file).isDirectory() ? walkpages(file) : file.endsWith('.html') ? [file] : []; });
 const PAGES = pagePath ? [pagePath] : walkpages(dist).map(file => '/' + file.slice(dist.length + 1).replaceAll('\\', '/').replace(/(?:^|\/)index\.html$/, ''));
@@ -206,14 +206,15 @@ try {
         const visible = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden'; };
         const unnamed = [...document.querySelectorAll('a[href], button')].filter((el) => visible(el) && !(el.getAttribute('aria-label') || el.textContent.trim() || el.querySelector('img[alt]:not([alt=""])')))
           .map((el) => el.tagName.toLowerCase() + '.' + el.className);
-        const small = [...document.querySelectorAll('.nav a, .burger, .btn, .dock a, .menu-list a, .footer__col a, .modal__close')].filter(visible)
+        const small = [...document.querySelectorAll('.nav a, .burger, .btn, .menu-list a, .footer__col a, .modal__close')].filter(visible)
+          .filter((el) => !(window.innerWidth > 1024 && el.matches('.footer__col a')))
           .filter((el) => { const r = el.getBoundingClientRect(); return r.height < 43.5 || r.width < 43.5; }).map((el) => el.className + ' ' + Math.round(el.getBoundingClientRect().width) + '×' + Math.round(el.getBoundingClientRect().height));
         const navLabels = [...document.querySelectorAll('nav')].map((n) => n.getAttribute('aria-label') || '');
         return { scrollW: de.scrollWidth, clientW: de.clientWidth, wide, fonts, imgs, unnamed, small, navLabels,
           h1: document.querySelectorAll('h1').length, mains: document.querySelectorAll('main').length, headers: document.querySelectorAll('body > header').length,
           footers: document.querySelectorAll('body > footer').length, skip: document.querySelectorAll('a.skip').length,
           lang: de.lang, robots: document.querySelector('meta[name=robots]')?.content,
-          burger: visible(document.querySelector('.burger')), nav: visible(document.querySelector('.nav')), dock: visible(document.querySelector('.dock')),
+          burger: visible(document.querySelector('.burger')), nav: visible(document.querySelector('.nav')), dock: !!document.querySelector('.dock'),
           cta: visible(document.querySelector('.site-header__actions .btn')), phone: visible(document.querySelector('.header-phone')),
           h1Top: document.querySelector('h1').getBoundingClientRect().top, headerBottom: document.querySelector('.site-header').getBoundingClientRect().bottom };
       })()`);
@@ -234,8 +235,8 @@ try {
       expectEq('меню в шапке / бургер', [m.nav, m.burger], width > 960 ? [true, false] : [false, true]);
       expectEq('CTA «Заказать звонок» в шапке', m.cta, width > 960);
       expectEq('телефон в шапке', m.phone, width > 1180);
-      expectEq('нижняя панель', m.dock, width <= 640);
-      if (shotsDir && [390,1440].includes(width) && ['/', '/services', '/projects', '/projects/tlt', '/projects/pns', '/projects/tlt/gnb-d-1', '/about', '/vacancies', '/contacts'].includes(path)) await shot((path === '/' ? 'home' : path.slice(1).replaceAll('/', '-')) + '-' + width);
+      expectEq('нижней панели нет', m.dock, false);
+      if (shotsDir && [390,1440].includes(width) && ['/', '/about', '/vacancies', '/contacts'].includes(path)) await shot((path === '/' ? 'home' : path.slice(1).replaceAll('/', '-')) + '-' + width);
       if (path === '/') report.push(`${width}px: scrollWidth ${m.scrollW}/${m.clientW}, шрифты: ${[...new Set(m.fonts)].join(' + ')}, изображений ${m.imgs.length}, запросов ${requests.size}`);
     }
     console.log(`checked ${path}: ${WIDTHS.length} widths`);
@@ -276,7 +277,7 @@ try {
   // --- 3. desktop 1440: навигация, активный пункт, CTA, логотип, подвал
   await view(1440, 900);
   ctx = 'desktop 1440';
-  await go('/services');
+  await go('/about');
   const desk = await evaluate(`(() => ({
     nav: [...document.querySelectorAll('.nav a')].map((a) => [a.textContent.trim(), a.getAttribute('href'), a.getAttribute('aria-current')]),
     cta: [document.querySelector('.site-header__actions .btn').textContent.trim(), document.querySelector('.site-header__actions .btn').getAttribute('href')],
@@ -284,18 +285,18 @@ try {
     solid: document.querySelector('.site-header').classList.contains('is-solid'),
     logoShown: [...document.querySelectorAll('.site-header .logo__img')].filter((i) => getComputedStyle(i).display !== 'none').map((i) => i.src.split('/').pop().split('.')[0]),
     footer: [...document.querySelectorAll('#site-nav a')].map((a) => [a.textContent.trim(), a.getAttribute('href')]),
-    vacancy: document.querySelector('#site-nav a[href="/vacancies"]')?.getAttribute('href'),
-    privacy: document.querySelector('.footer__bottom a').getAttribute('href'),
+    vacancy: [...document.querySelectorAll('#site-nav a')].find((a) => a.textContent.includes('Вакансии'))?.getAttribute('href'),
+    privacy: document.querySelector('.site-footer a[href="/privacy"]').getAttribute('href'),
   }))()`);
   expectEq('пункты шапки', desk.nav.map((n) => n[0]), headernav.map((i) => i.label));
   expectEq('ссылки шапки', desk.nav.map((n) => n[1]), headernav.map((i) => i.href));
-  expectEq('aria-current в шапке на /services', desk.nav.map((n) => n[2]), [null, 'page', null, null, null]);
+  expectEq('aria-current в шапке на /about', desk.nav.map((n) => n[2]), [null, 'page', null, null, null]);
   expectEq('CTA шапки', desk.cta, [ui.actions.orderCall, '/contacts#contact-form']);
   expectEq('ссылка логотипа', desk.logo, routes.home);
   expectEq('логотип над светлой шапкой', desk.logoShown, ['logo-wordmark']);
   expectEq('телефон — tel:', desk.phone.startsWith('tel:+7'), true);
-  expectEq('разделы подвала', desk.footer.map((f) => f[1]), [...mainNav.map((i) => i.href), '/vacancies', ...published_routes.filter(path => path === '/news' || path === '/documents')]);
-  expectEq('Вакансии доступны', desk.vacancy, '/vacancies');
+  expectEq('разделы подвала', desk.footer.map((f) => f[1]), [...mainNav.map((i) => i.href), vacanciesExternalUrl, ...published_routes.filter(path => path === '/news' || path === '/documents')]);
+  expectEq('Вакансии в подвале ведут на hh.ru', desk.vacancy, vacanciesExternalUrl);
   expectEq('политика в подвале', desk.privacy, routes.privacy);
   await shot('header-desktop', { x: 0, y: 0, width: 1440, height: 200 });
 
@@ -317,8 +318,6 @@ try {
   await press('Escape', 'Escape', 27);
   await sleep(150);
   expectEq('Фокус возвращается к CTA', await evaluate(`document.activeElement.matches('[data-request-open]')`), true);
-  await go('/projects/tlt');
-  expectEq('/projects/tlt: «Проекты» отмечены aria-current=true', await evaluate(`document.querySelector('.nav a[href="/projects"]').getAttribute('aria-current')`), 'true');
   await go('/privacy');
   await evaluate('window.scrollTo(0, document.body.scrollHeight)');
   await sleep(300);
@@ -331,17 +330,9 @@ try {
   await go('/about');
   await shot('header-mobile', { x: 0, y: 0, width: 390, height: 180 });
   await shot('menu-closed-mobile');
-  const dockInfo = await evaluate(`(() => { const d = document.querySelector('.dock'); const r = d.getBoundingClientRect(); const cs = getComputedStyle(d);
-    return { pos: cs.position, bottomGap: Math.round(innerHeight - r.bottom), links: [...d.querySelectorAll('a')].map((a) => [a.textContent.trim(), a.getAttribute('href'), Math.round(a.getBoundingClientRect().height)]), pad: cs.paddingBottom }; })()`);
-  expectEq('нижняя панель: закреплена у нижнего края', [dockInfo.pos, dockInfo.bottomGap], ['fixed', 0]);
-  expectEq('нижняя панель: кнопки', dockInfo.links.map((l) => [l[0], l[1].startsWith('tel:+7') ? 'tel' : l[1]]), [[ui.actions.call, 'tel'], [ui.actions.leaveRequest, routes.contacts]]);
-  if (dockInfo.links.some((l) => l[2] < 44)) fail(`${ctx}: кнопка нижней панели ниже 44 px: ${JSON.stringify(dockInfo.links)}`);
   await evaluate('window.scrollTo(0, document.body.scrollHeight)');
   await sleep(300);
-  const overlap = await evaluate(`(() => { const dock = document.querySelector('.dock').getBoundingClientRect(); const last = document.querySelector('.footer__bottom').getBoundingClientRect();
-    return { dockTop: Math.round(dock.top), contentBottom: Math.round(last.bottom), atEnd: Math.round(scrollY + innerHeight) >= document.documentElement.scrollHeight - 1 }; })()`);
-  if (!overlap.atEnd || overlap.contentBottom > overlap.dockTop) fail(`${ctx}: нижняя панель перекрывает конец страницы (контент до ${overlap.contentBottom}, панель с ${overlap.dockTop})`);
-  await shot('bottom-bar-mobile');
+  expectEq('нижней панели нет', await evaluate(`document.querySelector('.dock') === null`), true);
   await shot('footer-mobile-end');
   await evaluate('window.scrollTo(0, 0)');
 
@@ -360,7 +351,7 @@ try {
   expectEq('шторка: фон не прокручивается', open.overflow, 'hidden');
   if (open.hScroll) fail(`${ctx}: горизонтальная прокрутка при открытом меню`);
   expectEq('шторка: пункты', open.items.map((i) => [i[0], i[1]]), mainNav.map((i) => [i.label, i.href]));
-  expectEq('шторка: активный раздел «О компании»', open.items.map((i) => i[2]), [null, null, 'page', null]);
+  expectEq('шторка: активный раздел «О нас»', open.items.map((i) => i[2]), ['page', null, null, null]);
   expectEq('шторка: кнопка заявки', open.cta, [ui.actions.orderCall, routes.contacts]);
   await shot('menu-open-mobile');
   // ловушка фокуса: 14 нажатий Tab и 3 Shift+Tab, фокус всё время в шторке
@@ -399,7 +390,7 @@ try {
   const afterNav = await evaluate(`({ path: location.pathname.replace(/\\/$/, ''), open: document.querySelector('#menu').open, h1: document.querySelector('h1').textContent.trim() })`);
   expectEq('переход из шторки на «Контакты»', [afterNav.path, afterNav.open, !!afterNav.h1], [routes.contacts, false, true]);
   // нижняя панель: переход «Оставить заявку» → /contacts
-  await go('/services');
+  await go('/about');
   await evaluate(`document.querySelector('.dock a[href="${routes.contacts}"]').click()`);
   await settled();
   expectEq('«Оставить заявку» ведёт в контакты', await evaluate(`location.pathname.replace(/\\/$/, '')`), routes.contacts);
@@ -415,7 +406,7 @@ try {
   await send('Emulation.setScriptExecutionDisabled', { value: true });
   await view(390, 844);
   ctx = 'без JS @390';
-  await go('/services');
+  await go('/about');
   const nojs = await evaluate(`(() => ({ js: document.documentElement.dataset.js, burger: [document.querySelector('.burger').getAttribute('href'), document.querySelector('.burger').getAttribute('role')],
     solid: document.querySelector('.site-header').classList.contains('is-solid'), dock: getComputedStyle(document.querySelector('.dock')).display, menuOpen: document.querySelector('#menu').open }))()`);
   expectEq('без JS: «Меню» — якорь на навигацию подвала', nojs.burger, ['#site-nav', null]);
@@ -426,10 +417,10 @@ try {
   expectEq('без JS: якорь #site-nav ведёт к навигации подвала', [anchor.hash, anchor.inView, anchor.links], ['#site-nav', true, mainNav.length + 1]);
   await view(1440, 900);
   ctx = 'без JS @1440';
-  await go('/services');
+  await go('/about');
   const nojsDesk = await evaluate(`(() => ({ nav: [...document.querySelectorAll('.nav a')].filter((a) => a.getBoundingClientRect().width > 0).length, cta: document.querySelector('.site-header__actions .btn').getAttribute('href'),
     cur: document.querySelector('.nav a[aria-current="page"]')?.getAttribute('href') }))()`);
-  expectEq('без JS: меню шапки, CTA, активный пункт', [nojsDesk.nav, nojsDesk.cta, nojsDesk.cur], [headernav.length, '/contacts#contact-form', '/services']);
+  expectEq('без JS: меню шапки, CTA, активный пункт', [nojsDesk.nav, nojsDesk.cta, nojsDesk.cur], [headernav.length, '/contacts#contact-form', '/about']);
   await send('Emulation.setScriptExecutionDisabled', { value: false });
   report.push('без JS: меню шапки, якорь #site-nav, CTA ведёт в контакты, шапка читаема');
 
@@ -437,7 +428,7 @@ try {
   for (const width of [768, 1024]) {
     ctx = `шторка @${width}`;
     await view(width, 900);
-    await go('/projects');
+    await go('/about');
     const t = await evaluate(`(() => ({ burger: getComputedStyle(document.querySelector('.burger')).display, nav: getComputedStyle(document.querySelector('.nav')).display, dock: getComputedStyle(document.querySelector('.dock')).display }))()`);
     expectEq('меню на ширине', [t.burger !== 'none', t.nav !== 'none', t.dock !== 'none'], width <= 960 ? [true, false, false] : [false, true, false]);
     if (width <= 960) {

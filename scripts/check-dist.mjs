@@ -31,7 +31,9 @@ const all = walk(dist);
 const htmlFiles = all.filter((f) => f.endsWith('.html'));
 if (all.some(file => /(?:\.map|\.env|package\.json)$/.test(file))) fail('служебный файл или source map попал в dist');
 const demo = process.env.PUBLIC_SITE_MODE !== 'production' || process.env.PUBLIC_LEGAL_APPROVED !== 'true';
-const isExternalOk = (u) => u.startsWith('tel:') || u.startsWith('mailto:') || u.startsWith('https://wa.me/');
+// Единственная внешняя ссылка кроме tel:, mailto:, wa.me — вакансии на hh.ru (решение владельца 2026-11-18); в HTML & записан как &amp;.
+const HH_VACANCIES = 'https://blagoveschensk.hh.ru/employer/9992331?hhtmFrom=vacancy&tab=VACANCIES';
+const isExternalOk = (u) => u.startsWith('tel:') || u.startsWith('mailto:') || u.startsWith('https://wa.me/') || u.replaceAll('&amp;', '&') === HH_VACANCIES;
 
 /** Путь URL ('/a/b') → файл в dist или null. */
 function resolveLocal(urlPath) {
@@ -64,7 +66,7 @@ for (const file of htmlFiles) {
   if (!demo && noindex && !/(?:404|privacy|consent|cookies)/.test(rel)) fail(`${rel}: noindex в production-сборке`);
   const h1 = (html.match(/<h1[\s>]/g) ?? []).length;
   if (h1 !== 1) fail(`${rel}: <h1> ${h1} шт. (нужен один)`);
-  for (const img of html.matchAll(/<img\b[^>]*>/g)) if (!/\balt=/.test(img[0])) fail(`${rel}: <img> без alt`);
+  for (const img of html.matchAll(/<img\b[^>]*>/g)) if (!/\balt(?=[\s=>])/.test(img[0])) fail(`${rel}: <img> без alt`);
 
   const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
   const dup = ids.filter((id, i) => ids.indexOf(id) !== i);
@@ -108,7 +110,8 @@ for (const svg of svgs) {
   if (!sources.has(sha(buf))) fail(`${relative(root, svg)}: не совпадает ни с одним файлом design/system/logo/`);
 }
 const usedLogos = new Set(svgs.map((f) => sources.get(sha(readFileSync(f)))));
-for (const name of ['logo-wordmark.svg', 'logo-wordmark-on-dark.svg', 'logo-full-on-dark.svg', 'favicon.svg']) {
+// logo-full-on-dark.svg в подвале больше не используется: его место занял крупный декоративный знак (SiteFooter.astro).
+for (const name of ['logo-wordmark.svg', 'logo-wordmark-on-dark.svg', 'logo-mark-square.svg']) {
   if (!usedLogos.has(name)) fail(`в dist нет логотипа ${name}`);
 }
 

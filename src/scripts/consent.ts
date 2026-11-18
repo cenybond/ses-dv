@@ -36,7 +36,8 @@ export function init_consent() {
   const status = document.querySelector<HTMLElement>('[data-cookie-status]');
   const available = banner?.dataset.analyticsAvailable === 'true';
   let trigger: HTMLElement | null = null;
-  const refresh = () => { if (banner) banner.hidden = !available || read_consent() !== null; };
+  // Окно выбора показывается, пока посетитель не выбрал (решение владельца 2026-11-18); без подключённого счётчика выбор только запоминается.
+  const refresh = () => { if (banner) banner.hidden = read_consent() !== null; };
   const close = () => { dialog?.close(); trigger?.focus(); };
   const choose = (enabled: boolean) => {
     const persisted = save_consent(available && enabled);

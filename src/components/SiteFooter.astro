@@ -23,10 +23,10 @@ const { currentPath = '' } = Astro.props;
         {published_routes.includes('/news') && <li><NavigationLink href="/news" label="Новости" currentPath={currentPath} /></li>}
         {published_routes.includes('/documents') && <li><NavigationLink href="/documents" label="Документы" currentPath={currentPath} /></li>}
       </ul></nav>
-      <div class="footer__col"><h2 class="footer__h">Информация</h2><ul>
+      {import.meta.env.PUBLIC_PAGES_PREVIEW !== 'true' && <div class="footer__col"><h2 class="footer__h">Информация</h2><ul>
         <li><NavigationLink href="/cookies" label="Куки и аналитика" currentPath={currentPath} /></li>
         <li><NavigationLink href={privacyRoute.href} label={privacyRoute.label} currentPath={currentPath} /></li>
-      </ul></div>
+      </ul></div>}
     </div>
   </div>
   <svg class="footer__mark" viewBox="0 0 1200 200" aria-hidden="true" focusable="false">

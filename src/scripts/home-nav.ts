@@ -2,10 +2,13 @@
 // Ссылки в разметке остаются настоящими (/about, /#home-services…): без JS и на других страницах они открывают страницы.
 import { lenis, reducedMotion } from './smooth-scroll.ts';
 
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const localPath = (path: string): string => basePath && (path === basePath || path.startsWith(basePath + '/')) ? path.slice(basePath.length) || '/' : path;
+
 // Ключ ссылки: путь без завершающего слэша и якорь (`/#home-services` — раздел услуг на главной).
 const keyOf = (link: HTMLAnchorElement): string => {
   const url = new URL(link.href, location.href);
-  return (url.pathname.replace(/\/+$/, '') || '/') + url.hash;
+  return (localPath(url.pathname).replace(/\/+$/, '') || '/') + url.hash;
 };
 
 const sections: Record<string, () => HTMLElement | null> = {
@@ -35,7 +38,7 @@ const go = (href: string, fromFooter = false): boolean => {
   return true;
 };
 
-if (location.pathname.replace(/\/+$/, '') === '') {
+if (localPath(location.pathname).replace(/\/+$/, '') === '') {
   document.querySelectorAll<HTMLAnchorElement>('.site-header .nav a, #menu .menu-list a, .site-footer #site-nav a, .site-header .logo, .site-header a[href="/"]').forEach((link) => {
     const href = keyOf(link);
     if (href !== '/' && !(href in sections) && href !== '/contacts') return;
@@ -60,7 +63,7 @@ const marks: [string, () => HTMLElement | null][] = [
 ];
 
 function spy(): void {
-  if (location.pathname.replace(/\/+$/, '') !== '' || !navLinks.size) return;
+  if (localPath(location.pathname).replace(/\/+$/, '') !== '' || !navLinks.size) return;
   let active = lock;
   if (!active) {
     const probe = window.innerHeight * 0.4;

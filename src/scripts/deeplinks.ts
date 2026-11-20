@@ -11,7 +11,7 @@ import { toLocal, toPublic } from './base-path.ts';
 const normalize = (path: string) => (path.length > 1 ? path.replace(/\/+$/, '') : path) || '/';
 /** Главная или её копия (адрес раздела, списка или проекта): на них работают прокрутка по разделам, подчёркивание пункта меню и открытие окон. */
 export const isHomePath = (path = location.pathname) => {
-  const p = normalize(path);
+  const p = normalize(toLocal(path));
   return p === '/' || p === '/services' || p.startsWith('/services/') || p === '/projects' || p.startsWith('/projects/');
 };
 
@@ -30,7 +30,7 @@ const currentSectionPath = () => {
   for (const [sectionPath, find] of sections) if ((find()?.getBoundingClientRect().top ?? Infinity) <= probe) path = sectionPath;
   return path;
 };
-const isModalPath = (path: string) => /^\/(services|projects)\/.+/.test(normalize(path));
+const isModalPath = (path: string) => /^\/(services|projects)\/.+/.test(normalize(toLocal(path)));
 
 if (isHomePath()) {
   // 1) Адрес следует за прокруткой: после остановки (без дребезга по пути) заменяем адрес записи на адрес раздела.

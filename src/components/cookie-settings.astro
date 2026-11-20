@@ -14,7 +14,7 @@ import { site_config } from '../data/site-config';
   </section>
   <section class="cookie-category">
     <label class="cookie-toggle" for="cookie-analytics"><input type="checkbox" id="cookie-analytics" disabled={!site_config.analytics_enabled} /> <strong>Яндекс Метрика</strong></label>
-    <p>{site_config.analytics_enabled ? 'Статистика просмотров и действий. Вебвизор выключен. Данные из полей формы в цели не передаются.' : 'Аналитика сейчас отключена. Запросы к Яндекс Метрике не отправляются.'}</p>
+    <p>{site_config.analytics_enabled ? 'Статистика просмотров и действий, Вебвизор (запись действий на странице) и карта кликов. Нажатия клавиш в формах не записываются, данные из полей формы в цели не передаются.' : 'Аналитика сейчас отключена. Запросы к Яндекс Метрике не отправляются.'}</p>
   </section>
   <p>Отзыв останавливает новые события. Он не отменяет уже отправленные запросы и не удаляет данные на серверах сервиса. <a href="/cookies">Подробнее</a></p>
   <div class="cookie-actions">

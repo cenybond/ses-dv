@@ -228,6 +228,14 @@ button.dot:hover,button.dot.is-hover,a.dot:hover,a.dot.is-hover{transform:transl
 /* Поля как у заголовка hero (24 + 48 = 72 px): первая колонка у левого поля, последняя — у правого, остальные между ними поровну. */
 .footer__wrap{padding-inline:calc(var(--space-6) + var(--space-12))}
 .footer__grid{display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;gap:32px}
+.footer__links{display:contents}
+/* Решение владельца 2026-11-20: подвал стоит на двухколоночной сетке сайта (как «О нас», контакты, юридические страницы: две равные половины с зазором 64 px
+   между левым и правым полем 72 px). Описание — в левой половине у левого поля; три колонки со ссылками — в правой половине, первая от её начала,
+   последняя у правого поля, зазоры между ними равные. Ниже 1025 px раскладка прежняя (две колонки, затем одна). */
+@media (min-width:1025px){
+  .footer__grid{grid-template-columns:repeat(2,minmax(0,1fr));justify-content:normal;column-gap:var(--space-16)}
+  .footer__links{display:flex;justify-content:space-between;gap:32px}
+}
 .footer__grid .footer__muted{max-width:30ch}
 .footer__brand{display:grid;gap:14px;align-content:start}
 .footer__lead{font:700 15px/1.35 var(--font-head);max-width:26ch}

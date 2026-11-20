@@ -126,6 +126,12 @@ for (const [key, page] of pages) {
       if (attrs.target !== '_blank' || !/\bnoopener\b/.test(attrs.rel ?? '')) fail(where, `ссылка на hh.ru должна открываться с target="_blank" rel="noopener noreferrer": ${name}`);
       continue;
     }
+    // Адрес в блоке контактов на главной (PROD-23): ссылка на точку в 2ГИС, новая вкладка.
+    if (href === 'https://2gis.ru/blagoveshchensk?m=127.486127%2C50.281787%2F17') {
+      stats.contact++;
+      if (attrs.target !== '_blank' || !/\bnoopener\b/.test(attrs.rel ?? '')) fail(where, `ссылка в 2ГИС должна открываться с target="_blank" rel="noopener noreferrer": ${name}`);
+      continue;
+    }
     if (/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(href)) {
       if (/tilda|ses-dv\.ru/i.test(href)) fail(where, `ссылка на старый сайт ${name}`);
       else fail(where, `недопустимая внешняя ссылка ${name} (разрешены tel:, mailto:, https://wa.me/)`);

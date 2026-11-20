@@ -5,8 +5,7 @@
 // проигрываются на canvas, поля и скругление карточки уходят, шапка превращается в плашки. Заголовок и кнопка стоят на месте.
 // Кадры нарезаны scripts/build-hero-frames.py: кадр 0000 — это само фото 1 в 1, до отклика JS показывается оно же (img).
 // На телефоне и планшете (≤ 960 px) hero — компактная карточка с вертикальным фото, без закрепления и без кадров.
-import { hero, ui } from '../data';
-import RequestButton from './request-button.astro';
+import { hero, ui, routes } from '../data';
 import { getImage } from 'astro:assets';
 import photo from '../../design/client-preview/hero/assets/hero-building.webp';
 import photoMobile from '../../design/client-preview/hero/assets/hero-building-mobile.webp';
@@ -42,7 +41,7 @@ const fallback = await getImage({ src: photo, format: 'jpeg', width: 1280 });
           <span class="hero__line"><span class="hero__line-in hero__accent">{accent}</span></span>
         </h1>
         <p class="hero__sub">{ui.hero.subtitle.join(' ')}</p>
-        <RequestButton class="btn--lg hero__btn" context="callback" label={ui.actions.orderCall} arrow={false} />
+        <a class="btn btn--lime btn--lg request-button hero__btn" href={routes.services}>{ui.actions.ourServices}</a>
       </div>
     </div>
   </section>

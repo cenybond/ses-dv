@@ -3,10 +3,10 @@ import { site_config } from '../data/site-config';
 import '../styles/privacy.css';
 ---
 <aside class="cookie-banner" aria-label="Куки и аналитика" data-cookie-banner data-analytics-available={String(site_config.analytics_enabled)} data-metrica-id={site_config.metrica_id || ''} data-site-origin={site_config.origin} hidden>
-  <p>Яндекс Метрика помогает понять, как используют сайт. Вы можете согласиться на аналитику или отказаться. <a href="/cookies">Куки и аналитика</a></p>
+  <!-- Текст и одна кнопка — решение владельца (PROD-24). Метрика по-прежнему грузится только после нажатия «Окей»; отказаться можно на странице «Куки и аналитика». -->
+  <p>Пользуясь нашим сайтом, вы соглашаетесь с тем, что <a href="/cookies">мы используем cookies</a> <span aria-hidden="true">🍪</span></p>
   <div class="cookie-actions">
-    <button type="button" class="btn btn--lime" data-cookie-accept>Согласиться</button>
-    <button type="button" class="btn btn--secondary" data-cookie-reject>Отказаться</button>
+    <button type="button" class="btn btn--lime" data-cookie-accept>Окей</button>
   </div>
 </aside>
 <p class="cookie-status" role="status" data-cookie-status></p>

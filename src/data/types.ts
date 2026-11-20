@@ -59,6 +59,8 @@ export interface Project {
   /** Предлагаемый slug (IA §6.2); не утверждён, A-24. */
   readonly slug: string;
   readonly title: SourceText;
+  /** Сокращённое название для плиток и панелей (PROD-17); в окне проекта выводится полное `title`. */
+  readonly shortTitle?: DecisionText;
   /** Файл снимка страницы проекта в docs/content/source/. */
   readonly snapshot: string;
   /** Путь к изображению или null: до получения фото — заглушка (A-06). */

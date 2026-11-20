@@ -15,7 +15,9 @@ if (!reducedMotion) {
   const headerOffset = -(document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 0) - 12;
   lenis = new Lenis({ duration: 1.15, easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)), anchors: { offset: headerOffset } });
   lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis?.raf(time * 1000));
+  // Lenis — первым в кадре (prioritize): прокрутка и ScrollTrigger.update идут до того, как твины GSAP запишут стили.
+  // Иначе window.scrollTo после этих записей заставляет браузер пересчитывать стили прямо внутри кадра (замер на CPU 4×: до 260 мс за проход hero).
+  gsap.ticker.add((time) => lenis?.raf(time * 1000), false, true);
   gsap.ticker.lagSmoothing(0);
   // Открытое меню-шторка или диалог заявки (<dialog open>) — страница под ними не прокручивается.
   const sync = () => (document.querySelector('dialog[open]') ? lenis?.stop() : lenis?.start());

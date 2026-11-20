@@ -32,7 +32,7 @@ const ok = (cond, cat, msg) => {
 };
 
 // ---------- ожидания (источник — SPEC-DEMO, IA, DECISIONS) ----------
-const EXPECT = { services: 10, projects: 14, workTypes: 12, advantages: 5, departments: 5, homeProjects: 6, homeAdvantages: 3, gallery: 6, phones: 2 };
+const EXPECT = { services: 11, projects: 14, workTypes: 12, advantages: 5, departments: 5, homeProjects: 6, homeAdvantages: 3, gallery: 6, phones: 2 };
 const MARKERS = ['DESCRIPTION_PENDING', 'ADDRESS_PENDING', 'SOURCE_SUPPORTED', 'CLIENT_APPROVED', 'PENDING_CLIENT_CONFIRMATION', 'PENDING_FROM_CLIENT', 'NONE_IN_SOURCE'];
 const STRUCTURAL_KEYS = new Set(['id', 'slug', 'snapshot', 'href', 'whatsapp', 'status', 'basis', 'decision', 'src', 'descriptionStatus', 'serviceId', 'derivedFrom', 'projectId', 'catalogHref', 'ids']);
 // В строке H-03 SPEC-DEMO первый проект назван аббревиатурой.
@@ -73,7 +73,7 @@ const COVERAGE = {
     rec596870778: {},
     rec596804757: { skip: { 5: 'старый адрес не переносится (ADDRESS_PENDING)', 6: 'старый адрес не переносится (ADDRESS_PENDING)' } },
   },
-  'privacy.md': { rec596899666: {} },
+  'privacy.md': { rec596899666: skipAll('страница «Политика конфиденциальности» удалена с сайта по поручению владельца 2026-11-20 (PROD-25); снимок сохранён, в данных не используется') },
 };
 
 // ---------- вспомогательное ----------
@@ -160,8 +160,8 @@ const load = async (rel) => {
     return {};
   }
 };
-const [svc, prj, tltM, adv, comp, cont, priv, uiM, navM, detailsM, worksM, vacanciesM, poolM] = await Promise.all(
-  ['source/services.ts', 'source/projects.ts', 'source/tlt.ts', 'source/advantages.ts', 'source/company.ts', 'source/contacts.ts', 'source/privacy.ts', 'ui.ts', 'nav.ts', 'source/project-details.ts', 'source/work-details.ts', 'source/vacancies.ts', 'source/content-texts.ts'].map(load),
+const [svc, prj, tltM, adv, comp, cont, uiM, navM, detailsM, worksM, vacanciesM, poolM] = await Promise.all(
+  ['source/services.ts', 'source/projects.ts', 'source/tlt.ts', 'source/advantages.ts', 'source/company.ts', 'source/contacts.ts', 'ui.ts', 'nav.ts', 'source/project-details.ts', 'source/work-details.ts', 'source/vacancies.ts', 'source/content-texts.ts'].map(load),
 );
 if (errors.length) finish();
 
@@ -171,7 +171,7 @@ const decisionsText = readLf(join(root, 'DECISIONS.md'));
 const snapshotFiles = readdirSync(sourceDir).filter((f) => f.endsWith('.md') && !f.startsWith('_') && f !== 'README.md');
 
 // ---------- 1–2. все SourceText и «голые» строки ----------
-const sourceModules = { services: svc, projects: prj, tlt: tltM, advantages: adv, company: comp, contacts: cont, privacy: priv, projectdetails: detailsM, workdetails: worksM, vacancies: vacanciesM, content: poolM };
+const sourceModules = { services: svc, projects: prj, tlt: tltM, advantages: adv, company: comp, contacts: cont, projectdetails: detailsM, workdetails: worksM, vacancies: vacanciesM, content: poolM };
 const seenObjects = new WeakSet();
 const textOwners = new Map(); // text → путь первого объекта (дубли вне privacy)
 let sourceTexts = 0;
@@ -209,7 +209,7 @@ function walk(value, path, key, moduleName) {
 for (const [name, mod] of Object.entries(sourceModules)) {
   for (const [exp, val] of Object.entries(mod)) walk(val, `${name}.${exp}`, exp, name);
 }
-ok(decisionTexts === 1, 'решение', `текстов по решению заказчика ожидался 1 («Проектирование», A-18), найдено ${decisionTexts}`);
+ok(decisionTexts === 10, 'решение', `текстов по решению заказчика ожидалось 10 («Проектирование», A-18; «Искусственное понижение уровня грунтовых вод», PROD-16; 7 коротких названий проектов, PROD-17; адрес офиса, PROD-23), найдено ${decisionTexts}`);
 
 // ---------- 4. услуги ----------
 const { services } = svc;
@@ -219,7 +219,10 @@ const serviceIds = new Set(services.map((s) => s.id));
 services.forEach((s, i) => {
   req(s, ['id', 'title', 'description', 'descriptionStatus'], `услуга ${s.id}`);
   ok(s.description === null, 'услуги', `${s.id}: описание должно быть null (описаний нет в источнике и у заказчика)`);
-  if (i < 9) {
+  if (i === 10) {
+    ok(s.title.decision === 'PROD-16' && s.title.text === 'Искусственное понижение уровня грунтовых вод', 'услуги', 'S-11 должна быть «Искусственное понижение уровня грунтовых вод» по решению PROD-16');
+    ok(s.descriptionStatus === 'DESCRIPTION_PENDING' && s.description === null, 'услуги', 'S-11: description null и descriptionStatus DESCRIPTION_PENDING');
+  } else if (i < 9) {
     ok(typeof s.title.src === 'string' && s.title.src.startsWith('services.md#rec596139915/'), 'услуги', `${s.id}: название должно ссылаться на services.md#rec596139915`);
     ok(s.descriptionStatus === 'NONE_IN_SOURCE', 'услуги', `${s.id}: descriptionStatus должен быть NONE_IN_SOURCE`);
     if (i > 0) ok(refUnitNums(s.title)[0] > refUnitNums(services[i - 1].title)[1], 'порядок', `${s.id}: порядок услуг отличается от порядка источника`);
@@ -228,7 +231,7 @@ services.forEach((s, i) => {
     ok(s.descriptionStatus === 'DESCRIPTION_PENDING' && s.description === null, 'услуги', 'S-10: description null и descriptionStatus DESCRIPTION_PENDING');
   }
 });
-ok(services.filter((s) => s.descriptionStatus === 'DESCRIPTION_PENDING').length === 1, 'услуги', 'DESCRIPTION_PENDING допустим только у S-10');
+ok(services.filter((s) => s.descriptionStatus === 'DESCRIPTION_PENDING').length === 2, 'услуги', 'DESCRIPTION_PENDING допустим только у S-10 и S-11');
 
 // ---------- проекты ----------
 const { projects, homeProjects } = prj;
@@ -257,6 +260,10 @@ function checkLinks(owner, links, kind) {
 }
 projects.forEach((p, i) => {
   req(p, ['id', 'slug', 'title', 'snapshot', 'image', 'hasPage', 'serviceLinks'], `проект ${p.id}`);
+  if (p.shortTitle) {
+    ok(p.shortTitle.decision === 'PROD-17', 'проекты', `${p.id}: короткое название должно идти по решению PROD-17`);
+    ok(p.shortTitle.text.length < p.title.text.length, 'проекты', `${p.id}: короткое название должно быть короче полного`);
+  }
   ok(/^[a-z0-9]+(-[a-z0-9]+)*$/.test(p.slug), 'slug', `${p.id}: недопустимый slug «${p.slug}»`);
   ok(p.title.src === `completed-projects.md#rec596873316/${i + 1}`, 'порядок', `${p.id}: название должно ссылаться на строку ${i + 1} каталога (порядок источника)`);
   ok(existsSync(join(sourceDir, p.snapshot)), 'снимок', `${p.id}: нет снимка docs/content/source/${p.snapshot}`);
@@ -372,15 +379,8 @@ ok(documents.status === 'PENDING_FROM_CLIENT' && documents.items.length === 0, '
   req(email, ['display', 'href', 'status'], 'email');
   ok(email.href === `mailto:${email.display.text}` && /^[^\s@]+@[^\s@]+\.[a-z]+$/.test(email.display.text), 'контакты', 'email: href должен быть mailto:<адрес> без лишнего префикса');
   ok(email.status === 'PENDING_CLIENT_CONFIRMATION', 'контакты', 'email: статус PENDING_CLIENT_CONFIRMATION');
-  ok(Object.keys(address).join() === 'status' && address.status === 'ADDRESS_PENDING', 'контакты', 'address: только status ADDRESS_PENDING, текста адреса нет');
-}
-
-// ---------- политика ----------
-{
-  const total = loadSnapshot(sourceDir, 'privacy.md').blocks.get('rec596899666')?.length ?? 0;
-  const p = priv.privacyParagraphs;
-  ok(p.length === total - 1 && p.every((x, i) => x.src === `privacy.md#rec596899666/${i + 2}`), 'политика', `политика: ожидалось ${total - 1} абзацев в порядке источника, найдено ${p.length}`);
-  ok(priv.privacyTitle.src === 'privacy.md#rec596899666/1', 'политика', 'заголовок политики: privacy.md#rec596899666/1');
+  ok(address.line.text === 'ул. Нагорная, 19в/9, офис, 2 этаж, г. Благовещенск, Амурская область' && address.status === 'CLIENT_APPROVED', 'контакты', 'address: новый адрес владельца (2026-11-20, PROD-23), статус CLIENT_APPROVED');
+  ok(Math.abs(address.lat - 50.28) < 0.02 && Math.abs(address.lon - 127.49) < 0.02, 'контакты', 'address: координаты должны быть у Благовещенска (Нагорная, 19в)');
 }
 
 // ---------- 6. ui.ts ----------
@@ -498,6 +498,9 @@ for (const file of fullsnapshots) {
         if (rel === 'src/data/site-config.ts' && m[0] === 'https://ses-dv.ru') continue;
         if (rel === 'src/components/seo-head.astro' && m[0] === 'https://schema.org') continue;
         if (rel === 'src/scripts/analytics.ts' && m[0] === 'https://mc.yandex.ru/metrika/tag.js') continue;
+        // Блок контактов на главной (PROD-23, поручение владельца 2026-11-20): карта — виджет Яндекс Карт только в этом блоке.
+        if ((rel === 'src/components/home-contacts.astro' || rel.startsWith('dist/')) && m[0].startsWith('https://yandex.ru/map-widget/v1/?ll=')) continue; // dist: точное значение проверяет check-dist
+        if ((rel === 'src/data/source/contacts.ts' || rel.startsWith('dist/')) && m[0].startsWith('https://2gis.ru/blagoveshchensk?m=127.486127')) continue; // адрес в блоке контактов (PROD-23): ссылка в 2ГИС
         fail('старый сайт', `${rel}: внешняя ссылка «${m[0]}»; допустимы только wa.me (SPEC-DEMO §7), адреса сайта — лишь в тексте политики`);
       }
     }
@@ -515,8 +518,8 @@ function finish() {
 }
 finish();
 console.log(
-  `check-copy: OK — проверок ${checks}; SourceText ${sourceTexts} (+ ${decisionTexts} по решению A-18); ` +
+  `check-copy: OK — проверок ${checks}; SourceText ${sourceTexts} (+ ${decisionTexts} по решениям A-18, PROD-16, PROD-17, PROD-23); ` +
     `услуг ${services.length}, проектов ${projects.length} (на главной ${homeProjects.ids.length}, страницы у всех), видов работ ТЛТ ${workTypes.length}, ` +
-    `преимуществ ${advantages.length} (на главной ${homeAdvantageIds.ids.length}), отделов ${departments.length}, абзацев политики ${priv.privacyParagraphs.length}; ` +
+    `преимуществ ${advantages.length} (на главной ${homeAdvantageIds.ids.length}), отделов ${departments.length}; ` +
     `строк источника: использовано ${covered}, исключено с причиной ${excluded}`,
 );

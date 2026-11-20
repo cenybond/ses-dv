@@ -1,6 +1,7 @@
 // Каталог проектов: 14 карточек в порядке источника docs/content/source/completed-projects.md (PRJ-01…PRJ-14).
 // PRJ-15 («Перенос модульной котельной…», /page55167833.html) в каталоге источника отсутствует и в демо не показывается (A-19, REVIEW).
 // Нет года, заказчика, стоимости, статуса, сроков — их нет в источнике. `image: null` — фото ожидаются от заказчика (A-06), показывается заглушка.
+// `shortTitle` — сокращённое название для плиток и панелей (решение владельца 2026-11-20, PROD-17); в окне проекта всегда полное `title`.
 // Слаги соответствуют IA §6.2. Все 14 страниц доступны в полной сборке; публикация проходит release gates.
 // `serviceLinks` — только SOURCE_SUPPORTED из IA §7.4 (PROPOSED и PENDING в данные демо не переносятся); `clientApproved: false` у всех (A-20).
 // Каждая связь держится на строке снимка страницы проекта (`evidence`); у ТЛТ связь выводится из видов работ (tlt.ts).
@@ -41,6 +42,7 @@ export const projects = [
     id: 'prj-04',
     slug: 'clap',
     title: { text: 'Строительство КЛЭП-10кВ от РУ-10кВ ТП-27А до РУ-10кВ ТП-31 в рамках Технологического присоединения энергопринимающих устройств для Сохранения объекта культурного наследия', src: 'completed-projects.md#rec596873316/4' },
+    shortTitle: { text: 'Строительство КЛЭП-10кВ для объекта культурного наследия', decision: 'PROD-17' },
     snapshot: 'clap.md',
     image: null,
     hasPage: true,
@@ -52,6 +54,7 @@ export const projects = [
     id: 'prj-05',
     slug: 'pumping-station',
     title: { text: 'Капитальный ремонт канализационной насосной станции в квартале 374 г. Благовещенска', src: 'completed-projects.md#rec596873316/5' },
+    shortTitle: { text: 'Капремонт канализационной насосной станции, кв. 374', decision: 'PROD-17' },
     snapshot: 'pumping-station.md',
     image: null,
     hasPage: true,
@@ -61,6 +64,7 @@ export const projects = [
     id: 'prj-06',
     slug: 'ktp',
     title: { text: 'Реконструкция трансформаторных подстанций КТП № 195 и КТП № 479', src: 'completed-projects.md#rec596873316/6' },
+    shortTitle: { text: 'Реконструкция КТП № 195 и № 479', decision: 'PROD-17' },
     snapshot: 'ktp.md',
     image: null,
     hasPage: true,
@@ -88,6 +92,7 @@ export const projects = [
     id: 'prj-09',
     slug: 'philharmonic',
     title: { text: 'ГАУКАО «Амурская областная филармония»', src: 'completed-projects.md#rec596873316/9' },
+    shortTitle: { text: 'Амурская областная филармония', decision: 'PROD-17' },
     snapshot: 'philharmonic.md',
     image: null,
     hasPage: true,
@@ -108,6 +113,7 @@ export const projects = [
     id: 'prj-11',
     slug: 'smr-kalinina',
     title: { text: 'Строительно-монтажные работы по\u00A0замене участка водопроводной сети по\u00A0ул.\u00A0Калинина между ул.\u00A0Игнатьевское шоссе и\u00A0ул.\u00A0Воронкова', src: 'completed-projects.md#rec596873316/11' },
+    shortTitle: { text: 'Замена участка водопроводной сети по ул. Калинина', decision: 'PROD-17' },
     snapshot: 'smr-kalinina.md',
     image: null,
     hasPage: true,
@@ -117,6 +123,7 @@ export const projects = [
     id: 'prj-12',
     slug: 'pns',
     title: { text: 'Строительство ПНС в\u00A0ЗПУ-А1, район Молокозавода с\u00A0реконструкцией водовода для дома по\u00A0ул.\u00A0Мичурина 15', src: 'completed-projects.md#rec596873316/12' },
+    shortTitle: { text: 'Строительство ПНС в ЗПУ-А1 с реконструкцией водовода', decision: 'PROD-17' },
     snapshot: 'pns.md',
     image: null,
     hasPage: true,
@@ -128,6 +135,7 @@ export const projects = [
     id: 'prj-13',
     slug: 'aks',
     title: { text: 'Выполнение строительно — монтажных работ по реконструкции кабельных линий для нужд ООО «Амурские коммунальные системы»', src: 'completed-projects.md#rec596873316/13' },
+    shortTitle: { text: 'Реконструкция кабельных линий ООО «Амурские коммунальные системы»', decision: 'PROD-17' },
     snapshot: 'aks.md',
     image: null,
     hasPage: true,

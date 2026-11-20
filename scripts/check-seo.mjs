@@ -41,7 +41,7 @@ for (const file of walk(dist).filter((file) => file.endsWith('.html'))) {
   assert.ok(/<meta name="description" content="[^"]+"/.test(html), 'Description: ' + path);
   assert.ok(/property="og:title"/.test(html) && /property="og:url"/.test(html), 'OG: ' + path);
   for (const section of ['/news', '/documents']) if (!published_routes.includes(section)) assert.ok(!html.includes(`href="${section}`), 'Скрытый раздел: ' + section);
-  if (path === '404' || (!legal_content_approved && ['privacy', 'cookies', 'consent'].includes(path))) assert.ok(/name="robots" content="noindex, nofollow"/.test(html), 'Черновик индексируется: ' + path);
+  if (path === '404' || (!legal_content_approved && ['cookies', 'consent'].includes(path))) assert.ok(/name="robots" content="noindex, nofollow"/.test(html), 'Черновик индексируется: ' + path);
   pages++;
 }
 const robots = readFileSync(join(dist, 'robots.txt'), 'utf8');
@@ -50,7 +50,7 @@ if (/Disallow: \/\s*$/.test(robots)) assert.ok(!sitemap.includes('<loc>'), 'Stag
 for (const loc of sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)) {
   const path = new URL(loc[1]).pathname;
   assert.notEqual(path, '/404');
-  if (!legal_content_approved) assert.ok(!['/privacy', '/cookies', '/consent'].includes(path));
+  if (!legal_content_approved) assert.ok(!['/cookies', '/consent'].includes(path));
   if (path === '/news' || path.startsWith('/news/') || path === '/documents') assert.ok(published_routes.includes(path));
   assert.ok(existsSync(join(dist, path === '/' ? 'index.html' : path.slice(1) + '/index.html')));
 }

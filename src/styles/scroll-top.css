@@ -1,0 +1,8 @@
+/* Кнопка «Наверх»: круг в салатовом цвете кнопок сайта, стрелка тёмная (цвет на салатовом — --color-on-accent). */
+.scroll-top{--scroll-top-lift:0px;position:fixed;z-index:30;inset-inline-end:var(--space-6);inset-block-end:calc(var(--space-6) + var(--scroll-top-lift));display:grid;place-items:center;inline-size:calc(var(--size-touch) + var(--space-1));block-size:calc(var(--size-touch) + var(--space-1));padding:0;border:0;border-radius:var(--radius-pill);background:var(--color-accent);color:var(--color-on-accent);box-shadow:var(--shadow-float);cursor:pointer;opacity:0;visibility:hidden;transform:translateY(var(--space-3));transition:opacity var(--motion-base),transform var(--motion-base),visibility 0s linear var(--motion-base),background-color var(--motion-fast),inset-block-end var(--motion-base)}
+.scroll-top.is-visible{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.scroll-top:hover{background:var(--color-accent-hover)}
+.scroll-top:active{background:var(--color-accent-mid)}
+.scroll-top:focus-visible{outline:var(--border-w) solid var(--color-focus);outline-offset:var(--space-1)}
+@media(max-width:640px){.scroll-top{inset-inline-end:var(--gutter)}}
+@media(prefers-reduced-motion:reduce){.scroll-top{transform:none;transition:opacity var(--motion-fast),visibility 0s linear var(--motion-fast)}}

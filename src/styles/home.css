@@ -30,6 +30,8 @@
 .home-services li:nth-child(7) .home-services__arrow{background:var(--color-accent);color:var(--color-on-accent);opacity:1;transform:none}
 .home-services__card:hover .home-services__arrow,.home-services__card:focus-visible .home-services__arrow{opacity:1;transform:none}
 @media (hover:none){.home-services__arrow{opacity:1;transform:none}}
+/* На телефоне кружков со стрелками на карточках услуг нет (решение владельца 2026-11-20): карточка и так целиком нажимается. */
+@media (max-width:640px){.home-services__arrow{display:none}}
 /* Карточка с фото («Монтаж объектов видеонаблюдения», решение владельца 2026-11-18): в покое фото выбелено, красок почти не видно; при наведении оно проявляется в цвете.
    Белая подложка сверху (под тёмный текст) остаётся всегда, зелёного нет. */
 .home-services__card--photo{--film:var(--color-surface);position:relative;overflow:hidden;isolation:isolate}

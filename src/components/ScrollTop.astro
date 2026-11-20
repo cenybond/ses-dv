@@ -1,0 +1,11 @@
+---
+// Кнопка «Наверх»: круглая салатовая, в правом нижнем углу; появляется после первого экрана прокрутки (src/scripts/scroll-top.ts).
+// Над окнами (dialog) не показывается: они в верхнем слое. Над баннером cookie поднимается, чтобы не перекрывать его.
+import '../styles/scroll-top.css';
+---
+<button class="scroll-top" type="button" data-scroll-top aria-label="Наверх" inert>
+  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+</button>
+<script>
+  import '../scripts/scroll-top.ts';
+</script>

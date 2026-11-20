@@ -8,7 +8,7 @@ Astro собирает статические страницы. Единый `co
 
 `server/index.mjs` — небольшой Node HTTP-сервис на `127.0.0.1:4322`, без сторонних библиотек. Reverse proxy выбранного хостинга должен обслуживать `/api/leads` на том же origin, а остальные запросы — из `dist`. Такой подход сохраняет статику и не связывает весь сайт с будущим провайдером. Официальные [Astro endpoints](https://docs.astro.build/en/guides/endpoints/) и [on-demand rendering](https://docs.astro.build/en/guides/on-demand-rendering/) требуют adapter для исполняемых Astro server routes. Если будет выбран поддерживаемый Astro-хостинг, этот отдельный handler можно адаптировать, не меняя форму; сейчас adapter не устанавливался. [Node adapter](https://docs.astro.build/en/guides/integrations-guide/node/) статическому сайту сам по себе не нужен.
 
-Компоненты: `contact-form`, `request-button`, `request-dialog`, `consent-checkbox`, `form-status`. Один `RequestDialog` и один импорт `forms.ts` размещены в общем layout. Без JavaScript кнопки ведут на контакты, отправка формы недоступна; телефон и e-mail работают обычными ссылками.
+Компоненты: `contact-form`, `request-dialog`, `consent-checkbox`, `form-status`. Один `RequestDialog` и один импорт `forms.ts` размещены в общем layout. Без JavaScript кнопки ведут на контакты, отправка формы недоступна; телефон и e-mail работают обычными ссылками.
 
 ## Минимальные данные
 

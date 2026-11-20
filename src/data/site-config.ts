@@ -19,5 +19,5 @@ export function make_site_config(env: Record<string, unknown>, reviewed_content 
 // Меняется только вместе с утверждёнными юридическими текстами, не одним env-флагом.
 export const legal_content_approved = false;
 export const site_config = make_site_config(import.meta.env ?? {}, legal_content_approved);
-export const legal_paths = ['/privacy', '/consent', '/cookies'];
+export const legal_paths = ['/consent', '/cookies'];
 export const page_indexable = (path: string) => site_config.indexable && path !== '/404' && (!legal_paths.includes(path) || legal_content_approved);

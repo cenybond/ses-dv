@@ -1,11 +1,13 @@
 ---
 // Проекты на главной: слева заголовок, справа «аккордеон» из шести панелей и плитка «Еще работы» (React Bits AccordionGallery, перенос на Astro + GSAP).
 // Активная панель раскрывается (наведение, фокус, касание, стрелки), остальные сжимаются и слегка наклоняются; нажатие на раскрытую панель открывает окно проекта.
-// Плитка «Еще работы» открывает окно со всеми проектами: сетка фото-плиток (у проекта без фото — заглушка), плитка открывает окно проекта.
-// Фото есть у шести объектов (src/assets/projects/); у проектов без фото — тёмно-серая заглушка с водяным знаком «Фото ожидается». Поведение — src/scripts/projects-gallery.ts; без JS раскрыта средняя панель.
+// Плитка «Еще работы» открывает окно со всеми проектами: сетка фото-плиток, плитка открывает окно проекта.
+// Фото лежат в src/assets/projects/. Заглушек «Фото ожидается» нет (решение владельца 2026-11-20): у проекта без фото плитка нейтрально-серая, в окне проекта нет блока снимков.
+// На панелях и плитках — короткое название (`shortTitle`, PROD-17), в окне проекта — полное. Поведение — src/scripts/projects-gallery.ts; без JS раскрыта средняя панель.
 import { Picture } from 'astro:assets';
 import { getHomeProjects, projects as allProjects, projectdetails, tlt, workdetails, services } from '../data';
 import { pageui, ui } from '../data/ui';
+import { projectPath } from '../data/project-urls';
 import { glue } from '../utils/typography';
 import '../styles/projects-gallery.css';
 const projects = getHomeProjects();
@@ -13,13 +15,14 @@ const projects = getHomeProjects();
 const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/projects/*.webp', { eager: true });
 const photoOf = (slug: string) => photos[`../assets/projects/${slug}.webp`]?.default;
 // Все снимки проекта для листания в окне: <slug>.webp, затем <slug>-2.webp, <slug>-3.webp… (новые снимки просто кладутся в src/assets/projects/).
-// В окне проекта всегда не меньше трёх слайдов: настоящие снимки, дальше заглушки «Фото ожидается» (пока заказчик не передал остальные фото).
-const SLIDES_MIN = 3;
+// Формат снимка (ширина / высота) для рамки фото в окне проекта: не уже 3:5 и не шире 11:5 (src/scripts/project-slider.ts, projects-gallery.css).
+const ratioOf = (image: ImageMetadata) => Math.min(Math.max(image.width / image.height, 0.6), 2.2);
 const photosOf = (slug: string) => Object.entries(photos)
   .map(([path, module]) => { const name = path.split('/').pop()!.replace(/\.webp$/, ''); return { order: name === slug ? 1 : name.startsWith(`${slug}-`) && /^\d+$/.test(name.slice(slug.length + 1)) ? Number(name.slice(slug.length + 1)) : 0, image: module.default }; })
   .filter((item) => item.order > 0)
   .sort((a, b) => a.order - b.order)
   .map((item) => item.image);
+const shortTitleOf = (project: (typeof allProjects)[number]) => ('shortTitle' in project && project.shortTitle ? project.shortTitle.text : project.title.text);
 // Окно проекта (вместо отдельной страницы, решение владельца 2026-11-18): заголовок, текст из источника, у ТЛТ — перечень видов работ.
 const modalId = (slug: string) => `project-modal-${slug}`;
 const detailOf = (id: string) => projectdetails.find((detail) => detail.id === id);
@@ -36,8 +39,8 @@ const relatedOf = (project: (typeof allProjects)[number]) => project.serviceLink
         {projects.map((project, index) => { const photo = photoOf(project.slug); return (
           <li class:list={['pg__panel', photo && 'pg__panel--photo', index >= 4 && 'pg__panel--hide-sm', index >= 5 && 'pg__panel--hide-md']}>
             <button class="pg__link" type="button" data-project-modal={modalId(project.slug)} aria-haspopup="dialog" data-goal="project_open">
-              {photo ? <Picture class="pg__img" src={photo} alt="" formats={['avif', 'webp']} fallbackFormat="jpeg" widths={[480, 960, 1600]} sizes="(max-width: 640px) 100vw, 60vw" loading="eager" decoding="async" data-morph-source /> : <span class="pg__photo" aria-hidden="true">{pageui.photo}</span>}
-              <span class="pg__caption"><span class="pg__bar" aria-hidden="true"></span><span class="pg__title">{project.title.text}</span></span>
+              {photo ? <Picture class="pg__img" src={photo} alt="" formats={['avif', 'webp']} fallbackFormat="jpeg" widths={[480, 960, 1600]} sizes="(max-width: 640px) 100vw, 60vw" loading="eager" decoding="async" data-morph-source /> : null}
+              <span class="pg__caption"><span class="pg__bar" aria-hidden="true"></span><span class="pg__title">{shortTitleOf(project)}</span></span>
             </button>
           </li>
         ); })}
@@ -61,21 +64,21 @@ const relatedOf = (project: (typeof allProjects)[number]) => project.serviceLink
     </div>
   </div>
 </section>
-<dialog class="list-modal" id="list-modal-projects" aria-labelledby="list-modal-projects-title">
+<dialog class="list-modal" id="list-modal-projects" data-path="/projects/all" aria-labelledby="list-modal-projects-title">
   <div class="list-modal__scroll" data-lenis-prevent>
     <div class="list-modal__inner">
-      <header class="list-modal__head">
-        <h2 id="list-modal-projects-title">Проекты</h2>
+      <header class="list-modal__head list-modal__head--end">
         <button class="list-modal__close" type="button" data-modal-close aria-label={ui.a11y.close}>
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
       </header>
+      <h2 class="list-modal__title" id="list-modal-projects-title">Проекты</h2>
       <ul class="pj">
         {allProjects.map((project) => { const photo = photoOf(project.slug); return (
           <li>
             <button class="pj__card" type="button" data-modal-open={modalId(project.slug)} aria-haspopup="dialog" data-goal="project_open">
-              <span class="pj__media" data-morph-source>{photo ? <Picture class="pj__img" src={photo} alt="" formats={['avif', 'webp']} fallbackFormat="jpeg" widths={[480, 960]} sizes="(max-width: 480px) 100vw, (max-width: 960px) 50vw, 25vw" loading="lazy" decoding="async" /> : <span class="pj__ph" aria-hidden="true">{pageui.photo}</span>}</span>
-              <span class="pj__caption"><span class="pj__title">{glue(project.title.text, true)}</span></span>
+              <span class="pj__media" data-morph-source>{photo ? <Picture class="pj__img" src={photo} alt="" formats={['avif', 'webp']} fallbackFormat="jpeg" widths={[480, 960]} sizes="(max-width: 480px) 100vw, (max-width: 960px) 50vw, 25vw" loading="lazy" decoding="async" /> : null}</span>
+              <span class="pj__caption"><span class="pj__title">{glue(shortTitleOf(project), true)}</span></span>
             </button>
           </li>
         ); })}
@@ -83,8 +86,8 @@ const relatedOf = (project: (typeof allProjects)[number]) => project.serviceLink
     </div>
   </div>
 </dialog>
-{allProjects.map((project) => { const detail = detailOf(project.id); const photos_ = photosOf(project.slug); const slides = Array.from({ length: Math.max(SLIDES_MIN, photos_.length) }, (_, index) => photos_[index]); const isTlt = project.id === tlt.projectId; const related = relatedOf(project); const heading = isTlt ? tlt.heading.text : (detail?.heading.text ?? project.title.text); return (
-  <dialog class="list-modal project-modal" id={modalId(project.slug)} aria-labelledby={`${modalId(project.slug)}-title`}>
+{allProjects.map((project) => { const detail = detailOf(project.id); const photos_ = photosOf(project.slug); const slides = photos_; const isTlt = project.id === tlt.projectId; const related = relatedOf(project); const heading = isTlt ? tlt.heading.text : (detail?.heading.text ?? project.title.text); const phoneTitle = shortTitleOf(project) !== heading && shortTitleOf(project).length < heading.length ? shortTitleOf(project) : null; return (
+  <dialog class="list-modal project-modal" id={modalId(project.slug)} data-path={projectPath(project.slug)} aria-labelledby={`${modalId(project.slug)}-title`}>
     <div class="list-modal__scroll" data-lenis-prevent>
       <div class="list-modal__inner">
         <header class="list-modal__head list-modal__head--end">
@@ -92,27 +95,32 @@ const relatedOf = (project: (typeof allProjects)[number]) => project.serviceLink
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
           </button>
         </header>
+        <h2 class="project-modal__title" id={`${modalId(project.slug)}-title`}>{phoneTitle ? <><span class="project-modal__title-full">{heading}</span><span class="project-modal__title-short">{phoneTitle}</span></> : heading}</h2>
         <div class="project-modal__body">
-          <div class="project-modal__gallery" data-slider>
-            <div class="project-modal__stage" data-morph-target>
-              <ul class="project-modal__slides" data-slides>
-                {slides.map((image) => <li>{image ? <Picture class="project-modal__photo" src={image} alt="" formats={['avif', 'webp']} fallbackFormat="jpeg" widths={[640, 1280]} sizes="(max-width: 960px) 100vw, 50vw" loading="lazy" decoding="async" /> : <span class="project-modal__ph" aria-hidden="true">{pageui.photo}</span>}</li>)}
-              </ul>
-            </div>
-            {slides.length > 1 && (
-              <div class="project-modal__nav">
-                <button class="list-modal__close" type="button" data-slide-prev aria-label={pageui.previous}>
-                  <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 4 6 10l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
-                <span class="project-modal__count" data-slide-count aria-live="polite">1 / {slides.length}</span>
-                <button class="list-modal__close" type="button" data-slide-next aria-label={pageui.next}>
-                  <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false"><path d="m8 4 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
+          {slides.length > 0 && (
+            <div class="project-modal__gallery" data-slider>
+              <div class="project-modal__stage" tabindex="0" role="group" aria-roledescription="carousel" aria-label={pageui.projectphotos}>
+                <div class="project-modal__frame" data-morph-target>
+                  <ul class="project-modal__slides" data-slides>
+                    {slides.map((image) => <li data-ratio={ratioOf(image).toFixed(4)}><Picture class="project-modal__photo" src={image} alt="" formats={['avif', 'webp']} fallbackFormat="jpeg" widths={[640, 1280, 1920]} sizes="100vw" loading="lazy" decoding="async" /></li>)}
+                  </ul>
+                </div>
+                {slides.length > 1 && (
+                  <>
+                    <button class="project-modal__arrow project-modal__arrow--prev" type="button" data-slide-prev aria-label={pageui.previous}>
+                      <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 4 6 10l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                    <span class="project-modal__count" data-slide-count aria-live="polite">1 / {slides.length}</span>
+                    <button class="project-modal__arrow project-modal__arrow--next" type="button" data-slide-next aria-label={pageui.next}>
+                      <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false"><path d="m8 4 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    </button>
+                  </>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
           <div class="project-modal__text">
-            <h2 id={`${modalId(project.slug)}-title`}>{heading}</h2>
+            {phoneTitle && <p class="project-modal__fullname">{heading}</p>}
             {isTlt && tlt.facts.map((fact) => <p>{fact.text.text}</p>)}
             {(detail?.sections as readonly { heading?: { text: string }; paragraphs: readonly { text: string }[] }[] | undefined)?.map((section) => <section>{section.heading && <h3>{section.heading.text}</h3>}{section.paragraphs.map((paragraph) => <p>{paragraph.text}</p>)}</section>)}
             {isTlt && (

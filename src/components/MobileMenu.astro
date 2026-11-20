@@ -3,7 +3,6 @@
 // без JS диалог закрыт, а кнопка — якорь на навигацию в подвале (#site-nav). Пункты — те же, что в шапке (data/nav.ts).
 import NavigationLink from './NavigationLink.astro';
 import ContactLink from './ContactLink.astro';
-import Button from './Button.astro';
 import { mainNav, phones, email, routes, ui } from '../data';
 
 interface Props {
@@ -25,6 +24,6 @@ const { currentPath = '' } = Astro.props;
       <ContactLink href={phones[0].href} label={phones[0].display.text} />
       <ContactLink href={email.href} label={email.display.text} />
     </div>
-    <Button href={routes.contacts} size="lg" block>{ui.actions.orderCall}</Button>
+    <a class="btn btn--lime btn--lg btn--block" href={routes.contacts} data-contacts-link>{ui.actions.contactUs}</a>
   </div>
 </dialog>

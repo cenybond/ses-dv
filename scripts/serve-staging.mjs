@@ -38,7 +38,7 @@ export function create_staging_server() {
       try { data = await readFile(file); } catch { file = resolve(root, '404.html'); data = await readFile(file); status = 404; }
       const hashes = extname(file) === '.html'
         ? [...data.toString().matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)].map(match => `'sha256-${createHash('sha256').update(match[1]).digest('base64')}'`) : [];
-      res.setHeader('Content-Security-Policy', `default-src 'self'; script-src 'self' ${hashes.join(' ')}; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`);
+      res.setHeader('Content-Security-Policy', `default-src 'self'; script-src 'self' ${hashes.join(' ')}; style-src 'self'; img-src 'self' data:; font-src 'self'; frame-src https://yandex.ru; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`);
       res.writeHead(status, { 'Content-Type': types[extname(file)] || 'application/octet-stream' });
       res.end(req.method === 'HEAD' ? undefined : data);
     } catch { if (!res.headersSent) res.writeHead(400); res.end(); }

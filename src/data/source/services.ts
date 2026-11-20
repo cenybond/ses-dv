@@ -1,6 +1,7 @@
 // Услуги (S-01…S-10). S-01…S-09 — названия дословно из docs/content/source/services.md, в порядке источника.
 // S-10 «Проектирование» добавлена заказчиком (DECISIONS.md A-18): в снимках её нет, описание ожидается от заказчика —
 // `descriptionStatus: 'DESCRIPTION_PENDING'`, текст не придумывается. Описаний нет и у S-01…S-09: на действующем сайте только названия.
+// S-11 «Искусственное понижение уровня грунтовых вод» добавлена владельцем 2026-11-20 (DECISIONS.md PROD-16): в снимках её нет, описания нет.
 // Идентификаторы s-NN были якорями страницы /services (SPEC-DEMO §6.2); страницу удалил владелец 2026-11-18, перечень показывает окно в разделе «Наши услуги» на главной. Отдельных страниц услуг нет (B-13).
 import type { Service, SourceText } from '../types.ts';
 
@@ -17,6 +18,7 @@ export const services = [
   { id: 's-08', title: { text: 'Благоустройство дворовых и общественных территорий', src: 'services.md#rec596139915/17' }, description: null, descriptionStatus: 'NONE_IN_SOURCE' },
   { id: 's-09', title: { text: 'Обслуживание электрооборудования, электрических сетей и освещения', src: 'services.md#rec596139915/19' }, description: null, descriptionStatus: 'NONE_IN_SOURCE' },
   { id: 's-10', title: { text: 'Проектирование', decision: 'A-18' }, description: null, descriptionStatus: 'DESCRIPTION_PENDING' },
+  { id: 's-11', title: { text: 'Искусственное понижение уровня грунтовых вод', decision: 'PROD-16' }, description: null, descriptionStatus: 'DESCRIPTION_PENDING' },
 ] as const satisfies readonly Service[];
 
 export type ServiceId = (typeof services)[number]['id'];

@@ -23,7 +23,7 @@ const id = `lead-${crypto.randomUUID()}`;
       <a href={email.href} data-goal="email_click">{email.display.text}</a>
     </div>}
   </div>
-  <form data-lead-form data-enabled={String(enabled)} data-context={context} data-mode={mode} data-consent-version={consent_version} {...(line ? { 'data-open-fill': '' } : {})} action="/api/leads" method="post" aria-describedby={!line && !enabled ? `${id}-notice` : undefined}>
+  <form class="ym-disable-keys" data-lead-form data-enabled={String(enabled)} data-context={context} data-mode={mode} data-consent-version={consent_version} {...(line ? { 'data-open-fill': '' } : {})} action="/api/leads" method="post" aria-describedby={!line && !enabled ? `${id}-notice` : undefined}>
     <fieldset disabled data-lead-fields>
       <legend class="visually-hidden">Контактные данные для обращения</legend>
       <div class="lead-fields">

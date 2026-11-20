@@ -11,6 +11,7 @@ import SeoHead from '../components/seo-head.astro';
 import CookieBanner from '../components/cookie-banner.astro';
 import CookieSettings from '../components/cookie-settings.astro';
 import RequestDialog from '../components/request-dialog.astro';
+import ScrollTop from '../components/ScrollTop.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import MobileMenu from '../components/MobileMenu.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -44,6 +45,7 @@ const currentPath = normalizePath(Astro.url.pathname);
     {!bare && <SiteFooter currentPath={currentPath} />}
     {!bare && <MobileMenu currentPath={currentPath} />}
     {!bare && <RequestDialog />}
+    {!bare && <ScrollTop />}
     <CookieBanner />
     <CookieSettings />
     <script>

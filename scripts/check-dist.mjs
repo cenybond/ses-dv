@@ -14,9 +14,8 @@ if (!existsSync(dist)) {
   console.error('dist/ не найден: сначала npm run build');
   process.exit(1);
 }
-const { mainNav, privacyRoute, pendingRoutes } = await import(pathToFileURL(join(root, 'src/data/nav.ts')).href);
+const { mainNav, pendingRoutes } = await import(pathToFileURL(join(root, 'src/data/nav.ts')).href);
 void mainNav;
-void privacyRoute;
 
 const errors = [];
 const pending = new Set();
@@ -33,7 +32,10 @@ if (all.some(file => /(?:\.map|\.env|package\.json)$/.test(file))) fail('слу�
 const demo = process.env.PUBLIC_SITE_MODE !== 'production' || process.env.PUBLIC_LEGAL_APPROVED !== 'true';
 // Единственная внешняя ссылка кроме tel:, mailto:, wa.me — вакансии на hh.ru (решение владельца 2026-11-18); в HTML & записан как &amp;.
 const HH_VACANCIES = 'https://blagoveschensk.hh.ru/employer/9992331?hhtmFrom=vacancy&tab=VACANCIES';
-const isExternalOk = (u) => u.startsWith('tel:') || u.startsWith('mailto:') || u.startsWith('https://wa.me/') || u.replaceAll('&amp;', '&') === HH_VACANCIES;
+const isExternalOk = (u) => u.startsWith('tel:') || u.startsWith('mailto:') || u.startsWith('https://wa.me/') || u.replaceAll('&amp;', '&') === HH_VACANCIES
+  || /^https:\/\/yandex\.ru\/map-widget\/v1\/\?ll=(?:127\.485097|127\.486127),50\.282061&z=17&pt=127\.486127,50\.281787,pm2gnm$/.test(u.replaceAll('&amp;', '&'))
+  || u === 'https://2gis.ru/blagoveshchensk?m=127.486127%2C50.281787%2F17'; // адрес в блоке контактов (PROD-23): ссылка в 2ГИС
+  // карта контактов на главной (PROD-23): iframe — условие выше, перед ним
 
 /** Путь URL ('/a/b') → файл в dist или null. */
 function resolveLocal(urlPath) {
@@ -63,7 +65,7 @@ for (const file of htmlFiles) {
   if (!/<html[^>]*\blang="ru"/.test(html)) fail(`${rel}: нет lang="ru"`);
   const noindex = /<meta name="robots" content="[^"]*noindex/.test(html);
   if (demo && !noindex) fail(`${rel}: нет noindex в демо-сборке`);
-  if (!demo && noindex && !/(?:404|privacy|consent|cookies)/.test(rel)) fail(`${rel}: noindex в production-сборке`);
+  if (!demo && noindex && !/(?:404|consent|cookies)/.test(rel)) fail(`${rel}: noindex в production-сборке`);
   const h1 = (html.match(/<h1[\s>]/g) ?? []).length;
   if (h1 !== 1) fail(`${rel}: <h1> ${h1} шт. (нужен один)`);
   for (const img of html.matchAll(/<img\b[^>]*>/g)) if (!/\balt(?=[\s=>])/.test(img[0])) fail(`${rel}: <img> без alt`);
@@ -79,7 +81,11 @@ for (const file of htmlFiles) {
   for (const form of html.matchAll(/<form\b[^>]*>/g)) {
     if (!/action="\/api\/leads"/.test(form[0]) || !/method="post"/.test(form[0]) || !/data-lead-form/.test(form[0])) fail(`${rel}: неподтверждённый адрес или метод формы`);
   }
-  if (/<iframe\b/i.test(html)) fail(`${rel}: внешний iframe не согласован`);
+  // Единственный разрешённый iframe — карта в блоке контактов на главной (PROD-23): адрес из isExternalOk, заголовок для скринридеров, referrerpolicy=no-referrer.
+  for (const frame of html.matchAll(/<iframe\b[^>]*>/gi)) {
+    const src = /\ssrc="([^"]*)"/.exec(frame[0])?.[1] ?? '';
+    if (!isExternalOk(src) || !src.startsWith('https://yandex.ru/') || !/\stitle="[^"]+"/.test(frame[0]) || !/referrerpolicy="no-referrer"/.test(frame[0])) fail(`${rel}: iframe не согласован (разрешена только карта контактов): ${frame[0].slice(0, 120)}`);
+  }
 }
 
 // CSS: url() и шрифты

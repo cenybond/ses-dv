@@ -1,5 +1,0 @@
----
-interface Props { context: string; label: string; class?: string; arrow?: boolean; }
-const { context, label, class: class_name = '', arrow = true } = Astro.props;
----
-<a class:list={['btn', 'btn--lime', 'request-button', class_name]} href="/contacts#contact-form" data-request-open data-request-context={context}>{label}{arrow && <span aria-hidden="true">↗</span>}</a>

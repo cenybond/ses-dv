@@ -1,12 +1,11 @@
 ---
 // Шапка (DESIGN-SYSTEM §8.1). `solid` — внутренние страницы без hero: светлая всегда (класс уже в разметке, без JS шапка читаема);
 // `overlay` — прозрачная над hero (главная, DEMO-06): hero сам уходит под шапку отрицательным margin-top, светлой она становится при прокрутке.
-// «Заказать звонок» до DEMO-05 ведёт на /contacts. Кнопка «Меню» — якорь на навигацию в подвале; с JS открывает шторку (scripts/mobile-menu.ts).
+// «Связаться с нами» ведёт на /contacts (на главной — плавно к блоку контактов, scripts/forms.ts). Кнопка «Меню» — якорь на навигацию в подвале; с JS открывает шторку (scripts/mobile-menu.ts).
 import Logo from './Logo.astro';
 import ContactLink from './ContactLink.astro';
 import NavigationLink from './NavigationLink.astro';
-import RequestButton from './request-button.astro';
-import { phones, ui, mainNav } from '../data';
+import { phones, ui, mainNav, routes } from '../data';
 
 interface Props {
   variant?: 'solid' | 'overlay' | 'hero';
@@ -25,7 +24,7 @@ const { variant = 'solid', currentPath = '' } = Astro.props;
     </nav>
     <div class="site-header__actions">
       <ContactLink class="header-phone" href={phones[0].href} label={phones[0].display.text} />
-      <RequestButton context="callback" label={ui.actions.orderCall} arrow={false} />
+      <a class="btn btn--lime request-button" href={routes.contacts} data-contacts-link>{ui.actions.contactUs}</a>
       <a class="burger" href="#site-nav" data-open-menu aria-label={ui.a11y.menu}>
         <span class="burger__bars" aria-hidden="true"></span>
       </a>

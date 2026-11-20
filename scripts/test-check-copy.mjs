@@ -33,10 +33,9 @@ const cases = [
   { name: 'тире: en dash заменён дефисом', file: 'src/data/source/tlt.ts', find: 'Д-1 Хэйхэ – Благовещенск для последующего устройства сетей тепловодоснабжения и ГНБ', replace: 'Д-1 Хэйхэ - Благовещенск для последующего устройства сетей тепловодоснабжения и ГНБ', expect: /дословность.*пунктуация/ },
   { name: 'опечатка в телефоне', file: 'src/data/source/contacts.ts', find: '+7 (924) 499-94-44', replace: '+7 (924) 499-94-45', expect: /дословность/ },
   { name: 'опечатка в преимуществе', file: 'src/data/source/advantages.ts', find: 'Работаем по Локально-Сметным Расчетам', replace: 'Работаем по локально-сметным расчетам', expect: /дословность.*регистр/ },
-  { name: 'опечатка в абзаце политики', file: 'src/data/source/privacy.ts', find: 'Общие положения', replace: 'Общие положения.', expect: /дословность/ },
   { name: 'подпись ui из снимка изменена («Заказать!»)', file: 'src/data/ui.ts', find: "order: 'Заказать',", replace: "order: 'Заказать!',", expect: /дословность/ },
   { name: 'подпись ui из SPEC изменена', file: 'src/data/ui.ts', find: "photo: 'Место для фотографии'", replace: "photo: 'Здесь будет фото'", expect: /\[SPEC\]/ },
-  { name: 'удалена услуга S-09 (количество)', file: 'src/data/source/services.ts', find: /  \{ id: 's-09'.*\n/, replace: '', expect: /количество.*услуг 9/ },
+  { name: 'удалена услуга S-09 (количество)', file: 'src/data/source/services.ts', find: /  \{ id: 's-09'.*\n/, replace: '', expect: /количество.*услуг 10/ },
   { name: 'удалён проект PRJ-13 (количество и полнота)', file: 'src/data/source/projects.ts', find: /  \{\n    id: 'prj-13',[\s\S]*?\n  \},\n/, replace: '', expect: /количество.*проектов 13/ },
   { name: 'удалён отдел (количество)', file: 'src/data/source/company.ts', find: /  \{ id: 'dep-04'.*\n/, replace: '', expect: /количество.*отделов 4/ },
   { name: 'пропущен вид работ ТЛТ (полнота исходного блока)', file: 'src/data/source/tlt.ts', find: /  \{\n    id: 'prj-14-12',[\s\S]*?\n  \},\n/, replace: '', expect: /полнота.*оригинальный фрагмент пропущен/ },
@@ -56,7 +55,7 @@ const cases = [
   { name: 'придуманное название S-10', file: 'src/data/source/services.ts', find: "text: 'Проектирование', decision: 'A-18'", replace: "text: 'Проектирование зданий', decision: 'A-18'", expect: /S-10/ },
   { name: 'придуманный текст вне SourceText (в данных компании)', file: 'src/data/source/company.ts', find: "status: 'PENDING_FROM_CLIENT',", replace: "status: 'PENDING_FROM_CLIENT', note: 'Работаем с 2005 года',", expect: /без источника/ },
   { name: 'придуманный год проекта', file: 'src/data/source/projects.ts', find: "slug: 'hope',", replace: "slug: 'hope', year: '2021',", expect: /без источника|\[поля\]/ },
-  { name: 'старый адрес в новых данных', file: 'src/data/source/contacts.ts', find: "export const address = { status: 'ADDRESS_PENDING' } as const;", replace: "export const address = { status: 'ADDRESS_PENDING', note: 'ул. Александра Кириллова, д. 53/2, офис 9' } as const;", expect: /старый адрес/ },
+  { name: 'старый адрес в новых данных', file: 'src/data/source/contacts.ts', find: "  lon: 127.486127,", replace: "  lon: 127.486127,\n  note: 'ул. Александра Кириллова, д. 53/2, офис 9',", expect: /старый адрес/ },
   { name: 'старый адрес в компоненте', add: 'src/components/Old.astro', content: '<p>ул. Александра Кириллова</p>', expect: /старый адрес/ },
   { name: 'ссылка на старый сайт в компоненте', add: 'src/components/Link.astro', content: '<a href="https://ses-dv.ru/services">старый</a>', expect: /старый сайт/ },
   { name: 'внутренний маркер в UI-тексте', file: 'src/data/ui.ts', find: "serviceDescription: 'Описание будет добавлено'", replace: "serviceDescription: 'DESCRIPTION_PENDING'", expect: /маркеры.*DESCRIPTION_PENDING/ },
@@ -81,7 +80,7 @@ const cases = [
   { name: 'ИЗМЕНЁН СНИМОК: название услуги в источнике (данные ≠ источник)', file: 'docs/content/source/services.md', find: '[TITLE] Геодезическое сопровождение строительства\n', replace: '[TITLE] Геодезическое сопровождение строительства.\n', expect: /дословность/ },
   { name: 'НОВЫЙ ТЕКСТ В СНИМКЕ не отражён в данных (полнота)', file: 'docs/content/source/services.md', find: '[TEXT] Заказать\n```\n\n### rec596170576', replace: '[TEXT] Заказать\n[TITLE] Новая услуга\n```\n\n### rec596170576', expect: /полнота.*Новая услуга/ },
   { name: 'НОВЫЙ БЛОК В СНИМКЕ без решения', file: 'docs/content/source/contacts.md', find: '## Кнопки (CTA)', replace: '### rec999999999 · type 1\n\n```text\n[TEXT] Новый блок\n```\n\n## Кнопки (CTA)', expect: /блок с текстом не учтён/ },
-  { name: 'ИЗМЕНЁН СНИМОК: оригинал исключённого адреса попал в данные', file: 'src/data/source/contacts.ts', find: "export const address = { status: 'ADDRESS_PENDING' } as const;", replace: "export const address = { status: 'ADDRESS_PENDING' } as const;\nexport const legacy = { text: 'Амурская обл, г. Благовещенск,', src: 'contacts.md#rec596804757/5' };", expect: /исключена.*используется|старый адрес/ },
+  { name: 'ИЗМЕНЁН СНИМОК: оригинал исключённого адреса попал в данные', file: 'src/data/source/contacts.ts', find: "export const email = {", replace: "export const legacy = { text: 'Амурская обл, г. Благовещенск,', src: 'contacts.md#rec596804757/5' };\nexport const email = {", expect: /исключена.*используется|старый адрес/ },
 ];
 
 function mutate(c) {

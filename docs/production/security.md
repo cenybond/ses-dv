@@ -25,7 +25,7 @@
 
 Endpoint возвращает `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, CSP `default-src 'none'; frame-ancestors 'none'`. Других routes он не обслуживает. Node слушает loopback; публичный HTTPS, сертификаты, redirects и security headers статики — ответственность утверждённого deployment. Для API заданы request/header/keepalive timeout и лимит числа headers.
 
-На hosting должны быть отключены directory listing, выдача `.git`, `.env`, `src/`, `server/`, исходников и приватных sourcemaps. Публиковать только `dist` и отдельно исполняемый server. HSTS вводить после проверки HTTPS и rollback-домена; не применять к неизвестным поддоменам автоматически. CSP статики и разрешения для Метрики документируются в конфигурации release и analytics; политика API не разрешает внешние скрипты.
+На hosting должны быть отключены directory listing, выдача `.git`, `.env`, `src/`, `server/`, исходников и приватных sourcemaps. Публиковать только `dist` и отдельно исполняемый server. HSTS вводить после проверки HTTPS и rollback-домена; не применять к неизвестным поддоменам автоматически. CSP статики и разрешения для Метрики документируются в конфигурации release и analytics; для карты контактов на главной статика должна разрешать `frame-src https://yandex.ru` (в `scripts/serve-staging.mjs` добавлено, PROD-23); политика API не разрешает внешние скрипты.
 
 Node builtins не добавляют dependency surface. Полный audit установленных зависимостей и сборки относится к общему QA-отчёту. Не трактовать отсутствие новых пакетов как отсутствие уязвимостей в существующих.
 

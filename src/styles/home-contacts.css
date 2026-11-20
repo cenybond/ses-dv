@@ -1,0 +1,45 @@
+/* Блок «Мы рады сотрудничать с Вами!» на главной: слева контакты, справа карта (эталон «О нас»: токены about). Ось и поля — как у остальных разделов (.home-rest .container). */
+.home-contacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--space-16);align-items:stretch}
+.home-contacts__info{display:flex;flex-direction:column;align-items:flex-start;min-inline-size:0}
+.home-contacts__title{margin:0 0 var(--space-8);font:var(--type-about-title);letter-spacing:var(--ls-about-title);color:var(--color-text);text-wrap:balance}
+.home-contacts__lead{max-inline-size:25.25em;margin:0 0 var(--space-8);font:var(--type-about-lead);letter-spacing:var(--ls-about-lead);color:var(--color-text);text-wrap:pretty}
+/* Список как у правой колонки «О нас» (home.css .home-about__list): пункты Manrope SemiBold, разделитель 20 % цвета текста у нижнего края пункта; подпись — мелкая, над значением. Три пункта: адрес, e-mail, телефоны. */
+.home-contacts__list{--pad:var(--space-4);inline-size:100%;margin:0;padding:0;list-style:none}
+.home-contacts__list li{position:relative;isolation:isolate;padding-block:var(--pad)}
+.home-contacts__list li + li{margin-block-start:1px}
+.home-contacts__list li > :is(span,a){display:block;transform-origin:left center}
+.home-contacts__list li:not(:last-child)::after{content:"";position:absolute;inset:auto 0 -1px;height:1px;background:color-mix(in srgb,var(--color-text) 20%,transparent)}
+.home-contacts__row{display:block;color:inherit;text-decoration:none;cursor:pointer;transition:color var(--motion-fast)}
+.home-contacts__row:hover{color:var(--color-brand)}
+.home-contacts__row:hover .home-contacts__value{color:inherit}
+.home-contacts__row:focus-visible{outline:var(--border-w) solid var(--color-focus);outline-offset:var(--space-1);border-radius:var(--radius-sm)}
+.home-contacts__label{display:block;margin:0 0 var(--space-1);font:var(--type-label);color:var(--color-text-muted)}
+.home-contacts__value{transition:color var(--motion-fast);display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-1);font:var(--type-about-item);font-style:normal;letter-spacing:var(--ls-about-item);color:var(--color-text);overflow-wrap:anywhere}
+.home-contacts__value a{color:var(--color-text);text-decoration:none;transition:color var(--motion-fast)}
+.home-contacts__value a:hover{color:var(--color-brand)}
+/* Наведение — один в один как в «О нас»: светлая плашка шире текста на 12 px с каждой стороны, пункт (подпись и значение вместе) растёт на 4 % от левого края, нижняя линия уходит вниз вместе с пунктом, соседние пункты раздвигаются на 4 px. Без «уменьшения движения» — только плашка. Карта на наведение не реагирует. */
+.home-contacts__list li::before{content:"";position:absolute;z-index:-1;inset:0 calc(var(--space-3) * -1);background:transparent;transition:background-color var(--motion-fast),inset var(--motion-fast)}
+@media (hover:hover){.home-contacts__list li:hover::before{background:color-mix(in srgb,var(--color-text) 6%,transparent)}}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .home-contacts__list li > :is(span,a),.home-contacts__list li,.home-contacts__list li::after{transition:transform var(--motion-fast)}
+  .home-contacts__list li:hover > :is(span,a){transform:scale(1.04)}
+  .home-contacts__list li:hover::before{inset:calc(var(--space-1) * -1) calc(var(--space-3) * -1)}
+  .home-contacts__list li:hover::after{transform:translateY(var(--space-1))}
+  .home-contacts__list li:has(~ li:hover){transform:translateY(calc(var(--space-1) * -1))}
+  .home-contacts__list li:hover ~ li{transform:translateY(var(--space-1))}
+}
+/* Карта: скруглённая плашка справа, iframe на всю плашку. */
+.home-contacts__map{position:relative;overflow:hidden;min-block-size:calc(var(--space-16) * 7);border-radius:var(--radius-xl);background:var(--color-bg-alt);isolation:isolate}
+.home-contacts__frame{--bleed-x:calc(var(--space-16) * 3);--bleed-y:calc(var(--space-16) + var(--space-4));position:absolute;inset-block-start:calc(var(--bleed-y) * -1);inset-inline-start:calc(var(--bleed-x) * -1);inline-size:calc(100% + var(--bleed-x));block-size:calc(100% + var(--bleed-y));border:0}
+.home-contacts__frame--narrow{display:none;--bleed-x:0px}
+/* iframe больше рамки: на 192 px влево и на 80 px вверх (за рамкой остаются плашка «Открыть в Яндекс Картах» и линейка с «Пробками»); вниз и вправо — ровно по рамке: строка «© Яндекс» и кнопки масштаба остаются на виду. Центр карты (ll) сдвинут под этот вылет — см. home-contacts.astro. */
+@media(max-width:960px){
+  .home-contacts{grid-template-columns:minmax(0,1fr)}
+  .home-contacts__map{margin-block-start:var(--space-10);min-block-size:calc(var(--space-16) * 5)}
+}
+@media(max-width:640px){
+  .home-contacts__lead{font:var(--type-body-lg);font-family:var(--font-hero);letter-spacing:var(--ls-about-lead)}
+  .home-contacts__value{font-size:1.125rem}
+}
+/* Рамка уже ≈ 460 px (телефон, а также 961–1180 px, где карта делит строку пополам): строка «© Яндекс …» шире рамки и обрезалась бы слева, поэтому вылет влево отключён — второй iframe (ll без сдвига по долготе). */
+@media(max-width:640px),(min-width:961px) and (max-width:1180px){.home-contacts__frame--wide{display:none}.home-contacts__frame--narrow{display:block}}

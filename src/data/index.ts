@@ -9,9 +9,8 @@ export { advantages, advantagesHeading, homeAdvantageIds } from './source/advant
 export { services, servicesPageTitle } from './source/services.ts';
 export { projects, projectsPageTitle, projectsPageLead, homeProjects } from './source/projects.ts';
 export { tlt, tltWorkTypes } from './source/tlt.ts';
-export { privacyTitle, privacyParagraphs } from './source/privacy.ts';
 export { ui } from './ui.ts';
-export { routes, mainNav, privacyRoute, vacanciesExternalUrl, currentState, normalizePath } from './nav.ts';
+export { routes, mainNav, vacanciesExternalUrl, currentState, normalizePath } from './nav.ts';
 export type * from './types.ts';
 
 type ProjectItem = (typeof projects)[number];

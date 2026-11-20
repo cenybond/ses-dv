@@ -1,6 +1,7 @@
 // Значения полей живут только в текущей странице до подтверждённой доставки; browser storage не используется.
 // Аналитика получает лишь имя цели.
 import { lenis, reducedMotion } from './smooth-scroll.ts';
+import { pushModal, closeViaHistory, forgetModal } from './modal-history.ts';
 
 const initialized = new WeakSet<HTMLFormElement>();
 const goal = (name: string) => window.dispatchEvent(new CustomEvent('ses:goal', { detail: { goal: name } }));
@@ -28,16 +29,22 @@ function init_form(form: HTMLFormElement): void {
     status.textContent = message;
     status.dataset.state = error ? 'error' : 'info';
   };
+  // Предупреждение об уходе со страницы висит только пока в форме есть неотправленный ввод: постоянный обработчик beforeunload
+  // не даёт браузеру (Firefox, часть мобильных) сохранить страницу в кэше «назад/вперёд», и кнопка «Назад» грузит её заново.
   const dirty_handler = (event: BeforeUnloadEvent) => {
-    if (!dirty) return;
     event.preventDefault();
-    event.returnValue = '';
+    event.returnValue = ''; // старые Chrome (до 119) показывают предупреждение только так
   };
-  window.addEventListener('beforeunload', dirty_handler);
+  const set_dirty = (value: boolean) => {
+    if (value === dirty) return;
+    dirty = value;
+    form.dataset.dirty = String(value);
+    if (value) window.addEventListener('beforeunload', dirty_handler);
+    else window.removeEventListener('beforeunload', dirty_handler);
+  };
   form.addEventListener('input', (event) => {
     if (!enabled) return;
-    dirty = true;
-    form.dataset.dirty = 'true';
+    set_dirty(true);
     if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
       event.target.removeAttribute('aria-invalid');
       event.target.removeAttribute('aria-errormessage');
@@ -84,8 +91,7 @@ function init_form(form: HTMLFormElement): void {
         announce('Обращение доставлено. Свяжемся с вами по указанному контакту.');
         if (!success_goal_sent) { goal('lead_success'); success_goal_sent = true; }
         form.reset();
-        dirty = false;
-        form.dataset.dirty = 'false';
+        set_dirty(false);
         payload_signature = '';
         key = '';
         started = false;
@@ -128,10 +134,10 @@ function init_form(form: HTMLFormElement): void {
 
 export function init_forms(): void {
   document.querySelectorAll<HTMLFormElement>('[data-lead-form]').forEach(init_form);
-  // На главной внизу страницы есть готовый блок обращения (#request): кнопки «Заказать звонок» плавно ведут к нему вместо диалога.
+  // На главной внизу страницы есть блок контактов с картой (#request, без формы): кнопки «Заказать звонок» плавно ведут к нему вместо диалога.
   const inline = document.getElementById('request');
   if (inline) {
-    for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-request-open]')) {
+    for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-request-open], [data-contacts-link]')) {
       link.addEventListener('click', (event) => {
         event.preventDefault();
         document.querySelector<HTMLDialogElement>('#menu[open]')?.close();
@@ -161,6 +167,7 @@ export function init_forms(): void {
       const form = dialog.querySelector<HTMLFormElement>('[data-lead-form]');
       if (form && form.dataset.dirty !== 'true') form.dataset.context = link.dataset.requestContext || 'callback';
       dialog.showModal();
+      pushModal(dialog, () => dialog.close());
       if (link.dataset.requestContext === 'callback') goal('callback_click');
       goal('form_open');
     };
@@ -169,9 +176,13 @@ export function init_forms(): void {
       if (event.key === ' ') { event.preventDefault(); open(); }
     });
   }
-  dialog.querySelector('[data-request-close]')?.addEventListener('click', () => dialog.close());
-  dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+  // Закрытие через «Назад» браузера (modal-history.ts): смахивание или системное «Назад» закрывают окно заявки, а не сайт.
+  const dismiss = () => { if (dialog.open && !closeViaHistory(dialog)) dialog.close(); };
+  dialog.querySelector('[data-request-close]')?.addEventListener('click', dismiss);
+  dialog.addEventListener('click', (event) => { if (event.target === dialog) dismiss(); });
+  dialog.addEventListener('cancel', (event) => { event.preventDefault(); dismiss(); }); // Esc
   dialog.addEventListener('close', () => {
+    forgetModal(dialog);
     const target = opener?.isConnected && opener.offsetParent !== null ? opener : Array.from(document.querySelectorAll<HTMLElement>('[data-request-open]')).find((item) => item.offsetParent !== null);
     target?.focus();
   });

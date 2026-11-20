@@ -1,0 +1,36 @@
+---
+// Блок «Мы рады сотрудничать с Вами!» на главной (#request): слева контакты, справа карта. Полей ввода и формы здесь нет (поручение владельца 2026-11-20, PROD-23).
+// Карта — виджет Яндекс Карт (ключ не нужен), центр и метка — точка владельца 50.281787, 127.486127; грузится сразу, без заглушки и согласия.
+import { phones, email, address, ui } from '../data';
+import '../styles/home-contacts.css';
+// Метка (pt) — точка владельца 50.281787, 127.486127. Центр карты (ll) сдвинут: iframe шире рамки вверх на 80 px, а на экранах шире 640 px ещё и влево на 192 px (home-contacts.css),
+// чтобы за рамкой оказались линейка с «Пробками» (сверху справа) и плашка «Открыть в Яндекс Картах» (снизу слева). Метка при этом должна встать в центр видимой рамки:
+// центр iframe выше на 80/2 = 40 px и левее на 192/2 = 96 px. На z=17 один пиксель = 1,0729e-5° долготы и 1,0729e-5·cos(50,28°) = 6,86e-6° широты:
+// широта 50,281787 + 40·6,86e-6 = 50,282061; долгота 127,486127 − 96·1,0729e-5 = 127,485097. На узкой рамке (≤ 640 px и 961–1180 px) влево не выходим: строка «© Яндекс …» там шире рамки
+// и обрезалась бы слева, — второй iframe, долгота без сдвига. Скрытый iframe с loading="lazy" не загружается. Менять вылет в CSS — пересчитать ll.
+const point = `${address.lon},${address.lat}`;
+const widget = (lon: number) => `https://yandex.ru/map-widget/v1/?ll=${lon},50.282061&z=17&pt=${point},pm2gnm`;
+const t = ui.homeContacts;
+---
+<section class="section section--cta home-cta" id="request" aria-labelledby="home-contacts-title">
+  <div class="container home-cta__pin">
+    <div class="home-contacts">
+      <div class="home-contacts__info">
+        <h2 class="home-contacts__title" id="home-contacts-title">{ui.cta.heading}</h2>
+        <p class="home-contacts__lead">{t.lead}</p>
+        <ul class="home-contacts__list">
+          <li><a class="home-contacts__row" href={address.href} target="_blank" rel="noopener noreferrer" aria-label={`${ui.contactLabels.address}: ${address.line.text} — ${t.address2gis}`}><span class="home-contacts__label">{ui.contactLabels.address}</span><span class="home-contacts__value">{address.line.text}</span></a></li>
+          <li><span><span class="home-contacts__label">{ui.contactLabels.email}</span><span class="home-contacts__value"><a href={email.href} data-goal="email_click">{email.display.text}</a></span></span></li>
+          <li><span><span class="home-contacts__label">{ui.contactLabels.phone}</span><span class="home-contacts__value">{phones.map((phone) => <a href={phone.href} data-goal="phone_click">{phone.display.text}</a>)}</span></span></li>
+        </ul>
+      </div>
+      <div class="home-contacts__map">
+        <iframe class="home-contacts__frame home-contacts__frame--wide" src={widget(127.485097)} title={t.mapTitle} loading="lazy" referrerpolicy="no-referrer"></iframe>
+        <iframe class="home-contacts__frame home-contacts__frame--narrow" src={widget(address.lon)} title={t.mapTitle} loading="lazy" referrerpolicy="no-referrer"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  import '../scripts/cta-pin.ts';
+</script>

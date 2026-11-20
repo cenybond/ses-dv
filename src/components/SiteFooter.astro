@@ -4,7 +4,7 @@
 // Показана верхняя часть фигур (низ обрезан), колонки растянуты между полями 72 px — те же, что у заголовка hero.
 import ContactLink from './ContactLink.astro';
 import NavigationLink from './NavigationLink.astro';
-import { company, phones, email, ui, mainNav, privacyRoute, vacanciesExternalUrl } from '../data';
+import { company, phones, email, ui, mainNav, vacanciesExternalUrl } from '../data';
 import { published_routes } from '../data/publications';
 interface Props { currentPath?: string; }
 const { currentPath = '' } = Astro.props;
@@ -13,6 +13,7 @@ const { currentPath = '' } = Astro.props;
   <div class="footer__wrap">
     <div class="footer__grid">
       <div class="footer__brand"><p class="footer__lead">{company.descriptor.text}</p><p class="footer__muted">{company.name.text}</p></div>
+      <div class="footer__links">
       <div class="footer__col"><h2 class="footer__h">{ui.nav.contactsHeading}</h2><ul>
         {phones.map(phone => <li><ContactLink href={phone.href} label={phone.display.text} /></li>)}
         <li><ContactLink href={email.href} label={email.display.text} /></li>
@@ -25,8 +26,8 @@ const { currentPath = '' } = Astro.props;
       </ul></nav>
       <div class="footer__col"><h2 class="footer__h">Информация</h2><ul>
         <li><NavigationLink href="/cookies" label="Куки и аналитика" currentPath={currentPath} /></li>
-        <li><NavigationLink href={privacyRoute.href} label={privacyRoute.label} currentPath={currentPath} /></li>
       </ul></div>
+      </div>
     </div>
   </div>
   <svg class="footer__mark" viewBox="0 0 1200 200" aria-hidden="true" focusable="false">

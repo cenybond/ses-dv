@@ -56,7 +56,9 @@ assert.equal(f.scripts.length, 1);
 assert.equal(f.calls.length, 0, 'До загрузки нет инициализации');
 f.scripts[0].onload();
 assert.equal(f.calls[0][1], 'init');
-for (const key of ['webvisor', 'clickmap', 'trackLinks', 'accurateTrackBounce', 'trackHash', 'ecommerce', 'sendTitle']) assert.equal(f.calls[0][2][key], false);
+assert.equal(f.calls[0][2].webvisor, true); // решение владельца 2026-11-20: вебвизор и карта кликов включены (только после согласия)
+assert.equal(f.calls[0][2].clickmap, true);
+for (const key of ['trackLinks', 'accurateTrackBounce', 'trackHash', 'ecommerce', 'sendTitle']) assert.equal(f.calls[0][2][key], false);
 assert.equal(f.calls[0][2].defer, true);
 assert.equal(f.calls[0][2].disableYtm, true);
 assert.equal(f.calls[1][2], 'https://ses-dv.ru/contacts');

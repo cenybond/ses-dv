@@ -49,7 +49,7 @@ export function init_analytics() {
       if (ticket !== generation) return;
       loading = false;
       if (!allowed()) { stop(); return; }
-      window.ym?.(id, 'init', { defer: true, webvisor: false, clickmap: false, trackLinks: false, accurateTrackBounce: false, trackHash: false, ecommerce: false, disableYtm: true, sendTitle: false });
+      window.ym?.(id, 'init', { defer: true, webvisor: true, clickmap: true, trackLinks: false, accurateTrackBounce: false, trackHash: false, ecommerce: false, disableYtm: true, sendTitle: false });
       active = true;
       // Только canonical: query/hash и внешний referer в просмотр не передаются.
       const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href;
@@ -73,8 +73,8 @@ export function init_analytics() {
     const href = target.getAttribute('href') || '';
     if (href.startsWith('tel:')) goal('phone_click');
     else if (href.startsWith('mailto:')) goal('email_click');
-    else if (href === '/#home-services') goal('services_click');
-    else if (href === '/#home-projects') goal('projects_click');
+    else if (href === '/services') goal('services_click');
+    else if (href === '/projects') goal('projects_click');
   });
   start();
 }

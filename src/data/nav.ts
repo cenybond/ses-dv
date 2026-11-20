@@ -8,11 +8,10 @@ export type Route = { href: string; label: string; built: boolean };
 
 export const routes = {
   home: '/',
-  services: '/#home-services', // отдельной страницы услуг нет (решение владельца 2026-11-18): пункт ведёт к разделу «Наши услуги» на главной
-  projects: '/#home-projects', // отдельной страницы каталога нет (решение владельца 2026-11-18): пункт ведёт к разделу «Проекты» на главной; полный перечень — окно по плитке «Еще работы»
+  services: '/services', // отдельной страницы услуг нет (решение владельца 2026-11-18): адрес — копия главной, открывается плавной прокруткой к разделу «Наши услуги» (PROD-22)
+  projects: '/projects', // отдельной страницы каталога нет (решение владельца 2026-11-18): адрес — копия главной с прокруткой к разделу «Проекты»; полный перечень — окно по плитке «Еще работы», у проекта и его снимка свои адреса (PROD-22)
   about: '/about',
   contacts: '/contacts',
-  privacy: '/privacy',
   vacancies: '/vacancies',
 } as const;
 
@@ -26,9 +25,7 @@ export const mainNav: Route[] = [
 /** Вакансии компании на hh.ru (решение владельца 2026-11-18): пункт «Вакансии» в подвале ведёт на этот адрес в новой вкладке. Единственная разрешённая внешняя ссылка кроме tel:, mailto: и wa.me; внутренняя страница /vacancies остаётся. */
 export const vacanciesExternalUrl = 'https://blagoveschensk.hh.ru/employer/9992331?hhtmFrom=vacancy&tab=VACANCIES';
 
-export const privacyRoute: Route = { href: routes.privacy, label: ui.nav.privacy, built: true };
-
-export const pendingRoutes = [...mainNav, privacyRoute].filter((r) => !r.built).map((r) => r.href);
+export const pendingRoutes = mainNav.filter((r) => !r.built).map((r) => r.href);
 
 /** Путь без завершающего слэша: `/about/` и `/about` — один маршрут (dev и build отдают разные формы). */
 export const normalizePath = (pathname: string): string => (pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname) || '/';

@@ -1,0 +1,12 @@
+---
+// Адрес проекта: копия главной, при открытии ссылки сразу открывается окно проекта (src/scripts/deeplinks.ts, PROD-22). Номер снимка — `?photo=N`.
+import HomePage from '../../components/HomePage.astro';
+import { projects } from '../../data';
+import { projectUrlName } from '../../data/project-urls';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({ params: { slug: projectUrlName[project.slug] ?? project.slug }, props: { title: project.title.text } }));
+}
+const { title } = Astro.props;
+---
+<HomePage title={`${title} — Связь Энергострой`} />

@@ -24,7 +24,7 @@ Canonical, title/description, Open Graph, JSON-LD, robots/sitemap и полны�
 
 ## Основные компоненты
 
-Существующие SiteHeader/SiteFooter/MobileMenu/Logo сохранены и интегрированы. Добавлены hero, page-hero, section-heading, breadcrumbs, project-gallery, contact-block, contact-form, request-button, request-dialog, consent-checkbox, form-status, cookie-banner, cookie-settings, seo-head, news-card и document-card. ProjectCard и ServiceCard наполнены данными полного сайта. Условные публикации используют типизированный реестр и проверку файлов/прав до генерации маршрутов.
+Существующие SiteHeader/SiteFooter/MobileMenu/Logo сохранены и интегрированы. Добавлены hero, page-hero, section-heading, breadcrumbs, project-gallery, contact-block, contact-form, request-dialog, consent-checkbox, form-status, cookie-banner, cookie-settings, seo-head, news-card и document-card. ProjectCard и ServiceCard наполнены данными полного сайта. Условные публикации используют типизированный реестр и проверку файлов/прав до генерации маршрутов.
 
 ## Навигация по документации
 

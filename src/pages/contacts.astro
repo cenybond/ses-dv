@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/page-hero.astro';
 import ContactForm from '../components/contact-form.astro';
-import {company,phones,email,ui,contactsPageTitle,contactsLead} from '../data';
+import {company,phones,email,address,ui,contactsPageTitle,contactsLead} from '../data';
 import {pageui} from '../data/ui';
 ---
 <BaseLayout title={`${ui.nav.contacts} — ${company.name.text}`} description={pageui.contactsmeta}>
@@ -11,7 +11,7 @@ import {pageui} from '../data/ui';
     <div><dl class="contact-details">
       <div><dt>{ui.contactLabels.phone}</dt><dd>{phones.map(phone=><a href={phone.href} data-goal="phone_click">{phone.display.text}</a>)}</dd></div>
       <div><dt>{ui.contactLabels.email}</dt><dd><a href={email.href} data-goal="email_click">{email.display.text}</a></dd></div>
-      <div><dt>{ui.contactLabels.address}</dt><dd>{pageui.addressnotice}</dd></div>
+      <div><dt>{ui.contactLabels.address}</dt><dd>{address.line.text}</dd></div>
     </dl></div>
     <div id="contact-form"><ContactForm context="contacts" heading={pageui.inquiry} /></div>
   </section>

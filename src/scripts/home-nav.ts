@@ -2,11 +2,12 @@
 // Ссылки в разметке остаются настоящими (/about, /services…): без JS и на других страницах они открывают страницы.
 import { lenis, reducedMotion, ScrollTrigger } from './smooth-scroll.ts';
 import { isHomePath } from './deeplinks.ts';
+import { toLocal } from './base-path.ts';
 
 // Ключ ссылки: путь без завершающего слэша и якорь (`/services` — раздел услуг на главной).
 const keyOf = (link: HTMLAnchorElement): string => {
   const url = new URL(link.href, location.href);
-  return (url.pathname.replace(/\/+$/, '') || '/') + url.hash;
+  return (toLocal(url.pathname).replace(/\/+$/, '') || '/') + url.hash;
 };
 
 const sections: Record<string, () => HTMLElement | null> = {

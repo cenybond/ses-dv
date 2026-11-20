@@ -25,7 +25,9 @@ interface Props {
   bare?: boolean;
 }
 const { title, description, headerVariant = 'solid', bare = false } = Astro.props;
-const currentPath = normalizePath(Astro.url.pathname);
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pathname = Astro.url.pathname;
+const currentPath = normalizePath(basePath && (pathname === basePath || pathname.startsWith(basePath + '/')) ? pathname.slice(basePath.length) || '/' : pathname);
 ---
 <!doctype html>
 <html lang="ru">
@@ -46,8 +48,8 @@ const currentPath = normalizePath(Astro.url.pathname);
     {!bare && <MobileMenu currentPath={currentPath} />}
     {!bare && <RequestDialog />}
     {!bare && <ScrollTop />}
-    <CookieBanner />
-    <CookieSettings />
+    {import.meta.env.PUBLIC_PAGES_PREVIEW !== 'true' && <CookieBanner />}
+    {import.meta.env.PUBLIC_PAGES_PREVIEW !== 'true' && <CookieSettings />}
     <script>
       import '../scripts/site.ts';
       import '../scripts/forms.ts';

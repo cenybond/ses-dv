@@ -6,6 +6,7 @@
 // Адреса — настоящие страницы (копии главной, src/pages/services, src/pages/projects): работают без JS и на любом хостинге, без правил перенаправления.
 import { lenis, reducedMotion } from './smooth-scroll.ts';
 import { forceNextPush } from './modal-history.ts';
+import { toLocal, toPublic } from './base-path.ts';
 
 const normalize = (path: string) => (path.length > 1 ? path.replace(/\/+$/, '') : path) || '/';
 /** Главная или её копия (адрес раздела, списка или проекта): на них работают прокрутка по разделам, подчёркивание пункта меню и открытие окон. */
@@ -37,7 +38,7 @@ if (isHomePath()) {
   const syncPath = () => {
     if (booting || document.querySelector('dialog[open]')) return;
     const path = currentSectionPath();
-    if (normalize(location.pathname) !== path || location.search || location.hash) history.replaceState(history.state, '', path);
+    if (normalize(toLocal(location.pathname)) !== path || location.search || location.hash) history.replaceState(history.state, '', toPublic(path));
   };
   window.addEventListener('scroll', () => { window.clearTimeout(timer); timer = window.setTimeout(syncPath, 140); }, { passive: true });
 
@@ -46,12 +47,12 @@ if (isHomePath()) {
     const dialog = (event.target as Element | null)?.closest('dialog');
     const index = (event as CustomEvent<{ index?: number }>).detail?.index ?? 0;
     if (!dialog?.open || !dialog.dataset.path) return;
-    history.replaceState(history.state, '', dialog.dataset.path + (index > 0 ? `?photo=${index + 1}` : ''));
+    history.replaceState(history.state, '', toPublic(dialog.dataset.path) + (index > 0 ? `?photo=${index + 1}` : ''));
   });
   document.addEventListener('close', () => {
     window.setTimeout(() => {
       if (document.querySelector('dialog[open]') || !isModalPath(location.pathname)) return;
-      history.replaceState(history.state, '', currentSectionPath()); // окно закрыли, а записи истории под ним не было
+      history.replaceState(history.state, '', toPublic(currentSectionPath())); // окно закрыли, а записи истории под ним не было
     }, 120);
   }, true);
 
@@ -72,7 +73,7 @@ if (isHomePath()) {
   };
 
   const boot = () => {
-    const rest = normalize(location.pathname).split('/').filter(Boolean);
+    const rest = normalize(toLocal(location.pathname)).split('/').filter(Boolean);
     const base = rest[0] === 'services' ? '/services' : rest[0] === 'projects' ? '/projects' : '/';
     const section = base === '/services' ? sectionOf('home-services')() : base === '/projects' ? sectionOf('home-projects')() : null;
     if (!section) { finishBoot(); return; }
@@ -81,7 +82,7 @@ if (isHomePath()) {
     const byPath = [...document.querySelectorAll<HTMLDialogElement>('dialog[data-path]')].find((dialog) => dialog.dataset.path === `${base}/${name}`);
     const target = byPath?.id ?? null;
     // Запись под окном — адрес раздела: «Назад» и крестик возвращают на него, а не уводят с сайта.
-    if (target) history.replaceState(null, '', base);
+    if (target) history.replaceState(null, '', toPublic(base));
     scrollToSection(section, () => {
       finishBoot();
       if (target) openDialog(target, photo - 1);

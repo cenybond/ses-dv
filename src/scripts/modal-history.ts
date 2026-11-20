@@ -5,6 +5,7 @@
 // Закрытие крестиком, Esc и фоном тоже идёт через `history.back()`, чтобы записи не копились; если окно закрыли кодом (кнопка «Заказать звонок» в окне проекта,
 // возврат из bfcache), лишние записи убирает `history.go(-n)`. Пока окно открыто, браузер не восстанавливает прокрутку при переходах по этим записям
 // (`scrollRestoration = 'manual'`): иначе страница прыгала бы назад.
+import { toPublic } from './base-path.ts';
 type Entry = { dialog: HTMLDialogElement; dismiss: () => void };
 
 const stack: Entry[] = [];
@@ -49,7 +50,7 @@ export function pushModal(dialog: HTMLDialogElement, dismiss: () => void, url?: 
   try {
     if (!stack.length) history.scrollRestoration = 'manual';
     stack.push({ dialog, dismiss });
-    history.pushState({ mh: stack.length }, '', url);
+    history.pushState({ mh: stack.length }, '', url ? toPublic(url) : url);
     depth = stack.length;
   } catch {
     stack.pop(); // история недоступна: окно просто работает без неё

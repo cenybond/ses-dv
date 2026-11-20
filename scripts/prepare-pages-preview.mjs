@@ -1,10 +1,7 @@
-import { readdir, readFile, writeFile, rm } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-// The preview is public: remove unapproved legal drafts before upload.
-for (const route of ['privacy', 'consent', 'cookies']) {
-  await rm(join('dist', route), { recursive: true, force: true });
-}
+// Страницы /cookies и /consent остаются в демоверсии по просьбе владельца (2026-11-21): на них пометка «проект для согласования». /privacy удалена (PROD-25).
 const base = '/ses-dv';
 async function processDirectory(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
@@ -15,9 +12,6 @@ async function processDirectory(dir) {
       // Astro applies base to generated assets; authored root links need the prefix too.
       html = html.replace(/\b(href|src|action)="\/(?!\/|ses-dv(?:\/|"|#))([^\"]*)"/g,
         (_, attr, rest) => `${attr}="${base}/${rest}"`);
-      if (/\b(?:href|src|action)="\/ses-dv\/(?:privacy|consent|cookies)(?:[\/#"?])/.test(html)) {
-        throw new Error(`Legal draft link found in ${path}`);
-      }
       await writeFile(path, html);
     }
   }

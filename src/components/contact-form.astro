@@ -45,7 +45,7 @@ const id = `lead-${crypto.randomUUID()}`;
         <label for={`${id}-website`}>Сайт</label>
         <input id={`${id}-website`} name="website" type="text" tabindex="-1" autocomplete="off" />
       </div>
-      {import.meta.env.PUBLIC_PAGES_PREVIEW !== 'true' && <ConsentCheckbox id={`${id}-consent`} />}
+      <ConsentCheckbox id={`${id}-consent`} />
       <p class="lead-hint">Поля со звёздочкой обязательны.</p>
       <button class:list={['btn', 'btn--lime', 'lead-submit', line && 'btn--lg']} type="submit" data-lead-submit disabled>{enabled ? 'Отправить обращение' : 'Отправка недоступна'}</button>
     </fieldset>

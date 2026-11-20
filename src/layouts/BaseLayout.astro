@@ -48,8 +48,8 @@ const currentPath = normalizePath(basePath && (pathname === basePath || pathname
     {!bare && <MobileMenu currentPath={currentPath} />}
     {!bare && <RequestDialog />}
     {!bare && <ScrollTop />}
-    {import.meta.env.PUBLIC_PAGES_PREVIEW !== 'true' && <CookieBanner />}
-    {import.meta.env.PUBLIC_PAGES_PREVIEW !== 'true' && <CookieSettings />}
+    <CookieBanner />
+    <CookieSettings />
     <script>
       import '../scripts/site.ts';
       import '../scripts/forms.ts';

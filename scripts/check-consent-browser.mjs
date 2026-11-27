@@ -90,34 +90,18 @@ try {
     await evaluate('document.fonts.ready.then(() => true)');
     assert.equal(await evaluate('document.querySelector("[data-cookie-banner]").hidden'), false);
     assert.equal(await evaluate('document.querySelector("#cookie-analytics").disabled'), true);
-    await evaluate('document.querySelector("[data-cookie-settings]").focus()');
-    await press('Enter', 'Enter', 13);
-    assert.equal(await evaluate('document.querySelector("#cookie-settings").open'), true);
-    assert.equal(await evaluate('document.querySelector("#cookie-settings").contains(document.activeElement)'), true);
+    assert.equal(await evaluate('Boolean(document.querySelector("main [data-cookie-open], main [data-cookie-settings]"))'), false);
+    assert.equal(await evaluate('getComputedStyle(document.querySelector(".analytics-data")).listStyleType'), 'disc');
     assert.equal(await evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth'), true);
-    const bounds = await evaluate('(() => {const r=document.querySelector("#cookie-settings").getBoundingClientRect(); return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:innerWidth,height:innerHeight}})()');
-    assert.ok(bounds.left >= 0 && bounds.right <= bounds.width + 1 && bounds.top >= 0 && bounds.bottom <= bounds.height + 1);
     const picture = await send('Page.captureScreenshot', { format: 'png' });
     await writeFile(join(shots, 'cookies-' + width + '.png'), Buffer.from(picture.data, 'base64'));
-    for (let count = 0; count < 8; count++) {
-      await press('Tab', 'Tab', 9);
-      assert.equal(await evaluate('document.querySelector("#cookie-settings").contains(document.activeElement)'), true, 'Tab не должен уходить в фон');
-    }
-    await press('Escape', 'Escape', 27);
+    await evaluate('document.querySelector("[data-cookie-accept]").focus()');
+    await press('Enter', 'Enter', 13);
+    assert.equal(await evaluate('document.querySelector("[data-cookie-banner]").hidden'), true);
     assert.equal(await evaluate('document.querySelector("#cookie-settings").open'), false);
-    assert.equal(await evaluate('document.activeElement.hasAttribute("data-cookie-settings")'), true);
-    await press('Enter', 'Enter', 13);
-    await evaluate('document.querySelector("[data-cookie-save]").focus()');
-    await press('Enter', 'Enter', 13);
-    assert.equal(await evaluate('JSON.parse(localStorage.getItem("ses-consent")).analytics'), false);
-    assert.equal(await evaluate('document.querySelector("#cookie-settings").open'), false);
-    assert.equal(await evaluate('document.activeElement.hasAttribute("data-cookie-settings")'), true);
-    await press('Enter', 'Enter', 13);
-    await evaluate('document.querySelector("#cookie-settings [data-cookie-reject]").focus()');
-    await press('Enter', 'Enter', 13);
     assert.equal(await evaluate('JSON.parse(localStorage.getItem("ses-consent")).version'), 1);
     assert.equal(await evaluate('JSON.parse(localStorage.getItem("ses-consent")).analytics'), false);
-    findings.push({ width, settings: 'keyboard open/save/reject/Escape/focus trap+restore OK', screenshot: 'cookies-' + width + '.png' });
+    findings.push({ width, settings: 'policy markers, no settings button, keyboard accept and storage OK', screenshot: 'cookies-' + width + '.png' });
   }
   await send('Page.addScriptToEvaluateOnNewDocument', { source: `window.__metrics = { lcp: null, cls: 0 }; new PerformanceObserver(list => { for (const item of list.getEntries()) window.__metrics.lcp = item.startTime; }).observe({type:'largest-contentful-paint', buffered:true}); new PerformanceObserver(list => { for (const item of list.getEntries()) if (!item.hadRecentInput) window.__metrics.cls += item.value; }).observe({type:'layout-shift', buffered:true});` });
   const metrics = [];
@@ -145,7 +129,7 @@ try {
   assert.deepEqual(external, [], 'Внешних запросов быть не должно');
   assert.deepEqual(logs, [], 'Ошибки JS/CSP');
   await writeFile(join(shots, 'cookies-verification.json'), JSON.stringify({ tested: new Date().toISOString(), findings, external_requests: external, console_errors: logs, csp, limits: ['Реальный SDK и цели проверены только mocks; счётчик не подключён.', 'Screen reader и реальные устройства не проверены.'] }, null, 2));
-  console.log('check-consent-browser: OK — 390/1440, keyboard/dialog/storage, no external requests, restrictive CSP/security headers; screenshots saved');
+  console.log('check-consent-browser: OK — 390/1440, policy markers, keyboard consent and storage, no external requests, CSP/security headers; screenshots saved');
   console.log(JSON.stringify({ metrics, reflow }));
 } finally {
   ws?.close();

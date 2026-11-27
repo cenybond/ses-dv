@@ -6,6 +6,7 @@ import ContactLink from './ContactLink.astro';
 import NavigationLink from './NavigationLink.astro';
 import { company, phones, email, ui, mainNav, vacanciesExternalUrl } from '../data';
 import { published_routes } from '../data/publications';
+import { site_config } from '../data/site-config';
 interface Props { currentPath?: string; }
 const { currentPath = '' } = Astro.props;
 ---
@@ -26,6 +27,7 @@ const { currentPath = '' } = Astro.props;
       </ul></nav>
       <div class="footer__col"><h2 class="footer__h">Информация</h2><ul>
         <li><NavigationLink href="/cookies" label="Куки и аналитика" currentPath={currentPath} /></li>
+        {site_config.analytics_enabled && <li><button type="button" class="btn btn--secondary" data-cookie-settings aria-haspopup="dialog">Настройки аналитики</button></li>}
       </ul></div>
       </div>
     </div>

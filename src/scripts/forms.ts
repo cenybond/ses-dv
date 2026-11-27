@@ -2,6 +2,7 @@
 // Аналитика получает лишь имя цели.
 import { lenis, reducedMotion } from './smooth-scroll.ts';
 import { pushModal, closeViaHistory, forgetModal } from './modal-history.ts';
+import { afterMobileMenuCloses } from './mobile-menu.ts';
 
 const initialized = new WeakSet<HTMLFormElement>();
 const goal = (name: string) => window.dispatchEvent(new CustomEvent('ses:goal', { detail: { goal: name } }));
@@ -140,12 +141,13 @@ export function init_forms(): void {
     for (const link of document.querySelectorAll<HTMLAnchorElement>('[data-request-open], [data-contacts-link]')) {
       link.addEventListener('click', (event) => {
         event.preventDefault();
-        document.querySelector<HTMLDialogElement>('#menu[open]')?.close();
         document.querySelectorAll<HTMLDialogElement>('dialog.list-modal[open]').forEach((modal) => modal.close()); // кнопка в окне проекта: окна закрываются, страница едет к блоку обращения
-        const offset = -(document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 0) - 12;
-        const focusField = () => inline.querySelector<HTMLElement>('input:not([tabindex="-1"]):not([disabled]), textarea:not([disabled])')?.focus({ preventScroll: true });
-        if (lenis && !reducedMotion) lenis.scrollTo(inline, { offset, duration: 1.6, force: true, onComplete: focusField });
-        else { inline.scrollIntoView({ block: 'start' }); focusField(); }
+        afterMobileMenuCloses(() => {
+          const offset = -(document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 0) - 12;
+          const focusField = () => inline.querySelector<HTMLElement>('input:not([tabindex="-1"]):not([disabled]), textarea:not([disabled])')?.focus({ preventScroll: true });
+          if (lenis && !reducedMotion) lenis.scrollTo(inline, { offset, duration: 1.6, force: true, onComplete: focusField });
+          else { inline.scrollIntoView({ block: 'start' }); focusField(); }
+        });
         goal('callback_click');
       });
     }

@@ -3,6 +3,7 @@
 import { lenis, reducedMotion, ScrollTrigger } from './smooth-scroll.ts';
 import { isHomePath } from './deeplinks.ts';
 import { toLocal } from './base-path.ts';
+import { afterMobileMenuCloses } from './mobile-menu.ts';
 
 // Ключ ссылки: путь без завершающего слэша и якорь (`/services` — раздел услуг на главной).
 const keyOf = (link: HTMLAnchorElement): string => {
@@ -42,10 +43,9 @@ if (isHomePath()) {
     const href = keyOf(link);
     if (href !== '/' && !(href in sections) && href !== '/contacts') return;
     link.addEventListener('click', (event) => {
-      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
       event.preventDefault();
-      document.querySelector<HTMLDialogElement>('#menu[open]')?.close();
-      go(href, link.closest('.site-footer') !== null);
+      afterMobileMenuCloses(() => go(href, link.closest('.site-footer') !== null));
     });
   });
 }

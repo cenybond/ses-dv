@@ -6,6 +6,17 @@ import { pushModal, closeViaHistory, forgetModal, hasModalEntry } from './modal-
 const MENU_BREAKPOINT = '(max-width: 960px)';
 const initialised = new WeakSet<HTMLDialogElement>();
 
+export function afterMobileMenuCloses(onClose: () => void): void {
+  const menu = document.querySelector<HTMLDialogElement>('#menu[open]');
+  if (!menu) {
+    onClose();
+    return;
+  }
+  // Запускаем прокрутку после закрытия шторки и снятия блокировки Lenis.
+  menu.addEventListener('close', () => requestAnimationFrame(onClose), { once: true });
+  if (!closeViaHistory(menu)) menu.close();
+}
+
 export function initMobileMenu(): void {
   const menu = document.querySelector<HTMLDialogElement>('#menu');
   const openers = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-open-menu]'));
@@ -93,10 +104,10 @@ export function initMobileMenu(): void {
     const target = opener && document.contains(opener) && opener.offsetParent !== null ? opener : null;
     opener = null;
     if (!target) return;
-    target.focus();
+    target.focus({ preventScroll: true });
     // Браузер может вернуть фокус «на прежний элемент» после нашего обработчика (прежним был <body>, если шторку открыли без фокуса).
     requestAnimationFrame(() => {
-      if (document.activeElement !== target && !menu.open) target.focus();
+      if (document.activeElement !== target && !menu.open) target.focus({ preventScroll: true });
     });
   });
 

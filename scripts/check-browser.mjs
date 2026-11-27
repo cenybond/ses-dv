@@ -421,6 +421,24 @@ try {
   await settled();
   const afterNav = await evaluate(`({ path: location.pathname.replace(/\\/$/, ''), open: document.querySelector('#menu').open, h1: document.querySelector('h1').textContent.trim() })`);
   expectEq('переход из шторки на «Контакты»', [afterNav.path, afterNav.open, !!afterNav.h1], [routes.contacts, false, true]);
+  // Главная: выбор в шторке закрывает диалог и прокручивает к своему разделу.
+  const mobileDestinations = [
+    ['/about', 'Math.abs(document.querySelector(".home-about").getBoundingClientRect().top) < 160'],
+    ['/services', 'Math.abs(document.getElementById("home-services").getBoundingClientRect().top) < 160'],
+    ['/projects', 'Math.abs(document.getElementById("home-projects").getBoundingClientRect().top) < 160'],
+    ['/contacts', 'document.querySelector(".site-footer").getBoundingClientRect().bottom <= innerHeight + 4'],
+    ['.btn', 'Math.abs(document.getElementById("request").getBoundingClientRect().top) < 160'],
+  ];
+  for (const [destination, nearSection] of mobileDestinations) {
+    await go('/');
+    await evaluate('document.querySelector(".burger").focus()');
+    await press('Enter', 'Enter', 13);
+    const selector = destination.startsWith('/') ? `#menu .menu-list a[href="${destination}"]` : `#menu ${destination}`;
+    await evaluate(`document.querySelector(${JSON.stringify(selector)}).focus()`);
+    await press('Enter', 'Enter', 13);
+    expectEq(`главная: пункт шторки ${destination} прокручивает к разделу`,
+      await untilLong(`!document.querySelector('#menu').open && (${nearSection})`, 3200), true);
+  }
   // расширение окна при открытой шторке закрывает её
   await go('/about');
   await evaluate(`document.querySelector('.burger').click()`);

@@ -28,7 +28,7 @@ const selected = [
   { id: '', title: 'Подробный перечень услуг' },
 ];
 interface Props { title?: string; description?: string; }
-const { title = 'Связь Энергострой — проектирование и строительство инженерных сетей', description = company.descriptor.text + '. Услуги, проекты и контакты ООО «Связь Энергострой».' } = Astro.props;
+const { title = 'Связь Энергострой', description = company.descriptor.text + '. Услуги, проекты и контакты ООО «Связь Энергострой».' } = Astro.props;
 ---
 <BaseLayout title={title} description={description} headerVariant="hero">
   <Hero />

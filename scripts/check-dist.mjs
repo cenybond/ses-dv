@@ -34,6 +34,7 @@ const demo = process.env.PUBLIC_SITE_MODE !== 'production' || process.env.PUBLIC
 const HH_VACANCIES = 'https://blagoveschensk.hh.ru/employer/9992331?hhtmFrom=vacancy&tab=VACANCIES';
 const isExternalOk = (u) => u.startsWith('tel:') || u.startsWith('mailto:') || u.startsWith('https://wa.me/') || u.replaceAll('&amp;', '&') === HH_VACANCIES
   || /^https:\/\/yandex\.ru\/map-widget\/v1\/\?ll=(?:127\.485097|127\.486127),50\.282061&z=17&pt=127\.486127,50\.281787,pm2gnm$/.test(u.replaceAll('&amp;', '&'))
+  || u === 'https://yandex.ru/legal/confidential/'
   || u === 'https://2gis.ru/blagoveshchensk?m=127.486127%2C50.281787%2F17'; // адрес в блоке контактов (PROD-23): ссылка в 2ГИС
   // карта контактов на главной (PROD-23): iframe — условие выше, перед ним
 

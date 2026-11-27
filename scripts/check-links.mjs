@@ -132,6 +132,7 @@ for (const [key, page] of pages) {
       if (attrs.target !== '_blank' || !/\bnoopener\b/.test(attrs.rel ?? '')) fail(where, `ссылка в 2ГИС должна открываться с target="_blank" rel="noopener noreferrer": ${name}`);
       continue;
     }
+    if (href === 'https://yandex.ru/legal/confidential/') continue;
     if (/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(href)) {
       if (/tilda|ses-dv\.ru/i.test(href)) fail(where, `ссылка на старый сайт ${name}`);
       else fail(where, `недопустимая внешняя ссылка ${name} (разрешены tel:, mailto:, https://wa.me/)`);

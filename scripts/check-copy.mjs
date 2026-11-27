@@ -379,7 +379,7 @@ ok(documents.status === 'PENDING_FROM_CLIENT' && documents.items.length === 0, '
   req(email, ['display', 'href', 'status'], 'email');
   ok(email.href === `mailto:${email.display.text}` && /^[^\s@]+@[^\s@]+\.[a-z]+$/.test(email.display.text), 'контакты', 'email: href должен быть mailto:<адрес> без лишнего префикса');
   ok(email.status === 'PENDING_CLIENT_CONFIRMATION', 'контакты', 'email: статус PENDING_CLIENT_CONFIRMATION');
-  ok(address.line.text === 'ул. Нагорная, 19в/9, офис, 2 этаж, г. Благовещенск, Амурская область' && address.status === 'CLIENT_APPROVED', 'контакты', 'address: новый адрес владельца (2026-11-20, PROD-23), статус CLIENT_APPROVED');
+  ok(address.line.text === 'ул. Нагорная, 19в, офис, 2 этаж, г. Благовещенск, Амурская область' && address.status === 'CLIENT_APPROVED', 'контакты', 'address: адрес владельца (PROD-23, уточнён 2026-11-27), статус CLIENT_APPROVED');
   ok(Math.abs(address.lat - 50.28) < 0.02 && Math.abs(address.lon - 127.49) < 0.02, 'контакты', 'address: координаты должны быть у Благовещенска (Нагорная, 19в)');
 }
 
@@ -501,6 +501,8 @@ for (const file of fullsnapshots) {
         // Блок контактов на главной (PROD-23, поручение владельца 2026-11-20): карта — виджет Яндекс Карт только в этом блоке.
         if ((rel === 'src/components/home-contacts.astro' || rel.startsWith('dist/')) && m[0].startsWith('https://yandex.ru/map-widget/v1/?ll=')) continue; // dist: точное значение проверяет check-dist
         if ((rel === 'src/data/source/contacts.ts' || rel.startsWith('dist/')) && m[0].startsWith('https://2gis.ru/blagoveshchensk?m=127.486127')) continue; // адрес в блоке контактов (PROD-23): ссылка в 2ГИС
+        if (['src/pages/cookies.astro', 'dist/cookies/index.html'].includes(rel)
+          && ['https://yandex.ru/legal/confidential/', 'https://ses-dv.ru/cookies'].includes(m[0])) continue;
         fail('старый сайт', `${rel}: внешняя ссылка «${m[0]}»; допустимы только wa.me (SPEC-DEMO §7), адреса сайта — лишь в тексте политики`);
       }
     }
